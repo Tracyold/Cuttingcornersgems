@@ -105,7 +105,7 @@ const Booking = () => {
               className="font-mono text-2xl hover:text-gray-300 transition-colors block mb-2"
               data-testid="contact-phone"
             >
-              480-285-4595
+              480-286-4595
             </a>
             <div className="flex items-center justify-center gap-4 text-gray-500 text-sm mt-4">
               <span className="flex items-center gap-2">
@@ -273,7 +273,7 @@ const Booking = () => {
                 href="tel:4802854595"
                 className="font-mono text-xl hover:text-gray-300 transition-colors"
               >
-                480-285-4595
+                480-286-4595
               </a>
             </div>
           </div>

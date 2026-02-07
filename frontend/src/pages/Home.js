@@ -173,7 +173,7 @@ const Home = () => {
                   Book a Consultation
                 </Link>
                 <a href="tel:4802854595" className="btn-secondary" data-testid="about-call-btn">
-                  Call 480-285-4595
+                  Call 480-286-4595
                 </a>
               </div>
             </div>

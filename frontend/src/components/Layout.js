@@ -166,7 +166,7 @@ const Layout = ({ children }) => {
               <div className="space-y-2 text-gray-500 text-sm">
                 <p>Tempe, Arizona</p>
                 <p>
-                  <a href="tel:4802854595" className="hover:text-white transition-colors">480-285-4595</a>
+                  <a href="tel:4802854595" className="hover:text-white transition-colors">480-286-4595</a>
                 </p>
                 <p className="text-xs text-gray-600">Calls & Texts Welcome</p>
               </div>

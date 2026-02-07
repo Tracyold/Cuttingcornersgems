@@ -42,7 +42,7 @@ const Home = () => {
             <span className="text-[#7dd3c0]">Cutting</span> Corners
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
-            Precision gemstone cutting by Michael Wall. Where rough stones become brilliant masterpieces.
+            Custom gemstone cutting by Michael Wall. Specializing in med-high weight retention for jewelers and collectors.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in delay-300">
             <Link to="/gallery" className="btn-primary inline-flex items-center justify-center gap-2" data-testid="hero-gallery-btn">
@@ -70,9 +70,9 @@ const Home = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { icon: Scissors, title: 'Precision Cutting', desc: 'Custom cuts tailored to each stone\'s unique properties and your vision.' },
+              { icon: Scissors, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
-              { icon: Gem, title: 'Cut Design', desc: 'Collaborative design process to create one-of-a-kind gem cuts.' },
+              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
             ].map((service, i) => (
               <div 
                 key={service.title}
@@ -139,7 +139,7 @@ const Home = () => {
       <section className="section-spacing" data-testid="about-section">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="relative">
+            <div>
               <div className="aspect-[4/5] overflow-hidden">
                 <img
                   src="https://images.unsplash.com/photo-1659682699444-9ebad278fbd3?w=800"
@@ -148,9 +148,9 @@ const Home = () => {
                 />
               </div>
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center">
-                <p className="spec-text text-gray-500 mb-1">Experience</p>
-                <p className="font-serif text-3xl">15+</p>
-                <p className="text-gray-500 text-sm">Years</p>
+                <p className="spec-text text-gray-500 mb-1">Industry Since</p>
+                <p className="font-serif text-3xl">2013</p>
+                <p className="text-gray-500 text-sm">Pro Since 2021</p>
               </div>
             </div>
             <div>
@@ -158,14 +158,14 @@ const Home = () => {
               <h2 className="section-title mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
-                  Based in Tempe, Arizona, I've dedicated my career to the art of precision gemstone cutting. 
-                  Every stone tells a story, and my job is to reveal its true potential through careful analysis 
-                  and expert cutting techniques.
+                  Based in Tempe, Arizona, I've been part of the gemstone industry since 2013, 
+                  transitioning from amateur enthusiast to professional cutter in 2021. My focus 
+                  is on med-high weight retention cuts that maximize both value and beauty.
                 </p>
                 <p>
-                  I specialize in colored gemstones—sapphires, tourmalines, emeralds, tanzanites, and more. 
-                  Whether you're looking for a custom cut, need a stone re-polished, or want to collaborate 
-                  on a unique design, I'm here to help bring your vision to life.
+                  I work closely with jewelers across the industry, specializing in colored gemstones—sapphires, 
+                  tourmalines, emeralds, tanzanites, and more. Whether you need a custom cut, re-polish, 
+                  or expert consultation, I'm here to deliver results that exceed expectations.
                 </p>
               </div>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">

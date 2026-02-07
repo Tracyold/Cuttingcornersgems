@@ -140,9 +140,10 @@ const Home = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="aspect-[4/5] overflow-hidden">
+              <div className="aspect-[4/5] overflow-hidden relative">
+                <div className="absolute inset-0 shadow-[inset_0_0_30px_15px_rgba(0,0,0,0.7)] z-10 pointer-events-none" />
                 <img
-                  src="https://images.unsplash.com/photo-1659682699444-9ebad278fbd3?w=800"
+                  src="https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/93xqhax5_IMG_5550.jpeg"
                   alt="Michael Wall at work"
                   className="w-full h-full object-cover"
                 />

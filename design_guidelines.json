@@ -1,0 +1,112 @@
+{
+  "identity": {
+    "name": "Cutting Corners",
+    "owner": "Michael Wall",
+    "location": "Tempe, Arizona",
+    "vibe": "Professional, Edgy, Laid Back, Precision",
+    "metaphor": "Light Refraction & Raw-to-Polished"
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Playfair Display",
+      "weights": ["400", "700", "900"],
+      "usage": "Hero titles, Section headers, Product names",
+      "tailwind_class": "font-serif tracking-tight"
+    },
+    "body": {
+      "font_family": "Manrope",
+      "weights": ["300", "400", "500"],
+      "usage": "Paragraphs, UI elements, Form labels",
+      "tailwind_class": "font-sans tracking-wide"
+    },
+    "mono": {
+      "font_family": "JetBrains Mono",
+      "usage": "Technical specs (carat, dimensions), Prices",
+      "tailwind_class": "font-mono text-xs uppercase tracking-widest"
+    }
+  },
+  "colors": {
+    "theme": "dark",
+    "palette": {
+      "background": "#050505",
+      "surface": "#0A0A0A",
+      "surface_highlight": "#171717",
+      "border": "#262626",
+      "text_primary": "#FAFAFA",
+      "text_secondary": "#A3A3A3",
+      "accent_glow": "rgba(255, 255, 255, 0.15)",
+      "success": "#10B981",
+      "error": "#EF4444"
+    },
+    "gradients": {
+      "hero_glow": "radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.1) 0%, rgba(0, 0, 0, 0) 50%)",
+      "metal_sheen": "linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%)"
+    }
+  },
+  "layout_strategies": {
+    "container": "max-w-7xl mx-auto px-6 md:px-12",
+    "spacing": {
+      "section_gap": "py-24 md:py-32",
+      "element_gap": "gap-6 md:gap-12"
+    },
+    "grid_systems": {
+      "gallery": "grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8",
+      "shop": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16",
+      "bento": "grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[300px]"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-white text-black hover:bg-gray-200 rounded-none px-8 py-3 font-bold uppercase tracking-widest transition-all duration-300",
+      "secondary": "bg-transparent border border-white/20 text-white hover:border-white hover:bg-white/5 rounded-none px-8 py-3 uppercase tracking-widest transition-all duration-300",
+      "ghost": "text-gray-400 hover:text-white transition-colors uppercase text-sm tracking-widest"
+    },
+    "cards": {
+      "style": "bg-[#0A0A0A] border border-white/5 hover:border-white/20 transition-all duration-500 group relative overflow-hidden",
+      "hover_effect": "group-hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]"
+    },
+    "inputs": {
+      "style": "bg-black/50 border-white/10 focus:border-white/40 rounded-none h-12 text-white placeholder:text-white/20"
+    },
+    "navigation": {
+      "style": "fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5",
+      "link_style": "text-sm uppercase tracking-widest text-gray-400 hover:text-white transition-colors"
+    }
+  },
+  "visual_enhancers": {
+    "textures": "Use a subtle noise texture overlay (opacity 0.03) on the main background to reduce digital flatness.",
+    "light_leaks": "Use radial gradients to simulate light hitting a gemstone facet in the background of hero sections.",
+    "borders": "1px solid borders with 5-10% opacity. No heavy shadows.",
+    "animations": {
+      "hover": "transform hover:-translate-y-1 transition-transform duration-300",
+      "fade_in": "animate-in fade-in slide-in-from-bottom-4 duration-700"
+    }
+  },
+  "image_urls": {
+    "hero_background": "https://images.unsplash.com/photo-1734779527958-6c94ab6fbc80?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "gemstones": {
+      "sapphire": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "emerald": "https://images.unsplash.com/photo-1769857879388-df93b4c96bca?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "tourmaline": "https://images.unsplash.com/photo-1583937443351-f2f669fbe2cf?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "general_mix": "https://images.unsplash.com/photo-1727375960785-9f5cbd4cb711?crop=entropy&cs=srgb&fm=jpg&q=85"
+    },
+    "workshop": {
+      "cutting_action": "https://images.unsplash.com/photo-1659682699444-9ebad278fbd3?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "tools": "https://images.unsplash.com/photo-1628058494685-6c2f796ac24a?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "hands_on": "https://images.unsplash.com/photo-1654076847645-b72b3b66d576?crop=entropy&cs=srgb&fm=jpg&q=85"
+    }
+  },
+  "instructions_to_main_agent": {
+    "general": "Build a Single Page Application (SPA) feel using React Router. The vibe must be 'Dark Luxury' but 'Industrial'. Think: A jewelry store in a converted warehouse.",
+    "gallery_implementation": "Create a 'SplitView' component. Left side is a sticky sidebar with categories (Sapphire, Tourmaline, etc.). Right side is a masonry or strict grid of images. Clicking a category filters the right side with a smooth fade transition.",
+    "booking_flow": "The booking form is the primary conversion point. Make it feel premium. Use 'Step-by-step' or a very clean, single-column layout. Do not clutter it. The 'Thank You' state must be prominent.",
+    "shop_integration": "Use a clean grid for the shop. Product cards should focus entirely on the image. Price and Title should be minimal below the image. Add a 'Quick View' or 'Add to Cart' button that appears on hover.",
+    "auth": "Keep auth simple. Modal-based or a dedicated clean page. Do not distract from the gems.",
+    "universal_rules": [
+      "Use 'sonner' for all notifications.",
+      "Use 'lucide-react' for icons (thin stroke, elegant).",
+      "Ensure all text has sufficient contrast against the dark background.",
+      "Do not use default blue links. Style all links to match the brand palette."
+    ]
+  }
+}

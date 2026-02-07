@@ -41,7 +41,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   };
 
   return (
-    <div className="modal-backdrop flex items-center justify-center p-4" onClick={onClose}>
+    <div className="modal-backdrop flex items-center justify-center p-4" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div
         className="bg-[#0A0A0A] border border-white/10 w-full max-w-md p-8 relative"
         onClick={e => e.stopPropagation()}

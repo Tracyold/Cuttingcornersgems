@@ -30,7 +30,7 @@ const Home = () => {
         <div className="absolute inset-0 hero-glow" />
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1734779527958-6c94ab6fbc80?w=1920)' }}
+          style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/ugdid12z_IMG_4031.jpeg)' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/50" />
         

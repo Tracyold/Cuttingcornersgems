@@ -1,0 +1,217 @@
+import React, { useEffect, useState } from 'react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+
+const CATEGORIES = [
+  { id: 'all', name: 'All Gemstones' },
+  { id: 'sapphire', name: 'Sapphire' },
+  { id: 'tourmaline', name: 'Tourmaline' },
+  { id: 'emerald', name: 'Emerald' },
+  { id: 'tanzanite', name: 'Tanzanite' },
+  { id: 'aquamarine', name: 'Aquamarine' },
+  { id: 'garnet', name: 'Garnet' },
+  { id: 'other', name: 'Other' },
+];
+
+const Gallery = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  useEffect(() => {
+    fetchGallery();
+  }, [selectedCategory]);
+
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+      const url = selectedCategory === 'all' 
+        ? `${API_URL}/gallery`
+        : `${API_URL}/gallery?category=${selectedCategory}`;
+      const response = await axios.get(url);
+      setItems(response.data);
+    } catch (error) {
+      console.error('Failed to fetch gallery:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openLightbox = (index) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  const navigateLightbox = (direction) => {
+    if (direction === 'prev') {
+      setLightboxIndex(prev => (prev === 0 ? items.length - 1 : prev - 1));
+    } else {
+      setLightboxIndex(prev => (prev === items.length - 1 ? 0 : prev + 1));
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigateLightbox('prev');
+      if (e.key === 'ArrowRight') navigateLightbox('next');
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, items.length]);
+
+  const currentItem = items[lightboxIndex];
+
+  return (
+    <div className="min-h-screen" data-testid="gallery-page">
+      {/* Header */}
+      <section className="section-spacing pb-16">
+        <div className="container-custom">
+          <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Portfolio</p>
+          <h1 className="section-title">Gallery</h1>
+        </div>
+      </section>
+
+      {/* Gallery Layout */}
+      <section className="pb-24">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
+            {/* Sidebar */}
+            <aside className="md:sticky md:top-28 md:h-fit" data-testid="gallery-sidebar">
+              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-6">Categories</h3>
+              <nav className="space-y-1">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`category-item block w-full text-left ${selectedCategory === cat.id ? 'active' : ''}`}
+                    data-testid={`category-${cat.id}`}
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </nav>
+            </aside>
+
+            {/* Gallery Grid */}
+            <div data-testid="gallery-grid">
+              {loading ? (
+                <div className="gallery-grid">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+                  ))}
+                </div>
+              ) : items.length === 0 ? (
+                <div className="text-center py-24">
+                  <p className="text-gray-500">No items found in this category.</p>
+                </div>
+              ) : (
+                <div className="gallery-grid">
+                  {items.map((item, index) => (
+                    <div
+                      key={item.id}
+                      onClick={() => openLightbox(index)}
+                      className="group relative aspect-square overflow-hidden gem-card cursor-pointer opacity-0 animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                      data-testid={`gallery-item-${index}`}
+                    >
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                        <p className="spec-text text-gray-400 mb-1">{item.category}</p>
+                        <h3 className="font-serif text-base">{item.title}</h3>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Lightbox */}
+      {lightboxOpen && currentItem && (
+        <div className="fixed inset-0 z-50 lightbox-overlay flex items-center justify-center" data-testid="lightbox">
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10"
+            data-testid="lightbox-close"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          {/* Navigation */}
+          <button
+            onClick={() => navigateLightbox('prev')}
+            className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+            data-testid="lightbox-prev"
+          >
+            <ChevronLeft className="w-10 h-10" />
+          </button>
+          <button
+            onClick={() => navigateLightbox('next')}
+            className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+            data-testid="lightbox-next"
+          >
+            <ChevronRight className="w-10 h-10" />
+          </button>
+
+          {/* Content */}
+          <div className="max-w-5xl w-full mx-6 flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1 max-h-[70vh]">
+              <img
+                src={currentItem.image_url}
+                alt={currentItem.title}
+                className="max-w-full max-h-[70vh] object-contain mx-auto"
+              />
+            </div>
+            <div className="w-full md:w-72 text-center md:text-left">
+              <p className="spec-text text-gray-500 mb-2">{currentItem.category}</p>
+              <h2 className="font-serif text-2xl mb-4">{currentItem.title}</h2>
+              {currentItem.description && (
+                <p className="text-gray-400 text-sm mb-4">{currentItem.description}</p>
+              )}
+              <div className="space-y-2">
+                {currentItem.carat && (
+                  <div className="flex justify-between md:justify-start md:gap-4 text-sm">
+                    <span className="text-gray-500">Carat</span>
+                    <span className="font-mono">{currentItem.carat}</span>
+                  </div>
+                )}
+                {currentItem.dimensions && (
+                  <div className="flex justify-between md:justify-start md:gap-4 text-sm">
+                    <span className="text-gray-500">Dimensions</span>
+                    <span className="font-mono">{currentItem.dimensions}</span>
+                  </div>
+                )}
+              </div>
+              <p className="text-gray-600 text-xs mt-6">
+                {lightboxIndex + 1} / {items.length}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Gallery;

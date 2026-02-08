@@ -749,6 +749,290 @@ async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
         "pending_inquiries": pending_inquiries
     }
 
+# ============ ANALYTICS TEST ENDPOINT ============
+
+@api_router.post("/admin/settings/test-analytics")
+async def test_analytics_connection(data: dict, admin: dict = Depends(get_admin_user)):
+    provider = data.get("provider", "").lower()
+    tracking_id = data.get("tracking_id", "")
+    
+    if not tracking_id or len(tracking_id) < 5:
+        return {"success": False, "message": "Invalid tracking ID format"}
+    
+    known_providers = ["google", "plausible", "fathom", "mixpanel", "amplitude", "heap", "posthog", "custom"]
+    if provider in known_providers:
+        await db.site_settings.update_one(
+            {"id": "main"},
+            {"$set": {"analytics_connected_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True
+        )
+        return {"success": True, "message": f"Successfully connected to {provider}"}
+    
+    return {"success": False, "message": f"Unknown provider: {provider}"}
+
+# ============ DATA & ARCHIVE ROUTES ============
+
+def generate_archive_txt(item: dict, item_type: str) -> str:
+    """Generate standardized .txt format for archived items"""
+    lines = [
+        "=" * 60,
+        f"ARCHIVED {item_type.upper()}",
+        "=" * 60,
+        f"ID: {item.get('id', 'N/A')}",
+        f"Date Created: {item.get('created_at', 'N/A')}",
+        f"Date Archived: {item.get('archived_at', 'N/A')}",
+        f"Date Deleted: {item.get('deleted_at', 'N/A')}",
+        "-" * 60,
+        "DATA:",
+    ]
+    
+    # Add all item fields
+    for key, value in item.items():
+        if key not in ['_id', 'id', 'created_at', 'archived_at', 'deleted_at']:
+            lines.append(f"  {key}: {value}")
+    
+    lines.extend([
+        "-" * 60,
+        "ANALYTICS:",
+        f"  Views: {item.get('views', 0)}",
+        f"  Clicks: {item.get('clicks', 0)}",
+        f"  Meta Links: {item.get('meta_links', 'N/A')}",
+        f"  Source: {item.get('source', 'Website')}",
+        "-" * 60,
+        "CACHE DATA:",
+        f"  Browser Cache: {item.get('cache_data', 'N/A')}",
+        "=" * 60,
+    ])
+    
+    return "\n".join(lines)
+
+def generate_batch_md(items: List[dict], item_type: str) -> str:
+    """Generate batch .md file for multiple archived items"""
+    lines = [
+        f"# Archived {item_type.title()} Batch Export",
+        f"Generated: {datetime.now(timezone.utc).isoformat()}",
+        f"Total Items: {len(items)}",
+        "",
+        "---",
+        ""
+    ]
+    
+    for item in items:
+        lines.extend([
+            f"## {item.get('title', item.get('name', item.get('id', 'Unknown')))}",
+            f"- **ID**: {item.get('id', 'N/A')}",
+            f"- **Created**: {item.get('created_at', 'N/A')}",
+            f"- **Archived**: {item.get('archived_at', 'N/A')}",
+            f"- **Views**: {item.get('views', 0)}",
+            f"- **Clicks**: {item.get('clicks', 0)}",
+            "",
+        ])
+        
+        for key, value in item.items():
+            if key not in ['_id', 'id', 'created_at', 'archived_at', 'deleted_at', 'views', 'clicks', 'title', 'name']:
+                lines.append(f"- **{key}**: {value}")
+        
+        lines.extend(["", "---", ""])
+    
+    return "\n".join(lines)
+
+@api_router.get("/admin/data/archived/{data_type}")
+async def get_archived_data(data_type: str, admin: dict = Depends(get_admin_user)):
+    collection_map = {
+        "sold": "archived_sold",
+        "inquiries": "archived_inquiries",
+        "bookings": "archived_bookings",
+        "gallery": "archived_gallery",
+        "products": "archived_products",
+        "all": None
+    }
+    
+    if data_type == "all":
+        # Combine all archived collections
+        all_archived = []
+        for coll_name in ["archived_sold", "archived_inquiries", "archived_bookings", "archived_gallery", "archived_products"]:
+            items = await db[coll_name].find({}, {"_id": 0}).to_list(1000)
+            for item in items:
+                item["archive_type"] = coll_name.replace("archived_", "")
+            all_archived.extend(items)
+        return all_archived
+    
+    collection = collection_map.get(data_type)
+    if not collection:
+        return []
+    
+    items = await db[collection].find({}, {"_id": 0}).sort("archived_at", -1).to_list(1000)
+    return items
+
+@api_router.post("/admin/data/archive/run")
+async def run_archive_process(admin: dict = Depends(get_admin_user)):
+    """Run the auto-archive process"""
+    now = datetime.now(timezone.utc)
+    archived_count = {"sold": 0, "inquiries": 0, "bookings": 0}
+    
+    # Archive sold items older than 30 days
+    cutoff_30 = (now - timedelta(days=30)).isoformat()
+    sold_to_archive = await db.sold_items.find({"sold_at": {"$lt": cutoff_30}}, {"_id": 0}).to_list(1000)
+    for item in sold_to_archive:
+        item["archived_at"] = now.isoformat()
+        await db.archived_sold.insert_one(item)
+        await db.sold_items.delete_one({"id": item["id"]})
+        archived_count["sold"] += 1
+    
+    # Archive inquiries older than 30 days
+    for coll in ["product_inquiries", "sell_inquiries", "name_your_price_inquiries"]:
+        inquiries_to_archive = await db[coll].find({"created_at": {"$lt": cutoff_30}}, {"_id": 0}).to_list(1000)
+        for item in inquiries_to_archive:
+            item["archived_at"] = now.isoformat()
+            item["inquiry_type"] = coll
+            await db.archived_inquiries.insert_one(item)
+            await db[coll].delete_one({"id": item["id"]})
+            archived_count["inquiries"] += 1
+    
+    # Archive bookings older than 90 days
+    cutoff_90 = (now - timedelta(days=90)).isoformat()
+    bookings_to_archive = await db.bookings.find({"created_at": {"$lt": cutoff_90}}, {"_id": 0}).to_list(1000)
+    for item in bookings_to_archive:
+        item["archived_at"] = now.isoformat()
+        await db.archived_bookings.insert_one(item)
+        await db.bookings.delete_one({"id": item["id"]})
+        archived_count["bookings"] += 1
+    
+    return {"message": "Archive process completed", "archived": archived_count}
+
+@api_router.get("/admin/data/download/{data_type}/{item_id}")
+async def download_archive_item(data_type: str, item_id: str, admin: dict = Depends(get_admin_user)):
+    collection_map = {
+        "sold": "archived_sold",
+        "inquiries": "archived_inquiries",
+        "bookings": "archived_bookings",
+        "deletedGallery": "archived_gallery",
+        "deletedProducts": "archived_products",
+        "allDeleted": "archived_products"
+    }
+    
+    collection = collection_map.get(data_type, f"archived_{data_type}")
+    item = await db[collection].find_one({"id": item_id}, {"_id": 0})
+    
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    txt_content = generate_archive_txt(item, data_type)
+    return Response(content=txt_content, media_type="text/plain")
+
+@api_router.get("/admin/data/download-batch/{data_type}")
+async def download_batch_archive(data_type: str, admin: dict = Depends(get_admin_user)):
+    collection_map = {
+        "sold": "archived_sold",
+        "inquiries": "archived_inquiries",
+        "bookings": "archived_bookings",
+        "deletedGallery": "archived_gallery",
+        "deletedProducts": "archived_products",
+        "allDeleted": None
+    }
+    
+    if data_type == "allDeleted":
+        all_items = []
+        for coll in ["archived_gallery", "archived_products"]:
+            items = await db[coll].find({}, {"_id": 0}).to_list(1000)
+            all_items.extend(items)
+        md_content = generate_batch_md(all_items, "all deleted items")
+    else:
+        collection = collection_map.get(data_type)
+        if not collection:
+            raise HTTPException(status_code=400, detail="Invalid data type")
+        items = await db[collection].find({}, {"_id": 0}).to_list(1000)
+        md_content = generate_batch_md(items, data_type)
+    
+    return Response(content=md_content, media_type="text/markdown")
+
+@api_router.delete("/admin/data/purge/{data_type}/{item_id}")
+async def purge_archive_item(data_type: str, item_id: str, admin: dict = Depends(get_admin_user)):
+    collection_map = {
+        "sold": "archived_sold",
+        "inquiries": "archived_inquiries",
+        "bookings": "archived_bookings",
+        "deletedGallery": "archived_gallery",
+        "deletedProducts": "archived_products"
+    }
+    
+    collection = collection_map.get(data_type, f"archived_{data_type}")
+    result = await db[collection].delete_one({"id": item_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return {"message": "Item purged permanently"}
+
+@api_router.delete("/admin/data/purge-all/{data_type}")
+async def purge_all_archive(data_type: str, admin: dict = Depends(get_admin_user)):
+    collection_map = {
+        "sold": "archived_sold",
+        "inquiries": "archived_inquiries",
+        "bookings": "archived_bookings",
+        "deletedGallery": "archived_gallery",
+        "deletedProducts": "archived_products",
+        "allDeleted": None
+    }
+    
+    if data_type == "allDeleted":
+        for coll in ["archived_gallery", "archived_products"]:
+            await db[coll].delete_many({})
+    else:
+        collection = collection_map.get(data_type)
+        if not collection:
+            raise HTTPException(status_code=400, detail="Invalid data type")
+        await db[collection].delete_many({})
+    
+    return {"message": f"All {data_type} purged permanently"}
+
+# ============ MANUAL ARCHIVE BOOKING ============
+
+@api_router.post("/admin/bookings/{booking_id}/archive")
+async def archive_booking(booking_id: str, admin: dict = Depends(get_admin_user)):
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    
+    booking["archived_at"] = datetime.now(timezone.utc).isoformat()
+    await db.archived_bookings.insert_one(booking)
+    await db.bookings.delete_one({"id": booking_id})
+    
+    return {"message": "Booking archived successfully"}
+
+# ============ DELETE WITH ARCHIVE ============
+
+async def archive_before_delete(item: dict, item_type: str, collection_name: str):
+    """Archive item data before deletion"""
+    item["deleted_at"] = datetime.now(timezone.utc).isoformat()
+    item["archived_at"] = datetime.now(timezone.utc).isoformat()
+    item["views"] = item.get("views", 0)
+    item["clicks"] = item.get("clicks", 0)
+    item["source"] = "admin_deletion"
+    await db[collection_name].insert_one(item)
+
+@api_router.delete("/admin/products/{product_id}")
+async def admin_delete_product(product_id: str, admin: dict = Depends(get_admin_user)):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    await archive_before_delete(product, "product", "archived_products")
+    await db.products.delete_one({"id": product_id})
+    
+    return {"message": "Product deleted and archived"}
+
+@api_router.delete("/admin/gallery/{item_id}")
+async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admin_user)):
+    item = await db.gallery.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Gallery item not found")
+    
+    await archive_before_delete(item, "gallery", "archived_gallery")
+    await db.gallery.delete_one({"id": item_id})
+    
+    return {"message": "Gallery item deleted and archived"}
+
 # ============ PUBLIC AUTH ROUTES ============
 
 @api_router.post("/auth/register", response_model=TokenResponse)

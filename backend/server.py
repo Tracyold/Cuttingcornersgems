@@ -148,6 +148,30 @@ class OrderResponse(BaseModel):
     shipping_address: str
     created_at: str
 
+# Sell Inquiry Models
+class SellInquiryCreate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    description: str
+    asking_price: str
+    negotiable: bool = False
+    photo_count: int = 0
+    photo_names: List[str] = []
+
+class SellInquiryResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    name: str
+    email: str
+    phone: Optional[str] = None
+    description: str
+    asking_price: str
+    negotiable: bool
+    photo_count: int
+    status: str = "pending"
+    created_at: str
+
 # ============ AUTH HELPERS ============
 
 def hash_password(password: str) -> str:
@@ -417,6 +441,28 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
 async def get_user_orders(current_user: dict = Depends(get_current_user)):
     orders = await db.orders.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
     return orders
+
+# ============ SELL INQUIRY ROUTES ============
+
+@api_router.post("/sell-inquiry", response_model=SellInquiryResponse)
+async def create_sell_inquiry(inquiry_data: SellInquiryCreate):
+    inquiry_id = str(uuid.uuid4())
+    inquiry = {
+        "id": inquiry_id,
+        "name": inquiry_data.name,
+        "email": inquiry_data.email,
+        "phone": inquiry_data.phone,
+        "description": inquiry_data.description,
+        "asking_price": inquiry_data.asking_price,
+        "negotiable": inquiry_data.negotiable,
+        "photo_count": inquiry_data.photo_count,
+        "photo_names": inquiry_data.photo_names,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.sell_inquiries.insert_one(inquiry)
+    
+    return SellInquiryResponse(**{k: v for k, v in inquiry.items() if k not in ["_id", "photo_names"]})
 
 # ============ SEED DATA ============
 

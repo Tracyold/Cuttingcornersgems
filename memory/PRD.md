@@ -10,15 +10,6 @@ Create a modern and compelling website for a gemstone cutter called "Cutting Cor
 4. **Custom Work Client** - Wants consultation for re-cutting or special projects
 5. **Admin/Owner** - Michael Wall managing the business operations
 
-## Core Requirements (Static)
-- JWT-based user authentication
-- Gallery with left sidebar categories, right grid with lightbox
-- Shop with product listings and cart functionality
-- Booking form with service/stone type dropdowns
-- Thank you screen with phone number (480-285-4595)
-- User dashboard for orders and bookings
-- Comprehensive admin panel for business management
-
 ## Technology Stack
 - Frontend: React 19, Tailwind CSS, Shadcn UI, Sonner (toasts)
 - Backend: FastAPI, MongoDB (Motor async driver)
@@ -29,118 +20,99 @@ Create a modern and compelling website for a gemstone cutter called "Cutting Cor
 
 ### Core Website (Completed Jan 2026)
 - ✅ Full-stack application (React + FastAPI + MongoDB)
-- ✅ Dark theme with Playfair Display + Manrope fonts
-- ✅ Home page with hero, services, featured gems, about Michael
-- ✅ Gallery with category sidebar (Sapphire, Tourmaline, Emerald, Tanzanite, Aquamarine, Garnet, Other)
-- ✅ Lightbox for image viewing with navigation
-- ✅ Shop with product grid and category filters
-- ✅ Mobile-specific layouts (single column, dedicated pages)
-- ✅ Desktop layouts (popups, categories)
-- ✅ Cart functionality with checkout flow
-- ✅ Booking form with dropdowns (services: Cut, Re-cut, Re-polish, Cut Design, Consultation)
-- ✅ Stone type dropdown (NO diamond included)
-- ✅ Thank you screen with phone number 480-285-4595
+- ✅ Dark theme with custom fonts
+- ✅ Home page with hero, services, featured gems
+- ✅ Gallery with category sidebar and lightbox
+- ✅ Shop with product grid, mobile/desktop layouts
+- ✅ Booking form with service/stone dropdowns
 - ✅ User registration and login (JWT)
-- ✅ User dashboard with orders, bookings, account tabs
-- ✅ Sell Inquiry page with photo uploads and negotiable pricing
-- ✅ Responsive design
-- ✅ API seeding with sample gallery and products
+- ✅ User dashboard
+- ✅ Sell Inquiry page
 
 ### Admin Panel V2 (Completed Feb 2026)
 - ✅ Secure admin login (postvibe/adm1npa$$word)
-- ✅ **Dynamic Dashboard** with live backend stats:
-  - Products, Gallery Items, Bookings, Users, Orders, Sold Items counts
-  - Total Revenue calculation
-  - Pending Bookings
-  - Inquiry Breakdown (Product, Sell, Name Your Price)
-  - Recent Activity feed
-- ✅ **Products Management**:
-  - CRUD operations for products
-  - Bulk Add (max 10 entries) with Next/Back/Done buttons
-  - Saved items panel during bulk add
-  - GIA Reports and Name Your Price options
-- ✅ **Gallery Management**:
-  - CRUD operations for gallery items
-  - Bulk Add (max 10 entries) with same UX as Products
-- ✅ **Inquiries Page**:
-  - Tabs: Bookings, Product Inquiries, Sell Inquiries, Name Your Price
-  - Expandable cards showing full form details
-  - Name Your Price shows product info with thumbnail
-  - Links to product pages
-- ✅ **Sold Items Page**:
-  - Invoice display with expandable details
-  - Tracking number entry (auto-populates to user account)
-  - User notes feature
-  - Email verification status
-  - Price breakdown (item, shipping, total)
-  - Buyer information display
-- ✅ **Settings Pages** (all with enable/disable toggles & date connected):
-  - **Stripe/Payments**: Test/Live mode, API keys, webhook secret, test connection
-  - **Cloud Storage**: Multiple providers (Cloudinary, S3, GCS, Bunny, Backblaze)
-  - **Security**: SMS (Twilio, Vonage, etc.) and CAPTCHA (reCAPTCHA, hCaptcha, Turnstile)
-  - **Email Service**: SendGrid, Resend, Mailgun, SES, Postmark with auto-email triggers
-- ✅ **Users Management**: View all registered users
-- ✅ **Help Center**: Setup guides for all integrations
+- ✅ **Dynamic Dashboard** with live backend stats
+- ✅ **Products Management** with Bulk Add (max 10)
+- ✅ **Gallery Management** with Bulk Add (max 10)
+- ✅ **Inquiries Page** with expandable cards and tabs
+- ✅ **Sold Items Page** with full invoice details
+- ✅ **Settings Pages** with enable/disable toggles
+
+### Admin Panel V3 - Data & Archives (Completed Feb 2026)
+- ✅ **Data & Archives Page** with 6 tabs:
+  - Sold (30+ days old)
+  - Inquiries (30+ days old)
+  - Bookings (90+ days old)
+  - Deleted Gallery
+  - Deleted Products
+  - All Deleted Items
+- ✅ **Auto-Archive System**:
+  - Manual archive button for bookings
+  - Auto-archive runs on schedule (30/90 day thresholds)
+  - Archives compressed to .txt files with standard format
+  - Batch download as .md files
+- ✅ **Pre-Deletion Data Extraction**:
+  - All deleted items archived before removal
+  - Captures: date created, date deleted, views, clicks, meta links, cache
+- ✅ **Analytics & Data Collection Settings**:
+  - Enable/disable toggle (default OFF)
+  - Provider selection (Google Analytics, Plausible, Fathom, Mixpanel, Amplitude, Heap, PostHog, Custom)
+  - Test connection button (MOCKED)
+  - Data collection type toggles (browser, device, clicks, views, duration, interaction rate)
+- ✅ **Test Data Seed** for admin testing:
+  - Creates test product inquiry
+  - Creates test sell inquiry
+  - Creates test Name Your Price inquiry
+  - Creates test sold item with full invoice details
 
 ## Prioritized Backlog
 
 ### P0 (Critical - Completed)
-- [x] Core authentication flow
-- [x] Gallery with filtering
-- [x] Booking system
-- [x] Shop functionality
-- [x] Admin panel with full management capabilities
+- [x] Core website functionality
+- [x] Admin panel with full management
+- [x] Data & Archives system
+- [x] Analytics settings placeholder
 
-### P1 (High Priority - Configurable, Ready for Keys)
-- [ ] Stripe payment integration (settings UI ready, needs API keys)
-- [ ] Email notifications (settings UI ready, needs provider API key)
-- [ ] SMS/2FA verification (settings UI ready, needs provider credentials)
-- [ ] Cloud storage for images (settings UI ready, needs provider credentials)
-- [ ] CAPTCHA protection (settings UI ready, needs site/secret keys)
+### P1 (High Priority - Ready for Keys)
+- [ ] Stripe payment integration (settings UI ready)
+- [ ] Email notifications (settings UI ready)
+- [ ] SMS/2FA verification (settings UI ready)
+- [ ] Cloud storage for images (settings UI ready)
+- [ ] CAPTCHA protection (settings UI ready)
+- [ ] Analytics service connection (settings UI ready)
 
 ### P2 (Nice to Have)
-- [ ] Advanced search/filtering in shop
-- [ ] Customer reviews/testimonials
-- [ ] Blog/news section
+- [ ] Advanced search/filtering
+- [ ] Customer reviews
+- [ ] Blog section
 - [ ] Order analytics/reporting
 
-## Next Tasks
-1. Connect Stripe with real API keys for payment processing
-2. Configure email service (SendGrid recommended) for notifications
-3. Add real product images via cloud storage
-4. Enable CAPTCHA for form protection
-
-## API Endpoints Reference
+## API Endpoints
 
 ### Public
-- `/api/auth/register`, `/api/auth/login` - User authentication
-- `/api/gallery/items` - Gallery items
-- `/api/shop/products` - Shop products
-- `/api/booking` - Submit booking
-- `/api/sell-inquiry` - Submit sell inquiry
+- `/api/auth/register`, `/api/auth/login` - User auth
+- `/api/gallery/items`, `/api/shop/products` - Content
+- `/api/booking`, `/api/sell-inquiry` - Inquiries
 
 ### Admin (Protected)
-- `/api/admin/login` - Admin authentication
-- `/api/admin/dashboard/stats` - Live dashboard statistics
-- `/api/admin/products` - CRUD products
-- `/api/admin/products/bulk` - Bulk add products
-- `/api/admin/gallery` - CRUD gallery items
-- `/api/admin/gallery/bulk` - Bulk add gallery items
-- `/api/admin/bookings` - View bookings
-- `/api/admin/product-inquiries` - View product inquiries
-- `/api/admin/sell-inquiries` - View sell inquiries
-- `/api/admin/name-your-price-inquiries` - View NYP inquiries
-- `/api/admin/sold` - View/update sold items
-- `/api/admin/settings` - Site settings CRUD
-- `/api/admin/settings/test-email` - Test email connection
-- `/api/admin/users` - View users
-- `/api/admin/orders` - View orders
+- `/api/admin/login` - Admin auth
+- `/api/admin/dashboard/stats` - Live stats
+- `/api/admin/products`, `/api/admin/gallery` - CRUD
+- `/api/admin/bookings/{id}/archive` - Manual archive
+- `/api/admin/sold`, `/api/admin/sold/{id}` - Sold items
+- `/api/admin/data/archived/*` - Archive data
+- `/api/admin/data/archive/run` - Run auto-archive
+- `/api/admin/data/download/*` - Download archives
+- `/api/admin/data/purge/*` - Purge archives
+- `/api/admin/settings/test-analytics` - Test analytics
+- `/api/admin/seed-test-data` - Create test data
 
 ## Test Credentials
 - **Admin**: postvibe / adm1npa$$word
 - **Preview URL**: https://lapidary-hub.preview.emergentagent.com
 
 ## Notes
-- All 3rd party integrations (Stripe, Email, SMS, CAPTCHA, Storage) are **CONFIGURABLE PLACEHOLDERS** with test connection buttons
-- Test connections simulate success for known providers but don't make real API calls
-- Settings persist to MongoDB and show "date connected" when configured
+- All 3rd party integrations are **CONFIGURABLE PLACEHOLDERS**
+- Analytics test connection is **MOCKED**
+- Archives are empty until items reach age threshold (30/90 days)
+- Delete operations now archive data before removal

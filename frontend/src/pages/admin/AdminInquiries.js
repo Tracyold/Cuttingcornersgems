@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, DollarSign, Phone, Mail, Calendar, ChevronDown, ChevronUp, ExternalLink, Tag } from 'lucide-react';
+import { MessageSquare, DollarSign, Phone, Mail, Calendar, ChevronDown, ChevronUp, ExternalLink, Tag, Image as ImageIcon, Package } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 // Expandable Card Component
-const ExpandableCard = ({ item, type, children }) => {
+const ExpandableCard = ({ item, type, children, productData }) => {
   const [expanded, setExpanded] = useState(false);
 
   const formatDate = (dateString) => {
@@ -16,7 +16,7 @@ const ExpandableCard = ({ item, type, children }) => {
   };
 
   return (
-    <div className="gem-card overflow-hidden">
+    <div className="gem-card overflow-hidden" data-testid={`inquiry-card-${item.id}`}>
       <div 
         className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
         onClick={() => setExpanded(!expanded)}
@@ -27,6 +27,9 @@ const ExpandableCard = ({ item, type, children }) => {
               <h3 className="font-semibold">{item.name}</h3>
               {type === 'nyp' && (
                 <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5">NAME YOUR PRICE</span>
+              )}
+              {type === 'sell' && (
+                <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5">SELL INQUIRY</span>
               )}
             </div>
             {type === 'booking' && (
@@ -41,7 +44,9 @@ const ExpandableCard = ({ item, type, children }) => {
             {type === 'nyp' && (
               <p className="text-sm text-gray-500">Re: {item.product_title} • Offered: <span className="text-green-400 font-mono">${item.price}</span></p>
             )}
-            <p className="text-xs text-gray-600 mt-1">{formatDate(item.created_at)}</p>
+            <p className="text-xs text-gray-600 mt-1 flex items-center gap-1">
+              <Calendar className="w-3 h-3" /> {formatDate(item.created_at)}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             {item.status && (
@@ -62,6 +67,42 @@ const ExpandableCard = ({ item, type, children }) => {
       {expanded && (
         <div className="px-4 pb-4 border-t border-white/10 pt-4 space-y-4">
           {children}
+          
+          {/* Product Info for NYP */}
+          {type === 'nyp' && productData && (
+            <div className="border border-white/10 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <Package className="w-4 h-4" />
+                <span>Product Information</span>
+              </div>
+              <div className="flex gap-4">
+                {productData.image_url && (
+                  <img 
+                    src={productData.image_url} 
+                    alt={productData.title} 
+                    className="w-20 h-20 object-cover"
+                  />
+                )}
+                <div className="flex-1 space-y-1 text-sm">
+                  <p className="font-semibold">{productData.title}</p>
+                  <p className="text-gray-500">{productData.category}</p>
+                  {productData.carat && <p className="text-gray-500">Carat: {productData.carat}</p>}
+                  {productData.color && <p className="text-gray-500">Color: {productData.color}</p>}
+                  {productData.price && (
+                    <p className="text-gray-400">Listed Price: <span className="text-white font-mono">${productData.price.toLocaleString()}</span></p>
+                  )}
+                </div>
+              </div>
+              <a 
+                href={`/shop/${item.product_id}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300"
+              >
+                <ExternalLink className="w-3 h-3" /> View Product Page
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -77,6 +118,7 @@ const AdminInquiries = () => {
     sellInquiries: [],
     nameYourPrice: []
   });
+  const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -85,12 +127,19 @@ const AdminInquiries = () => {
 
   const fetchData = async () => {
     try {
-      const [bookings, productInquiries, sellInquiries, nameYourPrice] = await Promise.all([
+      const [bookings, productInquiries, sellInquiries, nameYourPrice, productsRes] = await Promise.all([
         axios.get(`${API_URL}/admin/bookings`, getAuthHeaders()),
         axios.get(`${API_URL}/admin/product-inquiries`, getAuthHeaders()),
         axios.get(`${API_URL}/admin/sell-inquiries`, getAuthHeaders()),
         axios.get(`${API_URL}/admin/name-your-price-inquiries`, getAuthHeaders()),
+        axios.get(`${API_URL}/admin/products`, getAuthHeaders()),
       ]);
+      
+      // Create product lookup map
+      const productMap = {};
+      productsRes.data.forEach(p => { productMap[p.id] = p; });
+      setProducts(productMap);
+      
       setData({
         bookings: bookings.data,
         productInquiries: productInquiries.data,
@@ -120,7 +169,7 @@ const AdminInquiries = () => {
   }
 
   return (
-    <div>
+    <div data-testid="admin-inquiries-page">
       <h1 className="font-serif text-3xl mb-8">Inquiries</h1>
 
       {/* Tabs */}
@@ -134,6 +183,7 @@ const AdminInquiries = () => {
                 ? 'bg-white text-black'
                 : 'text-gray-500 hover:text-white border border-white/10'
             }`}
+            data-testid={`tab-${tab.id}`}
           >
             <tab.icon className="w-4 h-4" />
             {tab.label}
@@ -185,6 +235,11 @@ const AdminInquiries = () => {
                   <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Description</p>
                   <p className="text-gray-400 text-sm bg-white/5 p-3">{item.description || 'No description provided'}</p>
                 </div>
+                {item.user_id && (
+                  <div className="text-xs text-blue-400">
+                    Submitted by registered user (ID: {item.user_id.slice(0,8)}...)
+                  </div>
+                )}
               </ExpandableCard>
             ))
           )
@@ -272,7 +327,7 @@ const AdminInquiries = () => {
                   {item.photo_count > 0 && (
                     <div>
                       <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Photos Uploaded</p>
-                      <p>{item.photo_count} photo(s)</p>
+                      <p className="flex items-center gap-1"><ImageIcon className="w-3 h-3" /> {item.photo_count} photo(s)</p>
                     </div>
                   )}
                 </div>
@@ -291,7 +346,12 @@ const AdminInquiries = () => {
             <div className="gem-card p-8 text-center text-gray-500">No "Name Your Price" inquiries yet</div>
           ) : (
             data.nameYourPrice.map(item => (
-              <ExpandableCard key={item.id} item={item} type="nyp">
+              <ExpandableCard 
+                key={item.id} 
+                item={item} 
+                type="nyp"
+                productData={products[item.product_id]}
+              >
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Name</p>
@@ -311,10 +371,11 @@ const AdminInquiries = () => {
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Offered Price</p>
                     <p className="text-green-400 font-mono text-xl">${item.price}</p>
                   </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Date Submitted</p>
+                    <p className="text-sm">{new Date(item.created_at).toLocaleDateString()}</p>
+                  </div>
                 </div>
-                <a href={`/shop/${item.product_id}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300">
-                  <ExternalLink className="w-4 h-4" /> View Product Page
-                </a>
               </ExpandableCard>
             ))
           )

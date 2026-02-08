@@ -352,6 +352,45 @@ class SellInquiryResponse(BaseModel):
     status: str = "pending"
     created_at: str
 
+# Sold Item Models
+class SoldItemUpdate(BaseModel):
+    tracking_number: Optional[str] = None
+    tracking_carrier: Optional[str] = None
+    tracking_entered_at: Optional[str] = None
+    user_notes: Optional[str] = None
+
+class SoldItemResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    product_id: str
+    product_title: str
+    product_image: Optional[str] = None
+    buyer_name: str
+    buyer_email: str
+    buyer_phone: Optional[str] = None
+    user_id: Optional[str] = None
+    shipping_address: Optional[str] = None
+    item_price: float
+    shipping_cost: float = 0
+    total_paid: float
+    payment_method: Optional[str] = None
+    payment_last_four: Optional[str] = None
+    sold_at: str
+    paid_at: Optional[str] = None
+    email_sent: bool = False
+    email_sent_at: Optional[str] = None
+    tracking_number: Optional[str] = None
+    tracking_carrier: Optional[str] = None
+    tracking_entered_at: Optional[str] = None
+    user_notes: Optional[str] = None
+    invoice_number: Optional[str] = None
+
+# Email Test Model
+class EmailTestRequest(BaseModel):
+    provider: str
+    api_key: str
+    from_address: str
+
 # Cart/Order Models
 class CartItem(BaseModel):
     product_id: str

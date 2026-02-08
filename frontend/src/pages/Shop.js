@@ -255,9 +255,15 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
           <button onClick={handleBuy} className="btn-primary w-full" data-testid="product-buy-btn">
             Buy Now
           </button>
-          <button onClick={() => setShowInquiry(true)} className="btn-secondary w-full" data-testid="product-inquiry-btn">
-            Inquiry
-          </button>
+          {isAuthenticated ? (
+            <button onClick={() => setShowInquiry(true)} className="btn-secondary w-full" data-testid="product-inquiry-btn">
+              Inquiry
+            </button>
+          ) : (
+            <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="product-inquiry-btn-disabled">
+              Sign In to Inquire
+            </button>
+          )}
         </div>
       </div>
 

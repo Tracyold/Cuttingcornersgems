@@ -8,7 +8,7 @@ import { CartProvider } from './context/CartContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Gallery from './pages/Gallery';
-import Shop from './pages/Shop';
+import Shop, { MobileProductPage } from './pages/Shop';
 import Cart from './pages/Cart';
 import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
@@ -50,6 +50,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/shop/:productId" element={<MobileProductPage />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/booking" element={<Booking />} />
               <Route path="/sell" element={<SellInquiry />} />

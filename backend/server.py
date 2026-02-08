@@ -624,7 +624,89 @@ async def admin_get_orders(admin: dict = Depends(get_admin_user)):
 @api_router.get("/admin/users")
 async def admin_get_users(admin: dict = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    
+    # Add summary data for each user
+    for user in users:
+        user_id = user.get("id")
+        # Count orders
+        orders_count = await db.orders.count_documents({"user_id": user_id})
+        user["total_orders"] = orders_count
+        # Count cart items
+        cart = await db.carts.find_one({"user_id": user_id}, {"_id": 0})
+        user["cart_items"] = len(cart.get("items", [])) if cart else 0
+    
     return users
+
+@api_router.get("/admin/users/{user_id}/details")
+async def admin_get_user_details(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Get full user details including orders, cart, inquiries, messages, analytics"""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get orders
+    orders = await db.orders.find({"user_id": user_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    
+    # Get cart items
+    cart = await db.carts.find_one({"user_id": user_id}, {"_id": 0})
+    cart_items = []
+    if cart and cart.get("items"):
+        for item in cart["items"]:
+            product = await db.products.find_one({"id": item.get("product_id")}, {"_id": 0})
+            if product:
+                cart_items.append({
+                    "title": product.get("title"),
+                    "price": product.get("price"),
+                    "quantity": item.get("quantity", 1)
+                })
+    
+    # Get abandoned items (items removed from cart)
+    abandoned = await db.abandoned_carts.find({"user_id": user_id}, {"_id": 0}).to_list(50)
+    
+    # Get bookings
+    bookings = await db.bookings.find({"user_id": user_id}, {"_id": 0}).to_list(50)
+    
+    # Get inquiries (product inquiries, sell inquiries, name your price)
+    product_inquiries = await db.product_inquiries.find({"email": user.get("email")}, {"_id": 0}).to_list(50)
+    for inq in product_inquiries:
+        inq["type"] = "Product Inquiry"
+    
+    sell_inquiries = await db.sell_inquiries.find({"email": user.get("email")}, {"_id": 0}).to_list(50)
+    for inq in sell_inquiries:
+        inq["type"] = "Sell Inquiry"
+    
+    nyp_inquiries = await db.name_your_price_inquiries.find({"email": user.get("email")}, {"_id": 0}).to_list(50)
+    for inq in nyp_inquiries:
+        inq["type"] = "Name Your Price"
+    
+    all_inquiries = product_inquiries + sell_inquiries + nyp_inquiries
+    all_inquiries.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    
+    # Get messages to admin
+    messages = await db.user_messages.find({"user_id": user_id}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    
+    # Get user analytics
+    analytics = await db.user_analytics.find_one({"user_id": user_id}, {"_id": 0})
+    if not analytics:
+        analytics = {
+            "click_through_rate": 0,
+            "most_clicked_item": None,
+            "longest_view_time": 0,
+            "longest_view_page": None,
+            "shortest_view_time": 0,
+            "shortest_view_page": None
+        }
+    
+    return {
+        **user,
+        "orders": orders,
+        "cart_items": cart_items,
+        "abandoned_items": abandoned,
+        "bookings": bookings,
+        "inquiries": all_inquiries,
+        "messages": messages,
+        "analytics": analytics
+    }
 
 # ============ ADMIN SOLD ITEMS ROUTES ============
 

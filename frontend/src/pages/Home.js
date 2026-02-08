@@ -73,11 +73,15 @@ const Home = () => {
             <h2 className="section-title">Services</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Desktop: 3 column grid */}
+          <div className="hidden md:grid grid-cols-3 gap-8">
             {[
               { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
               { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
+              { icon: Gem, title: 'Sell Gemstones', desc: 'Curate gemstone collections for collectors and enthusiasts.' },
+              { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
+              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale gemstone purchasing for jewelers and dealers.' },
             ].map((service, i) => (
               <div 
                 key={service.title}
@@ -87,6 +91,28 @@ const Home = () => {
                 <service.icon className="w-8 h-8 mb-6 text-gray-400" strokeWidth={1.5} />
                 <h3 className="font-serif text-xl mb-3">{service.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile: 2 column grid */}
+          <div className="grid grid-cols-2 gap-3 md:hidden">
+            {[
+              { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
+              { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
+              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
+              { icon: Gem, title: 'Sell Gemstones', desc: 'Curate gemstone collections for collectors and enthusiasts.' },
+              { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
+              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale gemstone purchasing for jewelers and dealers.' },
+            ].map((service, i) => (
+              <div 
+                key={service.title}
+                className="gem-card p-4 opacity-0 animate-fade-in"
+                style={{ animationDelay: `${i * 50}ms` }}
+              >
+                <service.icon className="w-6 h-6 mb-3 text-gray-400" strokeWidth={1.5} />
+                <h3 className="font-serif text-sm mb-2">{service.title}</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">{service.desc}</p>
               </div>
             ))}
           </div>

@@ -104,11 +104,27 @@ class SiteSettings(BaseModel):
     user_signup_enabled: bool = True
     require_email_verification: bool = False
     
-    # Notification Settings
-    email_notifications_enabled: bool = False
+    # Email Service Settings
+    email_enabled: bool = False
     email_provider: Optional[str] = None
     email_api_key: Optional[str] = None
     email_from_address: Optional[str] = None
+    email_from_name: Optional[str] = None
+    email_connected_at: Optional[str] = None
+    email_test_status: Optional[str] = None
+    auto_email_on_order: bool = True
+    auto_email_on_booking: bool = True
+    auto_email_on_inquiry: bool = False
+    auto_email_on_tracking: bool = True
+    
+    # Legacy (keep for backward compatibility)
+    email_notifications_enabled: bool = False
+    
+    # Service Connected Dates
+    sms_connected_at: Optional[str] = None
+    captcha_connected_at: Optional[str] = None
+    stripe_connected_at: Optional[str] = None
+    cloud_storage_connected_at: Optional[str] = None
 
 class SiteSettingsUpdate(BaseModel):
     sms_enabled: Optional[bool] = None
@@ -116,29 +132,41 @@ class SiteSettingsUpdate(BaseModel):
     sms_api_key: Optional[str] = None
     sms_api_secret: Optional[str] = None
     sms_phone_number: Optional[str] = None
+    sms_connected_at: Optional[str] = None
     captcha_enabled: Optional[bool] = None
     captcha_provider: Optional[str] = None
     captcha_site_key: Optional[str] = None
     captcha_secret_key: Optional[str] = None
     captcha_for_user_signup: Optional[bool] = None
     captcha_for_inquiries: Optional[bool] = None
+    captcha_connected_at: Optional[str] = None
     stripe_enabled: Optional[bool] = None
     stripe_publishable_key: Optional[str] = None
     stripe_secret_key: Optional[str] = None
     stripe_webhook_secret: Optional[str] = None
     stripe_test_mode: Optional[bool] = None
+    stripe_connected_at: Optional[str] = None
     cloud_storage_enabled: Optional[bool] = None
     cloud_storage_provider: Optional[str] = None
     cloud_storage_api_key: Optional[str] = None
     cloud_storage_api_secret: Optional[str] = None
     cloud_storage_bucket: Optional[str] = None
     cloud_storage_url: Optional[str] = None
+    cloud_storage_connected_at: Optional[str] = None
     user_signup_enabled: Optional[bool] = None
     require_email_verification: Optional[bool] = None
+    email_enabled: Optional[bool] = None
     email_notifications_enabled: Optional[bool] = None
     email_provider: Optional[str] = None
     email_api_key: Optional[str] = None
     email_from_address: Optional[str] = None
+    email_from_name: Optional[str] = None
+    email_connected_at: Optional[str] = None
+    email_test_status: Optional[str] = None
+    auto_email_on_order: Optional[bool] = None
+    auto_email_on_booking: Optional[bool] = None
+    auto_email_on_inquiry: Optional[bool] = None
+    auto_email_on_tracking: Optional[bool] = None
 
 # Product Models (Extended)
 class ProductCreate(BaseModel):

@@ -148,6 +148,27 @@ class OrderResponse(BaseModel):
     shipping_address: str
     created_at: str
 
+# Product Inquiry Models
+class ProductInquiryCreate(BaseModel):
+    name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    is_offer: bool = False
+    offer_price: Optional[str] = None
+    product_id: str
+    product_title: str
+
+class ProductInquiryResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    name: str
+    email: str
+    product_id: str
+    product_title: str
+    is_offer: bool
+    offer_price: Optional[str] = None
+    created_at: str
+
 # Sell Inquiry Models
 class SellInquiryCreate(BaseModel):
     name: str
@@ -441,6 +462,26 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
 async def get_user_orders(current_user: dict = Depends(get_current_user)):
     orders = await db.orders.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
     return orders
+
+# ============ PRODUCT INQUIRY ROUTES ============
+
+@api_router.post("/product-inquiry", response_model=ProductInquiryResponse)
+async def create_product_inquiry(inquiry_data: ProductInquiryCreate):
+    inquiry_id = str(uuid.uuid4())
+    inquiry = {
+        "id": inquiry_id,
+        "name": inquiry_data.name,
+        "email": inquiry_data.email,
+        "phone": inquiry_data.phone,
+        "is_offer": inquiry_data.is_offer,
+        "offer_price": inquiry_data.offer_price,
+        "product_id": inquiry_data.product_id,
+        "product_title": inquiry_data.product_title,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.product_inquiries.insert_one(inquiry)
+    
+    return ProductInquiryResponse(**{k: v for k, v in inquiry.items() if k != "_id"})
 
 # ============ SELL INQUIRY ROUTES ============
 

@@ -12,6 +12,7 @@ import Shop from './pages/Shop';
 import Cart from './pages/Cart';
 import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
+import SellInquiry from './pages/SellInquiry';
 
 import './App.css';
 
@@ -51,6 +52,7 @@ function App() {
               <Route path="/shop" element={<Shop />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/booking" element={<Booking />} />
+              <Route path="/sell" element={<SellInquiry />} />
               <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
           </Layout>

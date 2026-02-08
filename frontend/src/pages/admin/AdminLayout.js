@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Image, Settings, CreditCard, 
   Cloud, Shield, Users, MessageSquare, LogOut, Menu, X,
-  HelpCircle, ChevronRight
+  HelpCircle, ChevronRight, Receipt, Mail
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 
@@ -34,11 +34,13 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/products', label: 'Products', icon: Package },
     { path: '/admin/gallery', label: 'Gallery', icon: Image },
     { path: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { path: '/admin/sold', label: 'Sold Items', icon: Receipt },
     { path: '/admin/users', label: 'Users', icon: Users },
     { type: 'divider' },
     { path: '/admin/settings/stripe', label: 'Payments', icon: CreditCard },
     { path: '/admin/settings/storage', label: 'Cloud Storage', icon: Cloud },
     { path: '/admin/settings/security', label: 'Security', icon: Shield },
+    { path: '/admin/settings/email', label: 'Email Service', icon: Mail },
     { path: '/admin/settings/general', label: 'Site Settings', icon: Settings },
   ];
 

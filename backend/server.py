@@ -167,6 +167,18 @@ class SiteSettingsUpdate(BaseModel):
     auto_email_on_booking: Optional[bool] = None
     auto_email_on_inquiry: Optional[bool] = None
     auto_email_on_tracking: Optional[bool] = None
+    # Analytics Settings
+    analytics_enabled: Optional[bool] = None
+    analytics_provider: Optional[str] = None
+    analytics_tracking_id: Optional[str] = None
+    analytics_api_key: Optional[str] = None
+    analytics_connected_at: Optional[str] = None
+    track_browser_type: Optional[bool] = None
+    track_device_type: Optional[bool] = None
+    track_clicks: Optional[bool] = None
+    track_views: Optional[bool] = None
+    track_duration: Optional[bool] = None
+    track_interaction_rate: Optional[bool] = None
 
 # Product Models (Extended)
 class ProductCreate(BaseModel):

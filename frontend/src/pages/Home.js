@@ -8,6 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 const Home = () => {
   const [featured, setFeatured] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [expandedMobileItem, setExpandedMobileItem] = useState(null);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -22,6 +23,10 @@ const Home = () => {
     };
     fetchFeatured();
   }, []);
+
+  const toggleMobileItem = (itemId) => {
+    setExpandedMobileItem(prev => prev === itemId ? null : itemId);
+  };
 
   return (
     <div>
@@ -102,33 +107,78 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="gallery-grid">
+            <div className="gallery-grid hidden md:grid">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="aspect-square bg-white/5 animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="gallery-grid">
-              {featured.map((item, i) => (
-                <Link
-                  key={item.id}
-                  to="/gallery"
-                  className="group relative aspect-square overflow-hidden gem-card opacity-0 animate-fade-in"
-                  style={{ animationDelay: `${i * 100}ms` }}
-                  data-testid={`featured-item-${i}`}
-                >
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    <p className="spec-text text-gray-400 mb-1">{item.category}</p>
-                    <h3 className="font-serif text-lg">{item.title}</h3>
-                    {item.carat && <p className="spec-text mt-1">{item.carat}</p>}
+            <>
+              {/* Mobile: 2-column tap-to-flip grid */}
+              <div className="grid grid-cols-2 gap-3 md:hidden">
+                {featured.map((item, i) => (
+                  <div
+                    key={item.id}
+                    onClick={() => toggleMobileItem(item.id)}
+                    className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
+                    style={{ animationDelay: `${i * 50}ms` }}
+                    data-testid={`featured-mobile-${i}`}
+                  >
+                    {expandedMobileItem === item.id ? (
+                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
+                        <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
+                        <h3 className="font-serif text-sm mb-2">{item.title}</h3>
+                        {item.description && (
+                          <p className="text-gray-400 text-xs leading-relaxed">{item.description}</p>
+                        )}
+                        {item.carat && (
+                          <p className="text-xs text-gray-500 mt-2 font-mono">{item.carat}</p>
+                        )}
+                        <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
+                      </div>
+                    ) : (
+                      <img
+                        src={item.image_url}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
                   </div>
-                </Link>
+                ))}
+              </div>
+
+              {/* Desktop: Original hover grid */}
+              <div className="gallery-grid hidden md:grid">
+                {featured.map((item, i) => (
+                  <Link
+                    key={item.id}
+                    to="/gallery"
+                    className="group relative aspect-square overflow-hidden gem-card opacity-0 animate-fade-in"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                    data-testid={`featured-item-${i}`}
+                  >
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <p className="spec-text text-gray-400 mb-1">{item.category}</p>
+                      <h3 className="font-serif text-lg">{item.title}</h3>
+                      {item.carat && <p className="spec-text mt-1">{item.carat}</p>}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Mobile loading state */}
+          {loading && (
+            <div className="grid grid-cols-2 gap-3 md:hidden">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="aspect-square bg-white/5 animate-pulse" />
               ))}
             </div>
           )}

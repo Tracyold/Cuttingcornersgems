@@ -1184,6 +1184,48 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         created_at=current_user["created_at"]
     )
 
+# ============ USER MESSAGE TO ADMIN ============
+
+class UserMessageCreate(BaseModel):
+    subject: str
+    message: str
+
+@api_router.post("/user/messages")
+async def send_message_to_admin(message_data: UserMessageCreate, current_user: dict = Depends(get_current_user)):
+    """Allow logged-in users to send messages to admin"""
+    message_id = str(uuid.uuid4())
+    message = {
+        "id": message_id,
+        "user_id": current_user["id"],
+        "user_email": current_user["email"],
+        "user_name": current_user["name"],
+        "subject": message_data.subject,
+        "message": message_data.message,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "read": False
+    }
+    await db.user_messages.insert_one(message)
+    
+    return {"message": "Message sent to admin", "id": message_id}
+
+@api_router.get("/user/messages")
+async def get_user_messages(current_user: dict = Depends(get_current_user)):
+    """Get messages sent by the current user"""
+    messages = await db.user_messages.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return messages
+
+@api_router.get("/admin/messages")
+async def admin_get_messages(admin: dict = Depends(get_admin_user)):
+    """Admin: Get all user messages"""
+    messages = await db.user_messages.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    return messages
+
+@api_router.patch("/admin/messages/{message_id}/read")
+async def admin_mark_message_read(message_id: str, admin: dict = Depends(get_admin_user)):
+    """Admin: Mark message as read"""
+    await db.user_messages.update_one({"id": message_id}, {"$set": {"read": True}})
+    return {"message": "Marked as read"}
+
 # ============ BOOKING ROUTES ============
 
 @api_router.post("/bookings", response_model=BookingResponse)

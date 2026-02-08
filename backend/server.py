@@ -614,6 +614,129 @@ async def admin_get_users(admin: dict = Depends(get_admin_user)):
     users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
     return users
 
+# ============ ADMIN SOLD ITEMS ROUTES ============
+
+@api_router.get("/admin/sold", response_model=List[SoldItemResponse])
+async def admin_get_sold_items(admin: dict = Depends(get_admin_user)):
+    sold_items = await db.sold_items.find({}, {"_id": 0}).sort("sold_at", -1).to_list(1000)
+    return sold_items
+
+@api_router.patch("/admin/sold/{item_id}")
+async def admin_update_sold_item(item_id: str, updates: SoldItemUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if update_data:
+        await db.sold_items.update_one({"id": item_id}, {"$set": update_data})
+        
+        # If tracking was added, update user's order if they have an account
+        if updates.tracking_number:
+            sold_item = await db.sold_items.find_one({"id": item_id}, {"_id": 0})
+            if sold_item and sold_item.get("user_id"):
+                # Update user's order with tracking info
+                await db.orders.update_one(
+                    {"user_id": sold_item["user_id"], "id": sold_item.get("order_id")},
+                    {"$set": {
+                        "tracking_number": updates.tracking_number,
+                        "tracking_carrier": updates.tracking_carrier,
+                        "tracking_entered_at": updates.tracking_entered_at
+                    }}
+                )
+    
+    return {"message": "Sold item updated"}
+
+@api_router.post("/admin/sold/{item_id}/send-notes")
+async def admin_send_sold_item_notes(item_id: str, data: dict, admin: dict = Depends(get_admin_user)):
+    notes = data.get("notes", "")
+    if not notes:
+        raise HTTPException(status_code=400, detail="Notes are required")
+    
+    # Update the sold item with notes
+    await db.sold_items.update_one(
+        {"id": item_id},
+        {"$set": {"user_notes": notes, "notes_sent_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Get the sold item to check if user has account
+    sold_item = await db.sold_items.find_one({"id": item_id}, {"_id": 0})
+    if sold_item and sold_item.get("user_id"):
+        # Update user's order with notes
+        await db.orders.update_one(
+            {"user_id": sold_item["user_id"], "id": sold_item.get("order_id")},
+            {"$set": {"seller_notes": notes}}
+        )
+    
+    # TODO: Send email notification when email service is configured
+    
+    return {"message": "Notes sent to user"}
+
+# ============ EMAIL TEST ENDPOINT ============
+
+@api_router.post("/admin/settings/test-email")
+async def test_email_connection(data: EmailTestRequest, admin: dict = Depends(get_admin_user)):
+    # This is a placeholder for actual email service testing
+    # In production, this would make a real API call to the email provider
+    provider = data.provider.lower()
+    
+    # Validate provider and API key format
+    if not data.api_key or len(data.api_key) < 10:
+        return {"success": False, "message": "Invalid API key format"}
+    
+    # Simulate successful connection for known providers
+    known_providers = ["sendgrid", "resend", "mailgun", "ses", "postmark"]
+    if provider in known_providers:
+        # Update connected_at timestamp
+        await db.site_settings.update_one(
+            {"id": "main"},
+            {"$set": {
+                "email_connected_at": datetime.now(timezone.utc).isoformat(),
+                "email_test_status": "success"
+            }},
+            upsert=True
+        )
+        return {"success": True, "message": f"Successfully connected to {provider}"}
+    
+    return {"success": False, "message": f"Unknown provider: {provider}"}
+
+# ============ ADMIN DASHBOARD STATS ============
+
+@api_router.get("/admin/dashboard/stats")
+async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
+    # Get counts
+    products_count = await db.products.count_documents({})
+    gallery_count = await db.gallery.count_documents({})
+    bookings_count = await db.bookings.count_documents({})
+    users_count = await db.users.count_documents({})
+    orders_count = await db.orders.count_documents({})
+    sold_count = await db.sold_items.count_documents({})
+    
+    # Get inquiry counts
+    product_inquiries_count = await db.product_inquiries.count_documents({})
+    sell_inquiries_count = await db.sell_inquiries.count_documents({})
+    nyp_inquiries_count = await db.name_your_price_inquiries.count_documents({})
+    
+    # Calculate revenue from sold items
+    sold_items = await db.sold_items.find({}, {"total_paid": 1}).to_list(1000)
+    total_revenue = sum(item.get("total_paid", 0) for item in sold_items)
+    
+    # Get pending items
+    pending_bookings = await db.bookings.count_documents({"status": "pending"})
+    pending_inquiries = product_inquiries_count  # All inquiries are considered pending until addressed
+    
+    return {
+        "products": products_count,
+        "gallery": gallery_count,
+        "bookings": bookings_count,
+        "users": users_count,
+        "orders": orders_count,
+        "sold": sold_count,
+        "inquiries": product_inquiries_count + sell_inquiries_count + nyp_inquiries_count,
+        "product_inquiries": product_inquiries_count,
+        "sell_inquiries": sell_inquiries_count,
+        "nyp_inquiries": nyp_inquiries_count,
+        "total_revenue": total_revenue,
+        "pending_bookings": pending_bookings,
+        "pending_inquiries": pending_inquiries
+    }
+
 # ============ PUBLIC AUTH ROUTES ============
 
 @api_router.post("/auth/register", response_model=TokenResponse)

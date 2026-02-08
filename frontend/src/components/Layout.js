@@ -17,6 +17,7 @@ const Layout = ({ children }) => {
     { path: '/', label: 'Home' },
     { path: '/gallery', label: 'Gallery' },
     { path: '/shop', label: 'Shop' },
+    { path: '/sell', label: 'Sell' },
     { path: '/booking', label: 'Book' },
   ];
 

@@ -23,10 +23,12 @@ import AdminProducts from './pages/admin/AdminProducts';
 import AdminGallery from './pages/admin/AdminGallery';
 import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminSold from './pages/admin/AdminSold';
 import StripeSettings from './pages/admin/StripeSettings';
 import StorageSettings from './pages/admin/StorageSettings';
 import SecuritySettings from './pages/admin/SecuritySettings';
 import GeneralSettings from './pages/admin/GeneralSettings';
+import EmailSettings from './pages/admin/EmailSettings';
 import AdminHelp from './pages/admin/AdminHelp';
 
 import './App.css';

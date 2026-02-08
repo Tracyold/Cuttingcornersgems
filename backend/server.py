@@ -26,6 +26,10 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'cutting-corners-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
+# Admin credentials (in production, store hashed in DB)
+ADMIN_USERNAME = "postvibe"
+ADMIN_PASSWORD_HASH = bcrypt.hashpw("adm1npa$$word".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
@@ -54,6 +58,205 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     user: UserResponse
 
+# Admin Models
+class AdminLogin(BaseModel):
+    username: str
+    password: str
+
+class AdminTokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    is_admin: bool = True
+
+# Site Settings Models
+class SiteSettings(BaseModel):
+    # SMS/2FA Settings
+    sms_enabled: bool = False
+    sms_provider: Optional[str] = None  # twilio, vonage, etc.
+    sms_api_key: Optional[str] = None
+    sms_api_secret: Optional[str] = None
+    sms_phone_number: Optional[str] = None
+    
+    # Captcha Settings
+    captcha_enabled: bool = False
+    captcha_provider: Optional[str] = None  # recaptcha, hcaptcha
+    captcha_site_key: Optional[str] = None
+    captcha_secret_key: Optional[str] = None
+    captcha_for_user_signup: bool = False
+    captcha_for_inquiries: bool = False
+    
+    # Stripe Settings
+    stripe_enabled: bool = False
+    stripe_publishable_key: Optional[str] = None
+    stripe_secret_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+    stripe_test_mode: bool = True
+    
+    # Cloud Storage Settings
+    cloud_storage_enabled: bool = False
+    cloud_storage_provider: Optional[str] = None  # cloudinary, s3, gcs
+    cloud_storage_api_key: Optional[str] = None
+    cloud_storage_api_secret: Optional[str] = None
+    cloud_storage_bucket: Optional[str] = None
+    cloud_storage_url: Optional[str] = None
+    
+    # User Auth Settings
+    user_signup_enabled: bool = True
+    require_email_verification: bool = False
+    
+    # Notification Settings
+    email_notifications_enabled: bool = False
+    email_provider: Optional[str] = None
+    email_api_key: Optional[str] = None
+    email_from_address: Optional[str] = None
+
+class SiteSettingsUpdate(BaseModel):
+    sms_enabled: Optional[bool] = None
+    sms_provider: Optional[str] = None
+    sms_api_key: Optional[str] = None
+    sms_api_secret: Optional[str] = None
+    sms_phone_number: Optional[str] = None
+    captcha_enabled: Optional[bool] = None
+    captcha_provider: Optional[str] = None
+    captcha_site_key: Optional[str] = None
+    captcha_secret_key: Optional[str] = None
+    captcha_for_user_signup: Optional[bool] = None
+    captcha_for_inquiries: Optional[bool] = None
+    stripe_enabled: Optional[bool] = None
+    stripe_publishable_key: Optional[str] = None
+    stripe_secret_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+    stripe_test_mode: Optional[bool] = None
+    cloud_storage_enabled: Optional[bool] = None
+    cloud_storage_provider: Optional[str] = None
+    cloud_storage_api_key: Optional[str] = None
+    cloud_storage_api_secret: Optional[str] = None
+    cloud_storage_bucket: Optional[str] = None
+    cloud_storage_url: Optional[str] = None
+    user_signup_enabled: Optional[bool] = None
+    require_email_verification: Optional[bool] = None
+    email_notifications_enabled: Optional[bool] = None
+    email_provider: Optional[str] = None
+    email_api_key: Optional[str] = None
+    email_from_address: Optional[str] = None
+
+# Product Models (Extended)
+class ProductCreate(BaseModel):
+    title: str
+    category: str
+    description: Optional[str] = None
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    price_per_carat: Optional[float] = None
+    price: Optional[float] = None
+    image_url: str
+    images: List[str] = []
+    videos: List[str] = []
+    in_stock: bool = True
+    
+    # GIA fields
+    gia_certified: bool = False
+    gia_report_number: Optional[str] = None
+    gia_report_image: Optional[str] = None
+    
+    # Name Your Price fields
+    name_your_price: bool = False
+    name_your_price_phone: Optional[str] = None
+
+class ProductUpdate(BaseModel):
+    title: Optional[str] = None
+    category: Optional[str] = None
+    description: Optional[str] = None
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    price_per_carat: Optional[float] = None
+    price: Optional[float] = None
+    image_url: Optional[str] = None
+    images: Optional[List[str]] = None
+    videos: Optional[List[str]] = None
+    in_stock: Optional[bool] = None
+    gia_certified: Optional[bool] = None
+    gia_report_number: Optional[str] = None
+    gia_report_image: Optional[str] = None
+    name_your_price: Optional[bool] = None
+    name_your_price_phone: Optional[str] = None
+
+class ProductResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    title: str
+    category: str
+    description: Optional[str] = None
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    price_per_carat: Optional[float] = None
+    price: Optional[float] = None
+    image_url: str
+    images: List[str] = []
+    videos: List[str] = []
+    in_stock: bool = True
+    gia_certified: bool = False
+    gia_report_number: Optional[str] = None
+    gia_report_image: Optional[str] = None
+    name_your_price: bool = False
+    name_your_price_phone: Optional[str] = None
+
+# Gallery Models (Extended)
+class GalleryItemCreate(BaseModel):
+    title: str
+    category: str
+    description: Optional[str] = None
+    image_url: str
+    images: List[str] = []
+    videos: List[str] = []
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    featured: bool = False
+
+class GalleryItemUpdate(BaseModel):
+    title: Optional[str] = None
+    category: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    images: Optional[List[str]] = None
+    videos: Optional[List[str]] = None
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    featured: Optional[bool] = None
+
+class GalleryItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    title: str
+    category: str
+    image_url: str
+    description: Optional[str] = None
+    images: List[str] = []
+    videos: List[str] = []
+    gemstone_type: Optional[str] = None
+    color: Optional[str] = None
+    carat: Optional[str] = None
+    dimensions: Optional[str] = None
+    featured: bool = False
+
+# Name Your Price Inquiry
+class NameYourPriceInquiry(BaseModel):
+    name: str
+    phone: str
+    price: float
+    product_id: str
+    product_title: str
+
 # Booking Models
 class BookingCreate(BaseModel):
     name: str
@@ -75,78 +278,6 @@ class BookingResponse(BaseModel):
     status: str = "pending"
     created_at: str
     user_id: Optional[str] = None
-
-# Gallery Models
-class GalleryItem(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    title: str
-    category: str
-    image_url: str
-    description: Optional[str] = None
-    carat: Optional[str] = None
-    dimensions: Optional[str] = None
-    price: Optional[float] = None
-    featured: bool = False
-
-class GalleryItemCreate(BaseModel):
-    title: str
-    category: str
-    image_url: str
-    description: Optional[str] = None
-    carat: Optional[str] = None
-    dimensions: Optional[str] = None
-    price: Optional[float] = None
-    featured: bool = False
-
-# Shop Models
-class ProductResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    title: str
-    category: str
-    image_url: str
-    description: str
-    price: float
-    carat: Optional[str] = None
-    dimensions: Optional[str] = None
-    in_stock: bool = True
-
-class ProductCreate(BaseModel):
-    title: str
-    category: str
-    image_url: str
-    description: str
-    price: float
-    carat: Optional[str] = None
-    dimensions: Optional[str] = None
-    in_stock: bool = True
-
-class CartItem(BaseModel):
-    product_id: str
-    quantity: int = 1
-
-class CartResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    user_id: str
-    items: List[dict]
-    total: float
-
-class OrderCreate(BaseModel):
-    items: List[CartItem]
-    shipping_address: str
-    payment_method: str = "stripe"
-
-class OrderResponse(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str
-    user_id: str
-    items: List[dict]
-    total: float
-    status: str
-    shipping_address: str
-    created_at: str
 
 # Product Inquiry Models
 class ProductInquiryCreate(BaseModel):
@@ -193,6 +324,33 @@ class SellInquiryResponse(BaseModel):
     status: str = "pending"
     created_at: str
 
+# Cart/Order Models
+class CartItem(BaseModel):
+    product_id: str
+    quantity: int = 1
+
+class CartResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    user_id: str
+    items: List[dict]
+    total: float
+
+class OrderCreate(BaseModel):
+    items: List[CartItem]
+    shipping_address: str
+    payment_method: str = "stripe"
+
+class OrderResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    user_id: str
+    items: List[dict]
+    total: float
+    status: str
+    shipping_address: str
+    created_at: str
+
 # ============ AUTH HELPERS ============
 
 def hash_password(password: str) -> str:
@@ -201,10 +359,11 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
-def create_token(user_id: str, email: str) -> str:
+def create_token(user_id: str, email: str, is_admin: bool = False) -> str:
     payload = {
         "sub": user_id,
         "email": email,
+        "is_admin": is_admin,
         "exp": datetime.now(timezone.utc) + timedelta(hours=JWT_EXPIRATION_HOURS)
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
@@ -237,7 +396,158 @@ async def get_optional_user(credentials: Optional[HTTPAuthorizationCredentials] 
         pass
     return None
 
-# ============ AUTH ROUTES ============
+async def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if not payload.get("is_admin"):
+            raise HTTPException(status_code=403, detail="Admin access required")
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+# ============ ADMIN AUTH ROUTES ============
+
+@api_router.post("/admin/login", response_model=AdminTokenResponse)
+async def admin_login(credentials: AdminLogin):
+    if credentials.username != ADMIN_USERNAME:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    if not verify_password(credentials.password, ADMIN_PASSWORD_HASH):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    token = create_token("admin", ADMIN_USERNAME, is_admin=True)
+    return AdminTokenResponse(access_token=token)
+
+@api_router.get("/admin/verify")
+async def verify_admin(admin: dict = Depends(get_admin_user)):
+    return {"valid": True, "is_admin": True}
+
+# ============ SITE SETTINGS ROUTES ============
+
+@api_router.get("/admin/settings", response_model=SiteSettings)
+async def get_site_settings(admin: dict = Depends(get_admin_user)):
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+    if not settings:
+        # Create default settings
+        default_settings = SiteSettings().model_dump()
+        default_settings["id"] = "main"
+        await db.site_settings.insert_one(default_settings)
+        return SiteSettings()
+    return SiteSettings(**settings)
+
+@api_router.patch("/admin/settings", response_model=SiteSettings)
+async def update_site_settings(updates: SiteSettingsUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if update_data:
+        await db.site_settings.update_one(
+            {"id": "main"},
+            {"$set": update_data},
+            upsert=True
+        )
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+    return SiteSettings(**settings)
+
+# ============ ADMIN PRODUCT ROUTES ============
+
+@api_router.get("/admin/products", response_model=List[ProductResponse])
+async def admin_get_products(admin: dict = Depends(get_admin_user)):
+    products = await db.products.find({}, {"_id": 0}).to_list(1000)
+    return products
+
+@api_router.post("/admin/products", response_model=ProductResponse)
+async def admin_create_product(product: ProductCreate, admin: dict = Depends(get_admin_user)):
+    product_id = str(uuid.uuid4())
+    product_data = product.model_dump()
+    product_data["id"] = product_id
+    product_data["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.products.insert_one(product_data)
+    return ProductResponse(**product_data)
+
+@api_router.patch("/admin/products/{product_id}", response_model=ProductResponse)
+async def admin_update_product(product_id: str, updates: ProductUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if update_data:
+        await db.products.update_one({"id": product_id}, {"$set": update_data})
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return ProductResponse(**product)
+
+@api_router.delete("/admin/products/{product_id}")
+async def admin_delete_product(product_id: str, admin: dict = Depends(get_admin_user)):
+    result = await db.products.delete_one({"id": product_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"message": "Product deleted"}
+
+# ============ ADMIN GALLERY ROUTES ============
+
+@api_router.get("/admin/gallery", response_model=List[GalleryItem])
+async def admin_get_gallery(admin: dict = Depends(get_admin_user)):
+    items = await db.gallery.find({}, {"_id": 0}).to_list(1000)
+    return items
+
+@api_router.post("/admin/gallery", response_model=GalleryItem)
+async def admin_create_gallery_item(item: GalleryItemCreate, admin: dict = Depends(get_admin_user)):
+    item_id = str(uuid.uuid4())
+    item_data = item.model_dump()
+    item_data["id"] = item_id
+    item_data["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.gallery.insert_one(item_data)
+    return GalleryItem(**item_data)
+
+@api_router.patch("/admin/gallery/{item_id}", response_model=GalleryItem)
+async def admin_update_gallery_item(item_id: str, updates: GalleryItemUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if update_data:
+        await db.gallery.update_one({"id": item_id}, {"$set": update_data})
+    item = await db.gallery.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Gallery item not found")
+    return GalleryItem(**item)
+
+@api_router.delete("/admin/gallery/{item_id}")
+async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admin_user)):
+    result = await db.gallery.delete_one({"id": item_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Gallery item not found")
+    return {"message": "Gallery item deleted"}
+
+# ============ ADMIN INQUIRIES ROUTES ============
+
+@api_router.get("/admin/bookings")
+async def admin_get_bookings(admin: dict = Depends(get_admin_user)):
+    bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
+    return bookings
+
+@api_router.get("/admin/product-inquiries")
+async def admin_get_product_inquiries(admin: dict = Depends(get_admin_user)):
+    inquiries = await db.product_inquiries.find({}, {"_id": 0}).to_list(1000)
+    return inquiries
+
+@api_router.get("/admin/sell-inquiries")
+async def admin_get_sell_inquiries(admin: dict = Depends(get_admin_user)):
+    inquiries = await db.sell_inquiries.find({}, {"_id": 0}).to_list(1000)
+    return inquiries
+
+@api_router.get("/admin/name-your-price-inquiries")
+async def admin_get_name_your_price_inquiries(admin: dict = Depends(get_admin_user)):
+    inquiries = await db.name_your_price_inquiries.find({}, {"_id": 0}).to_list(1000)
+    return inquiries
+
+@api_router.get("/admin/orders")
+async def admin_get_orders(admin: dict = Depends(get_admin_user)):
+    orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
+    return orders
+
+@api_router.get("/admin/users")
+async def admin_get_users(admin: dict = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+    return users
+
+# ============ PUBLIC AUTH ROUTES ============
 
 @api_router.post("/auth/register", response_model=TokenResponse)
 async def register(user_data: UserCreate):
@@ -392,7 +702,6 @@ async def add_to_cart(item: CartItem, current_user: dict = Depends(get_current_u
             "total": 0.0
         }
     
-    # Check if product already in cart
     existing_item = next((i for i in cart["items"] if i["product_id"] == item.product_id), None)
     if existing_item:
         existing_item["quantity"] += item.quantity
@@ -400,12 +709,11 @@ async def add_to_cart(item: CartItem, current_user: dict = Depends(get_current_u
         cart["items"].append({
             "product_id": item.product_id,
             "title": product["title"],
-            "price": product["price"],
+            "price": product.get("price", 0),
             "image_url": product["image_url"],
             "quantity": item.quantity
         })
     
-    # Recalculate total
     cart["total"] = sum(i["price"] * i["quantity"] for i in cart["items"])
     
     await db.carts.update_one(
@@ -450,7 +758,6 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
     }
     await db.orders.insert_one(order)
     
-    # Clear cart
     await db.carts.update_one(
         {"user_id": current_user["id"]},
         {"$set": {"items": [], "total": 0.0}}
@@ -505,49 +812,53 @@ async def create_sell_inquiry(inquiry_data: SellInquiryCreate):
     
     return SellInquiryResponse(**{k: v for k, v in inquiry.items() if k not in ["_id", "photo_names"]})
 
+# ============ NAME YOUR PRICE ROUTES ============
+
+@api_router.post("/name-your-price")
+async def create_name_your_price_inquiry(inquiry: NameYourPriceInquiry):
+    inquiry_id = str(uuid.uuid4())
+    inquiry_data = {
+        "id": inquiry_id,
+        "name": inquiry.name,
+        "phone": inquiry.phone,
+        "price": inquiry.price,
+        "product_id": inquiry.product_id,
+        "product_title": inquiry.product_title,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.name_your_price_inquiries.insert_one(inquiry_data)
+    
+    # TODO: Send SMS when SMS is configured
+    # This will be implemented when SMS provider is set up
+    
+    return {"message": "Inquiry submitted successfully", "id": inquiry_id}
+
 # ============ SEED DATA ============
 
 @api_router.post("/seed")
 async def seed_data():
-    # Check if already seeded
     existing = await db.gallery.count_documents({})
     if existing > 0:
         return {"message": "Data already seeded"}
     
-    # Seed gallery items
     gallery_items = [
-        {"id": str(uuid.uuid4()), "title": "Montana Sapphire", "category": "sapphire", "image_url": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?w=800", "description": "Brilliant blue Montana sapphire with exceptional clarity", "carat": "2.3ct", "dimensions": "8x6mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Ceylon Blue Sapphire", "category": "sapphire", "image_url": "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800", "description": "Classic Ceylon blue with velvet undertones", "carat": "3.1ct", "dimensions": "9x7mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Parti Sapphire", "category": "sapphire", "image_url": "https://images.unsplash.com/photo-1583937443351-f2f669fbe2cf?w=800", "description": "Unique bi-color parti sapphire", "carat": "1.8ct", "dimensions": "7x5mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Pink Tourmaline", "category": "tourmaline", "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800", "description": "Vibrant pink tourmaline from Brazil", "carat": "4.2ct", "dimensions": "10x8mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Watermelon Tourmaline", "category": "tourmaline", "image_url": "https://images.unsplash.com/photo-1615655114865-4cc0d6328fd0?w=800", "description": "Rare watermelon tourmaline slice", "carat": "5.6ct", "dimensions": "12x10mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Green Tourmaline", "category": "tourmaline", "image_url": "https://images.unsplash.com/photo-1611955167811-4711904bb9f8?w=800", "description": "Deep forest green tourmaline", "carat": "2.9ct", "dimensions": "9x7mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Colombian Emerald", "category": "emerald", "image_url": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800", "description": "Fine Colombian emerald with garden inclusions", "carat": "1.5ct", "dimensions": "7x5mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Zambian Emerald", "category": "emerald", "image_url": "https://images.unsplash.com/photo-1551122087-f99a4ade9f1e?w=800", "description": "Deep green Zambian emerald", "carat": "2.1ct", "dimensions": "8x6mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "AAA Tanzanite", "category": "tanzanite", "image_url": "https://images.unsplash.com/photo-1613087546341-2c3f27aaa6d5?w=800", "description": "Exceptional violet-blue tanzanite", "carat": "3.8ct", "dimensions": "10x8mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Tanzanite Oval", "category": "tanzanite", "image_url": "https://images.unsplash.com/photo-1583937443351-f2f669fbe2cf?w=800", "description": "Classic oval cut tanzanite", "carat": "2.4ct", "dimensions": "9x7mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Santa Maria Aquamarine", "category": "aquamarine", "image_url": "https://images.unsplash.com/photo-1610030184561-9c22cd0a632a?w=800", "description": "Rare Santa Maria aquamarine", "carat": "5.2ct", "dimensions": "12x10mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Aquamarine Crystal", "category": "aquamarine", "image_url": "https://images.unsplash.com/photo-1587049016823-69ef9d68bd44?w=800", "description": "Eye-clean aquamarine", "carat": "3.7ct", "dimensions": "11x9mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Rhodolite Garnet", "category": "garnet", "image_url": "https://images.unsplash.com/photo-1603561596112-0a132b757442?w=800", "description": "Raspberry rhodolite garnet", "carat": "2.8ct", "dimensions": "8x8mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Tsavorite Garnet", "category": "garnet", "image_url": "https://images.unsplash.com/photo-1600119614318-75b8eba35265?w=800", "description": "Vivid green tsavorite garnet", "carat": "1.2ct", "dimensions": "6x5mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Spessartine Garnet", "category": "garnet", "image_url": "https://images.unsplash.com/photo-1610030184561-9c22cd0a632a?w=800", "description": "Mandarin orange spessartine", "carat": "3.5ct", "dimensions": "9x7mm", "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Rare Alexandrite", "category": "other", "image_url": "https://images.unsplash.com/photo-1615655114865-4cc0d6328fd0?w=800", "description": "Color-change alexandrite", "carat": "0.8ct", "dimensions": "5x4mm", "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Spinel Red", "category": "other", "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800", "description": "Vivid red spinel from Burma", "carat": "1.9ct", "dimensions": "7x6mm", "featured": False},
+        {"id": str(uuid.uuid4()), "title": "Teal Tourmaline - Rectangle", "category": "tourmaline", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/hosik6cy_IMG_2208.jpeg", "description": "Custom cut teal tourmaline with exceptional brilliance", "featured": True, "images": [], "videos": []},
+        {"id": str(uuid.uuid4()), "title": "Tsavorite Garnet - Light", "category": "garnet", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/4pxjbbs3_IMG_5662.jpeg", "description": "Vivid green tsavorite garnet", "featured": True, "images": [], "videos": []},
+        {"id": str(uuid.uuid4()), "title": "Tsavorite Garnet - Dark", "category": "garnet", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/7p60olwy_IMG_5648.jpeg", "description": "Vivid green tsavorite with dramatic lighting", "featured": True, "images": [], "videos": []},
+        {"id": str(uuid.uuid4()), "title": "Bicolor Sapphire - Radiant", "category": "sapphire", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/oz7snt9y_IMG_4339.jpeg", "description": "Stunning bicolor blue sapphire", "featured": True, "images": [], "videos": []},
+        {"id": str(uuid.uuid4()), "title": "Aquamarine - Emerald Cut", "category": "aquamarine", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/7coa2xqk_IMG_3073.jpeg", "description": "Light blue aquamarine", "featured": True, "images": [], "videos": []},
+        {"id": str(uuid.uuid4()), "title": "Colombian Emerald - Rectangle", "category": "emerald", "image_url": "https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/sxdw0x7e_IMG_2456.jpeg", "description": "Fine Colombian emerald", "featured": True, "images": [], "videos": []},
     ]
     await db.gallery.insert_many(gallery_items)
     
-    # Seed products
     products = [
-        {"id": str(uuid.uuid4()), "title": "Blue Sapphire - Cushion Cut", "category": "sapphire", "image_url": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?w=800", "description": "Natural blue sapphire, heat treated, cushion cut", "price": 2850.00, "carat": "2.3ct", "dimensions": "8x6mm", "in_stock": True, "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Pink Tourmaline - Oval", "category": "tourmaline", "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800", "description": "Brazilian pink tourmaline, natural, no treatment", "price": 1450.00, "carat": "4.2ct", "dimensions": "10x8mm", "in_stock": True, "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Colombian Emerald - Emerald Cut", "category": "emerald", "image_url": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800", "description": "Fine Colombian emerald with minor oil treatment", "price": 4200.00, "carat": "1.5ct", "dimensions": "7x5mm", "in_stock": True, "featured": True},
-        {"id": str(uuid.uuid4()), "title": "Tanzanite - Trillion", "category": "tanzanite", "image_url": "https://images.unsplash.com/photo-1613087546341-2c3f27aaa6d5?w=800", "description": "AAA grade tanzanite, heat treated", "price": 3100.00, "carat": "3.8ct", "dimensions": "10x8mm", "in_stock": True, "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Aquamarine - Pear", "category": "aquamarine", "image_url": "https://images.unsplash.com/photo-1610030184561-9c22cd0a632a?w=800", "description": "Santa Maria aquamarine, natural", "price": 1850.00, "carat": "5.2ct", "dimensions": "12x10mm", "in_stock": True, "featured": False},
-        {"id": str(uuid.uuid4()), "title": "Rhodolite Garnet - Round", "category": "garnet", "image_url": "https://images.unsplash.com/photo-1603561596112-0a132b757442?w=800", "description": "Natural rhodolite garnet, no treatment", "price": 680.00, "carat": "2.8ct", "dimensions": "8x8mm", "in_stock": True, "featured": False},
+        {"id": str(uuid.uuid4()), "title": "Blue Sapphire - Cushion Cut", "category": "sapphire", "image_url": "https://images.unsplash.com/photo-1605821771565-35e0d046a2fb?w=800", "description": "Natural blue sapphire", "price": 2850.00, "carat": "2.3ct", "dimensions": "8x6mm", "in_stock": True, "color": "Blue", "gemstone_type": "Sapphire", "price_per_carat": 1200, "images": [], "videos": [], "gia_certified": False, "name_your_price": False},
+        {"id": str(uuid.uuid4()), "title": "Pink Tourmaline - Oval", "category": "tourmaline", "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=800", "description": "Brazilian pink tourmaline", "price": 1450.00, "carat": "4.2ct", "dimensions": "10x8mm", "in_stock": True, "color": "Pink", "gemstone_type": "Tourmaline", "price_per_carat": 350, "images": [], "videos": [], "gia_certified": False, "name_your_price": False},
+        {"id": str(uuid.uuid4()), "title": "Colombian Emerald - Emerald Cut", "category": "emerald", "image_url": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800", "description": "Fine Colombian emerald", "price": 4200.00, "carat": "1.5ct", "dimensions": "7x5mm", "in_stock": True, "color": "Green", "gemstone_type": "Emerald", "price_per_carat": 2800, "images": [], "videos": [], "gia_certified": False, "name_your_price": False},
     ]
     await db.products.insert_many(products)
     
-    return {"message": "Data seeded successfully", "gallery_count": len(gallery_items), "products_count": len(products)}
+    return {"message": "Data seeded successfully"}
 
 @api_router.get("/")
 async def root():
@@ -564,7 +875,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'

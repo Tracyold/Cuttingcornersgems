@@ -1117,8 +1117,21 @@ async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admi
 
 # ============ PUBLIC AUTH ROUTES ============
 
+@api_router.get("/auth/signup-status")
+async def get_signup_status():
+    """Check if user registration is enabled"""
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+    if settings:
+        return {"signup_enabled": settings.get("user_signup_enabled", True)}
+    return {"signup_enabled": True}
+
 @api_router.post("/auth/register", response_model=TokenResponse)
 async def register(user_data: UserCreate):
+    # Check if registration is enabled
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0})
+    if settings and not settings.get("user_signup_enabled", True):
+        raise HTTPException(status_code=403, detail="User registration is currently disabled")
+    
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -1128,6 +1141,7 @@ async def register(user_data: UserCreate):
         "id": user_id,
         "email": user_data.email,
         "name": user_data.name,
+        "phone": getattr(user_data, 'phone', None),
         "password_hash": hash_password(user_data.password),
         "created_at": datetime.now(timezone.utc).isoformat()
     }

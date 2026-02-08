@@ -71,10 +71,12 @@ function App() {
               <Route path="/admin/gallery" element={<AdminLayout><AdminGallery /></AdminLayout>} />
               <Route path="/admin/inquiries" element={<AdminLayout><AdminInquiries /></AdminLayout>} />
               <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
+              <Route path="/admin/sold" element={<AdminLayout><AdminSold /></AdminLayout>} />
               <Route path="/admin/settings/stripe" element={<AdminLayout><StripeSettings /></AdminLayout>} />
               <Route path="/admin/settings/storage" element={<AdminLayout><StorageSettings /></AdminLayout>} />
               <Route path="/admin/settings/security" element={<AdminLayout><SecuritySettings /></AdminLayout>} />
               <Route path="/admin/settings/general" element={<AdminLayout><GeneralSettings /></AdminLayout>} />
+              <Route path="/admin/settings/email" element={<AdminLayout><EmailSettings /></AdminLayout>} />
               <Route path="/admin/help" element={<AdminLayout><AdminHelp /></AdminLayout>} />
               <Route path="/admin/help/:topic" element={<AdminLayout><AdminHelp /></AdminLayout>} />
 

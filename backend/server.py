@@ -1346,6 +1346,104 @@ async def seed_data():
     
     return {"message": "Data seeded successfully"}
 
+# ============ SEED TEST DATA FOR ADMIN ============
+
+@api_router.post("/admin/seed-test-data")
+async def seed_test_data(admin: dict = Depends(get_admin_user)):
+    """Create test inquiries, name your price, and sold listing for testing"""
+    now = datetime.now(timezone.utc)
+    
+    # Get a product for reference
+    product = await db.products.find_one({}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=400, detail="No products exist. Seed products first.")
+    
+    # Create test product inquiry
+    test_product_inquiry = {
+        "id": str(uuid.uuid4()),
+        "name": "Test Inquiry Customer",
+        "email": "testinquiry@example.com",
+        "phone": "480-555-1234",
+        "product_id": product["id"],
+        "product_title": product["title"],
+        "message": "I'm interested in this gemstone. Can you tell me more about its origin and certification?",
+        "is_offer": True,
+        "offer_price": "2500",
+        "created_at": now.isoformat(),
+        "status": "pending"
+    }
+    await db.product_inquiries.insert_one(test_product_inquiry)
+    
+    # Create test sell inquiry
+    test_sell_inquiry = {
+        "id": str(uuid.uuid4()),
+        "name": "Test Seller",
+        "email": "testseller@example.com",
+        "phone": "480-555-5678",
+        "description": "I have a 3.5ct natural ruby from Myanmar that I inherited. Looking to sell. No treatments, excellent clarity.",
+        "asking_price": "8500",
+        "negotiable": True,
+        "photo_count": 3,
+        "photos": ["ruby1.jpg", "ruby2.jpg", "ruby3.jpg"],
+        "created_at": now.isoformat(),
+        "status": "pending"
+    }
+    await db.sell_inquiries.insert_one(test_sell_inquiry)
+    
+    # Create test Name Your Price inquiry
+    test_nyp_inquiry = {
+        "id": str(uuid.uuid4()),
+        "name": "Test NYP Customer",
+        "phone": "480-555-9012",
+        "product_id": product["id"],
+        "product_title": product["title"],
+        "price": "2200",
+        "message": "I can offer $2,200 for this piece. Let me know if this works.",
+        "created_at": now.isoformat(),
+        "status": "pending"
+    }
+    await db.name_your_price_inquiries.insert_one(test_nyp_inquiry)
+    
+    # Create test sold item with all features
+    test_sold_item = {
+        "id": str(uuid.uuid4()),
+        "product_id": product["id"],
+        "product_title": product["title"],
+        "product_image": product["image_url"],
+        "buyer_name": "Test Buyer",
+        "buyer_email": "testbuyer@example.com",
+        "buyer_phone": "480-555-3456",
+        "user_id": None,
+        "shipping_address": "123 Test Street\nTempe, AZ 85281\nUnited States",
+        "item_price": product.get("price", 2850),
+        "shipping_cost": 45.00,
+        "total_paid": product.get("price", 2850) + 45.00,
+        "payment_method": "Credit Card",
+        "payment_last_four": "4242",
+        "sold_at": now.isoformat(),
+        "paid_at": now.isoformat(),
+        "email_sent": True,
+        "email_sent_at": now.isoformat(),
+        "tracking_number": "1Z999AA10123456784",
+        "tracking_carrier": "ups",
+        "tracking_entered_at": now.isoformat(),
+        "user_notes": "Thank you for your purchase! Handle with care - this is a delicate gemstone.",
+        "invoice_number": f"INV-{now.strftime('%Y%m%d')}-001",
+        "views": 47,
+        "clicks": 12
+    }
+    await db.sold_items.insert_one(test_sold_item)
+    
+    return {
+        "message": "Test data created successfully",
+        "created": {
+            "product_inquiry": test_product_inquiry["id"],
+            "sell_inquiry": test_sell_inquiry["id"],
+            "name_your_price": test_nyp_inquiry["id"],
+            "sold_item": test_sold_item["id"]
+        }
+    }
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

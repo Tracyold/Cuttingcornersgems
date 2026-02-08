@@ -147,13 +147,15 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
   const [showInquiry, setShowInquiry] = useState(false);
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   const images = product.images || [product.image_url];
   const videos = product.videos || [];
 
   const handleBuy = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to purchase');
+      toast.error('Please sign in to purchase');
+      navigate('/dashboard?tab=auth&redirect=shop');
       return;
     }
     try {

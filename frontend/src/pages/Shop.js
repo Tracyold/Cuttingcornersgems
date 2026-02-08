@@ -245,14 +245,13 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
             <span className="text-gray-500 uppercase tracking-widest text-xs">Out The Door Price</span>
             <span className="font-mono text-lg">${product.price?.toLocaleString()}</span>
           </div>
-          <div className="flex justify-between border-b border-white/10 pb-2">
-            <span className="text-gray-500 uppercase tracking-widest text-xs">Get Last Refusal</span>
-            <span className="text-gray-600 opacity-50">Contact for details</span>
-          </div>
         </div>
 
         {/* Buttons */}
         <div className="space-y-3 pt-4">
+          <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50">
+            Get Last Refusal
+          </button>
           <button onClick={handleBuy} className="btn-primary w-full" data-testid="product-buy-btn">
             Buy Now
           </button>

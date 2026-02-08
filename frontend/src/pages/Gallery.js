@@ -21,6 +21,7 @@ const Gallery = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [expandedMobileItem, setExpandedMobileItem] = useState(null);
 
   useEffect(() => {
     fetchGallery();
@@ -41,6 +42,7 @@ const Gallery = () => {
     }
   };
 
+  // Desktop lightbox functions
   const openLightbox = (index) => {
     setLightboxIndex(index);
     setLightboxOpen(true);
@@ -60,7 +62,12 @@ const Gallery = () => {
     }
   };
 
-  // Keyboard navigation
+  // Mobile item toggle
+  const toggleMobileItem = (itemId) => {
+    setExpandedMobileItem(prev => prev === itemId ? null : itemId);
+  };
+
+  // Keyboard navigation for desktop
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!lightboxOpen) return;
@@ -84,8 +91,58 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Gallery Layout */}
-      <section className="pb-24">
+      {/* Mobile Gallery - 2 column grid, no categories */}
+      <section className="pb-24 md:hidden">
+        <div className="px-4">
+          {loading ? (
+            <div className="grid grid-cols-2 gap-3">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            <div className="text-center py-24">
+              <p className="text-gray-500">No items in gallery.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {items.map((item, index) => (
+                <div
+                  key={item.id}
+                  onClick={() => toggleMobileItem(item.id)}
+                  className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  data-testid={`mobile-gallery-item-${index}`}
+                >
+                  {/* Image or Info overlay */}
+                  {expandedMobileItem === item.id ? (
+                    <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
+                      <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
+                      <h3 className="font-serif text-sm mb-2">{item.title}</h3>
+                      {item.description && (
+                        <p className="text-gray-400 text-xs leading-relaxed">{item.description}</p>
+                      )}
+                      {item.carat && (
+                        <p className="text-xs text-gray-500 mt-2 font-mono">{item.carat}</p>
+                      )}
+                      <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
+                    </div>
+                  ) : (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Desktop Gallery Layout - unchanged */}
+      <section className="pb-24 hidden md:block">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
             {/* Sidebar */}
@@ -146,9 +203,9 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Lightbox */}
+      {/* Desktop Lightbox */}
       {lightboxOpen && currentItem && (
-        <div className="fixed inset-0 z-50 lightbox-overlay flex items-center justify-center" data-testid="lightbox">
+        <div className="fixed inset-0 z-50 lightbox-overlay hidden md:flex items-center justify-center" data-testid="lightbox">
           {/* Close button */}
           <button
             onClick={closeLightbox}

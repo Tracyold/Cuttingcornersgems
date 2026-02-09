@@ -211,7 +211,7 @@ const Home = () => {
               </div>
               
               {/* Text */}
-              <h3 className="relative z-10 text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
+              <h3 className="relative z-10 font-serif text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
                 Buy
               </h3>
             </Link>
@@ -233,7 +233,7 @@ const Home = () => {
               </div>
               
               {/* Text */}
-              <h3 className="relative z-10 text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
+              <h3 className="relative z-10 font-serif text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
                 Sell
               </h3>
             </Link>

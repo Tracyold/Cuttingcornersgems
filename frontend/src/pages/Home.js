@@ -197,7 +197,7 @@ const Home = () => {
             {/* Buy Tile */}
             <Link 
               to="/shop"
-              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center"
+              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center border border-gray-800 hover:border-[#1a1f2e] transition-all duration-500"
             >
               {/* Background gemstone image - hidden by default, visible on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -219,7 +219,7 @@ const Home = () => {
             {/* Sell Tile */}
             <Link 
               to="/sell"
-              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center"
+              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center border border-gray-800 hover:border-[#1a1f2e] transition-all duration-500"
             >
               {/* Background gemstone image - hidden by default, visible on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">

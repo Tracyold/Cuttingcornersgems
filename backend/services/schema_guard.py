@@ -178,32 +178,26 @@ async def register_migration(
 
 async def get_schema_status(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     """
-    Get current schema version and migration history
+    Get current schema version and status
+    Report-only, no enforcement (D4 requirement)
     """
-    if not SCHEMA_DRIFT_GUARD_ENABLED:
-        return {
-            "enabled": False,
-            "message": "Schema drift guard disabled. Set SCHEMA_DRIFT_GUARD_ENABLED=true to enable"
-        }
-    
-    schema_doc = await db.schema_version.find_one({"_id": "main"})
+    schema_doc = await db.system_metadata.find_one({"id": "main"})
     
     if not schema_doc:
         return {
-            "enabled": True,
             "status": "not_initialized",
-            "message": "Run ensure_schema_version() to initialize"
+            "message": "System metadata not initialized (will be created on next startup)"
         }
     
     return {
-        "enabled": True,
         "status": "initialized",
-        "current_version": schema_doc["version"],
+        "current_version": schema_doc.get("schema_version"),
         "code_version": CURRENT_SCHEMA_VERSION,
-        "version_match": schema_doc["version"] == CURRENT_SCHEMA_VERSION,
+        "version_match": schema_doc.get("schema_version") == CURRENT_SCHEMA_VERSION,
         "migrations": schema_doc.get("migrations", []),
         "created_at": schema_doc.get("created_at"),
-        "updated_at": schema_doc.get("updated_at")
+        "updated_at": schema_doc.get("updated_at"),
+        "enforcement": "none (report-only per D4 spec)"
     }
 
 

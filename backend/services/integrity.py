@@ -243,6 +243,10 @@ async def generate_cleanliness_report(db: AsyncIOMotorDatabase) -> Dict[str, Any
     # D2: Dead-path detection (added per P_code directive)
     report["deadpath_report"] = await _generate_deadpath_report(db)
     
+    # D4: Schema version status (added per P_code directive)
+    from services.schema_guard import get_schema_status
+    report["schema_version_status"] = await get_schema_status(db)
+    
     return report
 
 

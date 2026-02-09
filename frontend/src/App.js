@@ -76,6 +76,7 @@ function App() {
               <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
               <Route path="/admin/sold" element={<AdminLayout><AdminSold /></AdminLayout>} />
               <Route path="/admin/data" element={<AdminLayout><AdminData /></AdminLayout>} />
+              <Route path="/admin/system-tools" element={<AdminLayout><AdminSystemTools /></AdminLayout>} />
               <Route path="/admin/settings/stripe" element={<AdminLayout><StripeSettings /></AdminLayout>} />
               <Route path="/admin/settings/storage" element={<AdminLayout><StorageSettings /></AdminLayout>} />
               <Route path="/admin/settings/security" element={<AdminLayout><SecuritySettings /></AdminLayout>} />

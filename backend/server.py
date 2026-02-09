@@ -1618,6 +1618,25 @@ async def ensure_indexes_endpoint(admin: dict = Depends(get_admin_user)):
     results = await ensure_indexes(db)
     return results
 
+@api_router.post("/admin/system/setup-ttl")
+async def setup_ttl_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Manually trigger TTL index creation (admin-only)
+    Requires AUDIT_TTL_DAYS environment variable to be set
+    """
+    from services.ttl import setup_ttl_indexes
+    results = await setup_ttl_indexes(db)
+    return results
+
+@api_router.get("/admin/system/ttl-status")
+async def get_ttl_status_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Check TTL index status (admin-only, read-only)
+    """
+    from services.ttl import get_ttl_status
+    status = await get_ttl_status(db)
+    return status
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

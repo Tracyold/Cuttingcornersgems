@@ -108,10 +108,11 @@ const Home = () => {
             ].map((service, i) => (
               <div 
                 key={service.title}
-                className="gem-card p-8 hover-lift opacity-0 animate-fade-in"
+                className="gem-card p-8 hover-lift opacity-0 transition-all duration-700"
                 style={{ animationDelay: `${i * 100}ms` }}
+                data-scroll-reveal
               >
-                <service.icon className="w-8 h-8 mb-6 text-gray-400" strokeWidth={1.5} />
+                <service.icon className="w-8 h-8 mb-6 text-[#d4af37]" strokeWidth={1.5} />
                 <h3 className="font-serif text-xl mb-3">{service.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
               </div>
@@ -130,10 +131,11 @@ const Home = () => {
             ].map((service, i) => (
               <div 
                 key={service.title}
-                className="gem-card p-4 opacity-0 animate-fade-in"
+                className="gem-card p-4 opacity-0 transition-all duration-700"
                 style={{ animationDelay: `${i * 50}ms` }}
+                data-scroll-reveal
               >
-                <service.icon className="w-6 h-6 mb-3 text-gray-400" strokeWidth={1.5} />
+                <service.icon className="w-6 h-6 mb-3 text-[#d4af37]" strokeWidth={1.5} />
                 <h3 className="font-serif text-sm mb-2">{service.title}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed">{service.desc}</p>
               </div>

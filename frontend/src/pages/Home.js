@@ -58,7 +58,7 @@ const Home = () => {
         <div className="absolute inset-0 hero-glow" />
         <div 
           className="absolute inset-0 bg-cover bg-center opacity-20"
-          style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/c2cwyfwb_IMG_5555.jpeg)' }}
+          style={{ backgroundImage: 'url(https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/yu1iknms_IMG_3821.jpeg)' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/50" />
         
@@ -252,7 +252,7 @@ const Home = () => {
               <div className="aspect-[4/5] overflow-hidden relative">
                 <div className="absolute inset-0 shadow-[inset_0_0_30px_15px_rgba(0,0,0,0.7)] z-10 pointer-events-none" />
                 <img
-                  src="https://customer-assets.emergentagent.com/job_1e0d6e37-2077-4a48-b9fe-d77e61594e60/artifacts/93xqhax5_IMG_5550.jpeg"
+                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/c2cwyfwb_IMG_5555.jpeg"
                   alt="Michael Wall at work"
                   className="w-full h-full object-cover"
                 />

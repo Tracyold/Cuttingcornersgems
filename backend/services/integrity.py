@@ -240,6 +240,9 @@ async def generate_cleanliness_report(db: AsyncIOMotorDatabase) -> Dict[str, Any
     # Ensure score doesn't go below 0
     report["cleanliness_score"] = max(0, report["cleanliness_score"])
     
+    # D2: Dead-path detection (added per P_code directive)
+    report["deadpath_report"] = await _generate_deadpath_report(db)
+    
     return report
 
 

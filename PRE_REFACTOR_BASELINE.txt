@@ -1,0 +1,42 @@
+==========================================
+API ENDPOINT BASELINE TEST
+Base URL: https://wall-cuts.preview.emergentagent.com/api
+==========================================
+
+=== PUBLIC ENDPOINTS ===
+✓ PASS: GET /products - List all products (HTTP 200)
+✓ PASS: GET /products?category - Filter by category (HTTP 200)
+✓ PASS: GET /gallery - List gallery items (HTTP 200)
+✓ PASS: GET /gallery/categories - Get categories (HTTP 200)
+✓ PASS: GET /gallery/featured - Get featured items (HTTP 200)
+✓ PASS: GET /auth/signup-status - Check signup enabled (HTTP 200)
+
+=== USER AUTH ENDPOINTS ===
+✗ FAIL: POST /auth/signup - User registration (Expected 200, Got 404)
+✓ PASS: POST /auth/login - Invalid credentials (expected) (HTTP 401)
+
+=== ADMIN AUTH ENDPOINTS ===
+✓ PASS: POST /admin/login - Admin login (HTTP 200)
+
+=== ADMIN PROTECTED ENDPOINTS ===
+✗ FAIL: GET /admin/stats - Dashboard statistics (Expected 200, Got 404)
+✓ PASS: GET /admin/products - List products (HTTP 200)
+✓ PASS: GET /admin/gallery - List gallery (HTTP 200)
+✓ PASS: GET /admin/users - List users (HTTP 200)
+✓ PASS: GET /admin/bookings - List bookings (HTTP 200)
+✓ PASS: GET /admin/product-inquiries - List inquiries (HTTP 200)
+✓ PASS: GET /admin/orders - List orders (HTTP 200)
+✓ PASS: GET /admin/settings - Get settings (HTTP 200)
+
+=== ADMIN CRUD ENDPOINTS ===
+✓ PASS: POST /admin/products - Create product (HTTP 200)
+✓ PASS: POST /admin/gallery - Create gallery item (HTTP 200)
+
+==========================================
+BASELINE TEST SUMMARY
+==========================================
+Passed: 17
+Failed: 2
+Total:  19
+==========================================
+✗ SOME TESTS FAILED

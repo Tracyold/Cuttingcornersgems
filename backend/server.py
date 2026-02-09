@@ -1609,6 +1609,15 @@ async def repair_empty_carts_endpoint(admin: dict = Depends(get_admin_user)):
     result = await repair_empty_carts(db)
     return result
 
+@api_router.post("/admin/system/ensure-indexes")
+async def ensure_indexes_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Manually trigger index creation (admin-only, idempotent)
+    """
+    from services.indexes import ensure_indexes
+    results = await ensure_indexes(db)
+    return results
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

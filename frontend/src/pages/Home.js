@@ -44,10 +44,10 @@ const Home = () => {
             Tempe, Arizona
           </p>
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
-            <span className="text-[#d4af37]">Cutting</span> Corners
+            <span className="text-[#d4af37]">Cutting</span> Corners—Not Quality
           </h1>
           <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
-            Custom gemstone cutting by Michael Wall. Specializing in med-high weight retention for jewelers and collectors.
+            A Tailored Gem Experience.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in delay-300">
             <Link to="/gallery" className="btn-primary inline-flex items-center justify-center gap-2" data-testid="hero-gallery-btn">

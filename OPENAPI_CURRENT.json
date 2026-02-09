@@ -1,0 +1,1931 @@
+{
+  "openapi_version": "3.1.0",
+  "title": "FastAPI",
+  "version": "0.1.0",
+  "total_endpoints": 68,
+  "endpoints": {
+    "POST /api/admin/login": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/AdminLogin"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminTokenResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Login",
+      "operationId": "admin_login_api_admin_login_post"
+    },
+    "GET /api/admin/verify": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Verify Admin",
+      "operationId": "verify_admin_api_admin_verify_get"
+    },
+    "GET /api/admin/settings": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteSettings"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Site Settings",
+      "operationId": "get_site_settings_api_admin_settings_get"
+    },
+    "PATCH /api/admin/settings": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SiteSettingsUpdate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SiteSettings"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Update Site Settings",
+      "operationId": "update_site_settings_api_admin_settings_patch"
+    },
+    "GET /api/admin/products": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                },
+                "type": "array",
+                "title": "Response Admin Get Products Api Admin Products Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Products",
+      "operationId": "admin_get_products_api_admin_products_get"
+    },
+    "POST /api/admin/products": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Create Product",
+      "operationId": "admin_create_product_api_admin_products_post"
+    },
+    "PATCH /api/admin/products/{product_id}": {
+      "parameters": [
+        {
+          "name": "product_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Product Id"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductUpdate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Update Product",
+      "operationId": "admin_update_product_api_admin_products__product_id__patch"
+    },
+    "DELETE /api/admin/products/{product_id}": {
+      "parameters": [
+        {
+          "name": "product_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Product Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Delete Product",
+      "operationId": "admin_delete_product_api_admin_products__product_id__delete"
+    },
+    "GET /api/admin/gallery": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/GalleryItem"
+                },
+                "type": "array",
+                "title": "Response Admin Get Gallery Api Admin Gallery Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Gallery",
+      "operationId": "admin_get_gallery_api_admin_gallery_get"
+    },
+    "POST /api/admin/gallery": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GalleryItemCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GalleryItem"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Create Gallery Item",
+      "operationId": "admin_create_gallery_item_api_admin_gallery_post"
+    },
+    "PATCH /api/admin/gallery/{item_id}": {
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/GalleryItemUpdate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GalleryItem"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Update Gallery Item",
+      "operationId": "admin_update_gallery_item_api_admin_gallery__item_id__patch"
+    },
+    "DELETE /api/admin/gallery/{item_id}": {
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Delete Gallery Item",
+      "operationId": "admin_delete_gallery_item_api_admin_gallery__item_id__delete"
+    },
+    "GET /api/admin/bookings": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Bookings",
+      "operationId": "admin_get_bookings_api_admin_bookings_get"
+    },
+    "GET /api/admin/product-inquiries": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Product Inquiries",
+      "operationId": "admin_get_product_inquiries_api_admin_product_inquiries_get"
+    },
+    "GET /api/admin/sell-inquiries": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Sell Inquiries",
+      "operationId": "admin_get_sell_inquiries_api_admin_sell_inquiries_get"
+    },
+    "GET /api/admin/name-your-price-inquiries": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Name Your Price Inquiries",
+      "operationId": "admin_get_name_your_price_inquiries_api_admin_name_your_price_inquiries_get"
+    },
+    "GET /api/admin/orders": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Orders",
+      "operationId": "admin_get_orders_api_admin_orders_get"
+    },
+    "GET /api/admin/users": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Users",
+      "operationId": "admin_get_users_api_admin_users_get"
+    },
+    "GET /api/admin/users/{user_id}/details": {
+      "parameters": [
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "User Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Get User Details",
+      "operationId": "admin_get_user_details_api_admin_users__user_id__details_get"
+    },
+    "GET /api/admin/sold": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/SoldItemResponse"
+                },
+                "type": "array",
+                "title": "Response Admin Get Sold Items Api Admin Sold Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Sold Items",
+      "operationId": "admin_get_sold_items_api_admin_sold_get"
+    },
+    "PATCH /api/admin/sold/{item_id}": {
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SoldItemUpdate"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Update Sold Item",
+      "operationId": "admin_update_sold_item_api_admin_sold__item_id__patch"
+    },
+    "POST /api/admin/sold/{item_id}/send-notes": {
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "additionalProperties": true,
+              "title": "Data"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Send Sold Item Notes",
+      "operationId": "admin_send_sold_item_notes_api_admin_sold__item_id__send_notes_post"
+    },
+    "POST /api/admin/settings/test-email": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/EmailTestRequest"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Test Email Connection",
+      "operationId": "test_email_connection_api_admin_settings_test_email_post"
+    },
+    "GET /api/admin/dashboard/stats": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Dashboard Stats",
+      "operationId": "admin_get_dashboard_stats_api_admin_dashboard_stats_get"
+    },
+    "POST /api/admin/settings/test-analytics": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "additionalProperties": true,
+              "type": "object",
+              "title": "Data"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Test Analytics Connection",
+      "operationId": "test_analytics_connection_api_admin_settings_test_analytics_post"
+    },
+    "GET /api/admin/data/archived/{data_type}": {
+      "parameters": [
+        {
+          "name": "data_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Data Type"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Archived Data",
+      "operationId": "get_archived_data_api_admin_data_archived__data_type__get"
+    },
+    "POST /api/admin/data/archive/run": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Run Archive Process",
+      "operationId": "run_archive_process_api_admin_data_archive_run_post"
+    },
+    "GET /api/admin/data/download/{data_type}/{item_id}": {
+      "parameters": [
+        {
+          "name": "data_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Data Type"
+          }
+        },
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Download Archive Item",
+      "operationId": "download_archive_item_api_admin_data_download__data_type___item_id__get"
+    },
+    "GET /api/admin/data/download-batch/{data_type}": {
+      "parameters": [
+        {
+          "name": "data_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Data Type"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Download Batch Archive",
+      "operationId": "download_batch_archive_api_admin_data_download_batch__data_type__get"
+    },
+    "DELETE /api/admin/data/purge/{data_type}/{item_id}": {
+      "parameters": [
+        {
+          "name": "data_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Data Type"
+          }
+        },
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Purge Archive Item",
+      "operationId": "purge_archive_item_api_admin_data_purge__data_type___item_id__delete"
+    },
+    "DELETE /api/admin/data/purge-all/{data_type}": {
+      "parameters": [
+        {
+          "name": "data_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Data Type"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Purge All Archive",
+      "operationId": "purge_all_archive_api_admin_data_purge_all__data_type__delete"
+    },
+    "POST /api/admin/bookings/{booking_id}/archive": {
+      "parameters": [
+        {
+          "name": "booking_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Booking Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Archive Booking",
+      "operationId": "archive_booking_api_admin_bookings__booking_id__archive_post"
+    },
+    "GET /api/auth/signup-status": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Signup Status",
+      "operationId": "get_signup_status_api_auth_signup_status_get"
+    },
+    "POST /api/auth/register": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Register",
+      "operationId": "register_api_auth_register_post"
+    },
+    "POST /api/auth/login": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserLogin"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Login",
+      "operationId": "login_api_auth_login_post"
+    },
+    "GET /api/auth/me": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserResponse"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Me",
+      "operationId": "get_me_api_auth_me_get"
+    },
+    "GET /api/user/messages": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get User Messages",
+      "operationId": "get_user_messages_api_user_messages_get"
+    },
+    "POST /api/user/messages": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/UserMessageCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Send Message To Admin",
+      "operationId": "send_message_to_admin_api_user_messages_post"
+    },
+    "GET /api/admin/messages": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Admin Get Messages",
+      "operationId": "admin_get_messages_api_admin_messages_get"
+    },
+    "PATCH /api/admin/messages/{message_id}/read": {
+      "parameters": [
+        {
+          "name": "message_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Message Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Admin Mark Message Read",
+      "operationId": "admin_mark_message_read_api_admin_messages__message_id__read_patch"
+    },
+    "GET /api/bookings": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                },
+                "type": "array",
+                "title": "Response Get User Bookings Api Bookings Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get User Bookings",
+      "operationId": "get_user_bookings_api_bookings_get"
+    },
+    "POST /api/bookings": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/BookingCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Create Booking",
+      "operationId": "create_booking_api_bookings_post"
+    },
+    "GET /api/gallery": {
+      "parameters": [
+        {
+          "name": "category",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GalleryItem"
+                },
+                "title": "Response Get Gallery Api Gallery Get"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Gallery",
+      "operationId": "get_gallery_api_gallery_get"
+    },
+    "GET /api/gallery/categories": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Gallery Categories",
+      "operationId": "get_gallery_categories_api_gallery_categories_get"
+    },
+    "GET /api/gallery/featured": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/GalleryItem"
+                },
+                "type": "array",
+                "title": "Response Get Featured Gallery Api Gallery Featured Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Featured Gallery",
+      "operationId": "get_featured_gallery_api_gallery_featured_get"
+    },
+    "GET /api/gallery/{item_id}": {
+      "parameters": [
+        {
+          "name": "item_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Item Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GalleryItem"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Gallery Item",
+      "operationId": "get_gallery_item_api_gallery__item_id__get"
+    },
+    "GET /api/products": {
+      "parameters": [
+        {
+          "name": "category",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          }
+        },
+        {
+          "name": "featured",
+          "in": "query",
+          "required": false,
+          "schema": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Featured"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                },
+                "title": "Response Get Products Api Products Get"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Products",
+      "operationId": "get_products_api_products_get"
+    },
+    "GET /api/products/{product_id}": {
+      "parameters": [
+        {
+          "name": "product_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Product Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Product",
+      "operationId": "get_product_api_products__product_id__get"
+    },
+    "GET /api/cart": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartResponse"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get Cart",
+      "operationId": "get_cart_api_cart_get"
+    },
+    "POST /api/cart/add": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/CartItem"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Add To Cart",
+      "operationId": "add_to_cart_api_cart_add_post"
+    },
+    "DELETE /api/cart/{product_id}": {
+      "parameters": [
+        {
+          "name": "product_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "title": "Product Id"
+          }
+        }
+      ],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Remove From Cart",
+      "operationId": "remove_from_cart_api_cart__product_id__delete"
+    },
+    "GET /api/orders": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "items": {
+                  "$ref": "#/components/schemas/OrderResponse"
+                },
+                "type": "array",
+                "title": "Response Get User Orders Api Orders Get"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Get User Orders",
+      "operationId": "get_user_orders_api_orders_get"
+    },
+    "POST /api/orders": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/OrderCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Create Order",
+      "operationId": "create_order_api_orders_post"
+    },
+    "POST /api/product-inquiry": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ProductInquiryCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductInquiryResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Create Product Inquiry",
+      "operationId": "create_product_inquiry_api_product_inquiry_post"
+    },
+    "POST /api/sell-inquiry": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/SellInquiryCreate"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SellInquiryResponse"
+              }
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Create Sell Inquiry",
+      "operationId": "create_sell_inquiry_api_sell_inquiry_post"
+    },
+    "POST /api/name-your-price": {
+      "parameters": [],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/NameYourPriceInquiry"
+            }
+          }
+        },
+        "required": true
+      },
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "422": {
+          "description": "Validation Error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HTTPValidationError"
+              }
+            }
+          }
+        }
+      },
+      "summary": "Create Name Your Price Inquiry",
+      "operationId": "create_name_your_price_inquiry_api_name_your_price_post"
+    },
+    "POST /api/seed": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Seed Data",
+      "operationId": "seed_data_api_seed_post"
+    },
+    "POST /api/admin/seed-test-data": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Seed Test Data",
+      "operationId": "seed_test_data_api_admin_seed_test_data_post"
+    },
+    "GET /api/admin/integrity-report": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Integrity Report",
+      "operationId": "get_integrity_report_api_admin_integrity_report_get"
+    },
+    "GET /api/admin/cleanliness-report": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Cleanliness Report",
+      "operationId": "get_cleanliness_report_api_admin_cleanliness_report_get"
+    },
+    "POST /api/admin/repair/cart-references": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Repair Cart References",
+      "operationId": "repair_cart_references_api_admin_repair_cart_references_post"
+    },
+    "POST /api/admin/repair/empty-carts": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Repair Empty Carts Endpoint",
+      "operationId": "repair_empty_carts_endpoint_api_admin_repair_empty_carts_post"
+    },
+    "POST /api/admin/system/ensure-indexes": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Ensure Indexes Endpoint",
+      "operationId": "ensure_indexes_endpoint_api_admin_system_ensure_indexes_post"
+    },
+    "POST /api/admin/system/setup-ttl": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Setup Ttl Endpoint",
+      "operationId": "setup_ttl_endpoint_api_admin_system_setup_ttl_post"
+    },
+    "GET /api/admin/system/ttl-status": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Ttl Status Endpoint",
+      "operationId": "get_ttl_status_endpoint_api_admin_system_ttl_status_get"
+    },
+    "GET /api/admin/system/maintenance-status": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Get Maintenance Status Endpoint",
+      "operationId": "get_maintenance_status_endpoint_api_admin_system_maintenance_status_get"
+    },
+    "POST /api/admin/system/run-maintenance": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Run Maintenance Now Endpoint",
+      "operationId": "run_maintenance_now_endpoint_api_admin_system_run_maintenance_post"
+    },
+    "GET /api/": {
+      "parameters": [],
+      "requestBody": {},
+      "responses": {
+        "200": {
+          "description": "Successful Response",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        }
+      },
+      "summary": "Root",
+      "operationId": "root_api__get"
+    }
+  }
+}

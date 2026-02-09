@@ -146,20 +146,32 @@ const Home = () => {
 
       {/* Philosophy Section - Color Conscious Careful Cutting */}
       <section className="section-spacing py-24">
-        <div className="container-custom max-w-4xl">
-          <div className="space-y-6 text-left">
-            <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
-              <span className="text-[#d4af37]">Color</span> is the goal.
-            </p>
-            <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <span className="text-[#d4af37]">Conscious</span> of the weight.
-            </p>
-            <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
-              <span className="text-[#d4af37]">Careful</span> with my approach.
-            </p>
-            <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
-              <span className="text-[#d4af37]">Cutting</span> is my craft.
-            </p>
+        <div className="container-custom max-w-6xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Text - Left Side */}
+            <div className="space-y-6 text-left">
+              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
+                <span className="text-[#d4af37]">Color</span> is the goal.
+              </p>
+              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+                <span className="text-[#d4af37]">Conscious</span> of the weight.
+              </p>
+              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
+                <span className="text-[#d4af37]">Careful</span> with my approach.
+              </p>
+              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
+                <span className="text-[#d4af37]">Cutting</span> is my craft.
+              </p>
+            </div>
+            
+            {/* Image - Right Side */}
+            <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/sqy5b97p_IMG_3573.jpeg" 
+                alt="Workshop" 
+                className="w-full h-auto rounded"
+              />
+            </div>
           </div>
         </div>
       </section>

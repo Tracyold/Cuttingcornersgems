@@ -63,7 +63,7 @@ const Home = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-[#050505]/50" />
         
         <div className="container-custom relative z-10 text-center">
-          <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-6 opacity-0 animate-fade-in">
+          <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-6 opacity-0 animate-fade-in transition-all duration-700" data-scroll-reveal>
             Tempe, Arizona
           </p>
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">

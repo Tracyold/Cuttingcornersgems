@@ -554,13 +554,6 @@ async def admin_update_product(product_id: str, updates: ProductUpdate, admin: d
         raise HTTPException(status_code=404, detail="Product not found")
     return ProductResponse(**product)
 
-@api_router.delete("/admin/products/{product_id}")
-async def admin_delete_product(product_id: str, admin: dict = Depends(get_admin_user)):
-    result = await db.products.delete_one({"id": product_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return {"message": "Product deleted"}
-
 # ============ ADMIN GALLERY ROUTES ============
 
 @api_router.get("/admin/gallery", response_model=List[GalleryItem])

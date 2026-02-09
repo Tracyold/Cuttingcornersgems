@@ -93,7 +93,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">What I Do</p>
-            <h2 className="section-title">Services</h2>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight">Services</h2>
           </div>
 
           {/* Desktop: 3 column grid */}
@@ -147,6 +147,9 @@ const Home = () => {
       {/* Philosophy Section - Color Conscious Careful Cutting */}
       <section className="section-spacing py-24">
         <div className="container-custom max-w-6xl">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>Philosophy</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Text - Left Side */}
             <div className="space-y-6 text-left">

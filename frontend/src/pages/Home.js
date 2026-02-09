@@ -255,6 +255,7 @@ const Home = () => {
                   src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/c2cwyfwb_IMG_5555.jpeg"
                   alt="Michael Wall at work"
                   className="w-full h-full object-cover"
+                  style={{ transform: 'scale(1.1)', objectPosition: 'center top' }}
                 />
               </div>
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center">

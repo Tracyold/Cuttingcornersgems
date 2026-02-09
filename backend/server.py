@@ -1663,6 +1663,7 @@ async def startup_db_indexes():
     """Ensure all indexes are created on startup"""
     from services.indexes import ensure_indexes
     from services.ttl import setup_ttl_indexes
+    from services.maintenance import get_maintenance_service
     
     # Create standard indexes
     results = await ensure_indexes(db)
@@ -1674,7 +1675,17 @@ async def startup_db_indexes():
         logger.info(f"TTL indexes created: {len(ttl_results['indexes_created'])}")
     else:
         logger.info("TTL indexes skipped (AUDIT_TTL_DAYS not set)")
+    
+    # Start automated maintenance service (only if CLEANLINESS_AUTORUN is true)
+    maintenance = get_maintenance_service(db)
+    maintenance.start()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    from services.maintenance import get_maintenance_service
+    
+    # Stop maintenance service
+    maintenance = get_maintenance_service(db)
+    await maintenance.stop()
+    
     client.close()

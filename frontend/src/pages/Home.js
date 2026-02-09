@@ -92,7 +92,7 @@ const Home = () => {
       <section className="section-spacing" data-testid="services-section">
         <div className="container-custom">
           <div className="text-center mb-16">
-            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">What I Do</p>
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>What I Do</p>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight">Services</h2>
           </div>
 
@@ -112,7 +112,7 @@ const Home = () => {
                 style={{ animationDelay: `${i * 100}ms` }}
                 data-scroll-reveal
               >
-                <service.icon className="w-8 h-8 mb-6 text-[#d4af37]" strokeWidth={1.5} />
+                <service.icon className="w-8 h-8 mb-6 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
                 <h3 className="font-serif text-xl mb-3">{service.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
               </div>
@@ -135,7 +135,7 @@ const Home = () => {
                 style={{ animationDelay: `${i * 50}ms` }}
                 data-scroll-reveal
               >
-                <service.icon className="w-6 h-6 mb-3 text-[#d4af37]" strokeWidth={1.5} />
+                <service.icon className="w-6 h-6 mb-3 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
                 <h3 className="font-serif text-sm mb-2">{service.title}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed">{service.desc}</p>
               </div>
@@ -215,7 +215,7 @@ const Home = () => {
               </div>
             </div>
             <div>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>About</p>
               <h2 className="section-title mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>

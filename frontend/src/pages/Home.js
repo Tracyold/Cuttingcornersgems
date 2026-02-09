@@ -193,57 +193,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Buy/Sell Tiles */}
-      <section className="section-spacing py-16">
-        <div className="container-custom">
-          <div className="grid grid-cols-2 md:grid-cols-2 gap-8">
-            {/* Buy Tile */}
-            <Link 
-              to="/shop"
-              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center border border-gray-800 hover:border-[#1a1f2e] transition-all duration-500"
-            >
-              {/* Background gemstone image - hidden by default, visible on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/9m0z4igm_IMG_5662.jpeg"
-                  alt="Green gemstone"
-                  className="w-full h-full object-cover"
-                />
-                {/* Black overlay */}
-                <div className="absolute inset-0 bg-black/60" />
-              </div>
-              
-              {/* Text */}
-              <h3 className="relative z-10 font-serif text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
-                Buy
-              </h3>
-            </Link>
-
-            {/* Sell Tile */}
-            <Link 
-              to="/sell"
-              className="group relative gem-card p-8 hover-lift aspect-square overflow-hidden flex items-center justify-center border border-gray-800 hover:border-[#1a1f2e] transition-all duration-500"
-            >
-              {/* Background gemstone image - hidden by default, visible on hover */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/6mesdnez_PhotoRoom_20220407_154952.jpeg"
-                  alt="Purple gemstone"
-                  className="w-full h-full object-cover"
-                />
-                {/* Black overlay */}
-                <div className="absolute inset-0 bg-black/60" />
-              </div>
-              
-              {/* Text */}
-              <h3 className="relative z-10 font-serif text-4xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
-                Sell
-              </h3>
-            </Link>
-          </div>
-        </div>
-      </section>
-
       {/* About Section */}
       <section className="section-spacing" data-testid="about-section">
         <div className="container-custom">

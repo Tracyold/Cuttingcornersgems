@@ -1,0 +1,1056 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0 -- /root/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /app/backend
+plugins: anyio-4.12.1
+collecting ... collected 19 items
+
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_products_list ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_products_by_category ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_list ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_categories ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_featured ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_public_booking_submission ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_signup_status_check ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_user_signup ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_user_login ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_user_cart_operations ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_user_orders ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_user_profile ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_login ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_stats ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_products_crud ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_gallery_crud ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_users_list ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_inquiries ERROR
+tests/test_regression_baseline.py::TestRegressionSuite::test_admin_settings ERROR
+
+==================================== ERRORS ====================================
+_______ ERROR at setup of TestRegressionSuite.test_public_products_list ________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_products_list' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____ ERROR at setup of TestRegressionSuite.test_public_products_by_category ____
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_products_by_category' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+________ ERROR at setup of TestRegressionSuite.test_public_gallery_list ________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_gallery_list' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+_____ ERROR at setup of TestRegressionSuite.test_public_gallery_categories _____
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_gallery_categories' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+______ ERROR at setup of TestRegressionSuite.test_public_gallery_featured ______
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_gallery_featured' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+_____ ERROR at setup of TestRegressionSuite.test_public_booking_submission _____
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_public_booking_submission' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+________ ERROR at setup of TestRegressionSuite.test_signup_status_check ________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_signup_status_check' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____________ ERROR at setup of TestRegressionSuite.test_user_signup ____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_user_signup' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____________ ERROR at setup of TestRegressionSuite.test_user_login _____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_user_login' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+_______ ERROR at setup of TestRegressionSuite.test_user_cart_operations ________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_user_cart_operations' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____________ ERROR at setup of TestRegressionSuite.test_user_orders ____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_user_orders' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+___________ ERROR at setup of TestRegressionSuite.test_user_profile ____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_user_profile' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____________ ERROR at setup of TestRegressionSuite.test_admin_login ____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_login' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+____________ ERROR at setup of TestRegressionSuite.test_admin_stats ____________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_stats' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+________ ERROR at setup of TestRegressionSuite.test_admin_products_crud ________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_products_crud' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+________ ERROR at setup of TestRegressionSuite.test_admin_gallery_crud _________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_gallery_crud' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+_________ ERROR at setup of TestRegressionSuite.test_admin_users_list __________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_users_list' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+__________ ERROR at setup of TestRegressionSuite.test_admin_inquiries __________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_inquiries' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+__________ ERROR at setup of TestRegressionSuite.test_admin_settings ___________
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:353: in from_call
+    result: TResult | None = func()
+                             ^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:245: in <lambda>
+    lambda: runtest_hook(item=item, **kwds),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/logging.py:843: in pytest_runtest_setup
+    yield
+/root/.venv/lib/python3.11/site-packages/_pytest/capture.py:895: in pytest_runtest_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:165: in pytest_runtest_setup
+    item.session._setupstate.setup(item)
+/root/.venv/lib/python3.11/site-packages/_pytest/runner.py:523: in setup
+    col.setup()
+/root/.venv/lib/python3.11/site-packages/_pytest/python.py:1723: in setup
+    self._request._fillfixtures()
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:707: in _fillfixtures
+    item.funcargs[argname] = self.getfixturevalue(argname)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:539: in getfixturevalue
+    fixturedef = self._get_active_fixturedef(argname)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:627: in _get_active_fixturedef
+    fixturedef.execute(request=subrequest)
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1110: in execute
+    result: FixtureValue = ihook.pytest_fixture_setup(
+/root/.venv/lib/python3.11/site-packages/pluggy/_hooks.py:512: in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_manager.py:120: in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:53: in run_old_style_hookwrapper
+    return result.get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/pluggy/_callers.py:38: in run_old_style_hookwrapper
+    res = yield
+          ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/setuponly.py:36: in pytest_fixture_setup
+    return (yield)
+            ^^^^^
+/root/.venv/lib/python3.11/site-packages/_pytest/fixtures.py:1188: in pytest_fixture_setup
+    warnings.warn(
+E   pytest.PytestRemovedIn9Warning: 'test_admin_settings' requested an async fixture 'client', with no plugin or hook that handled it. This is usually an error, as pytest does not natively support it. This will turn into an error in pytest 9.
+E   See: https://docs.pytest.org/en/stable/deprecations.html#sync-test-depending-on-async-fixture
+=========================== short test summary info ============================
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_products_list
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_products_by_category
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_list
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_categories
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_gallery_featured
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_public_booking_submission
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_signup_status_check
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_user_signup
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_user_login
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_user_cart_operations
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_user_orders
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_user_profile
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_login
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_stats
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_products_crud
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_gallery_crud
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_users_list
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_inquiries
+ERROR tests/test_regression_baseline.py::TestRegressionSuite::test_admin_settings
+============================== 19 errors in 2.26s ==============================

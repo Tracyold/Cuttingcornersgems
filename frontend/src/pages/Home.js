@@ -35,7 +35,7 @@ const Home = () => {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.3 }
     );
 
     const elements = document.querySelectorAll('[data-scroll-reveal]');

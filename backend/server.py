@@ -1643,8 +1643,18 @@ logger = logging.getLogger(__name__)
 async def startup_db_indexes():
     """Ensure all indexes are created on startup"""
     from services.indexes import ensure_indexes
+    from services.ttl import setup_ttl_indexes
+    
+    # Create standard indexes
     results = await ensure_indexes(db)
     logger.info(f"Indexes ensured: {len(results['created'])} created/verified")
+    
+    # Setup TTL indexes (only if AUDIT_TTL_DAYS is set)
+    ttl_results = await setup_ttl_indexes(db)
+    if ttl_results["ttl_enabled"]:
+        logger.info(f"TTL indexes created: {len(ttl_results['indexes_created'])}")
+    else:
+        logger.info("TTL indexes skipped (AUDIT_TTL_DAYS not set)")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

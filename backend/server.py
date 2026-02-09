@@ -1630,6 +1630,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+@app.on_event("startup")
+async def startup_db_indexes():
+    """Ensure all indexes are created on startup"""
+    from services.indexes import ensure_indexes
+    results = await ensure_indexes(db)
+    logger.info(f"Indexes ensured: {len(results['created'])} created/verified")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()

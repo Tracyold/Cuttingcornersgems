@@ -82,14 +82,14 @@ class TestSignupStatus:
         assert "signup_enabled" in data, "Missing signup_enabled field"
         assert isinstance(data["signup_enabled"], bool), "signup_enabled should be boolean"
         
-        print(f"✓ Signup status endpoint works")
+        print("✓ Signup status endpoint works")
         print(f"  Signup enabled: {data['signup_enabled']}")
     
     def test_signup_status_no_auth_required(self):
         """Test signup status is public (no auth required)"""
         response = requests.get(f"{BASE_URL}/api/auth/signup-status")
         assert response.status_code == 200, "Signup status should be public"
-        print(f"✓ Signup status is publicly accessible")
+        print("✓ Signup status is publicly accessible")
 
 
 class TestAdminUsersEndpoint:
@@ -124,7 +124,7 @@ class TestAdminUsersEndpoint:
         """Test users list requires admin auth"""
         response = requests.get(f"{BASE_URL}/api/admin/users")
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Users list correctly requires authentication")
+        print("✓ Users list correctly requires authentication")
     
     def test_users_list_excludes_password(self, admin_token):
         """Test users list does not expose password hash"""
@@ -138,7 +138,7 @@ class TestAdminUsersEndpoint:
             assert "password_hash" not in user, "Password hash should not be exposed"
             assert "password" not in user, "Password should not be exposed"
         
-        print(f"✓ Users list correctly excludes password data")
+        print("✓ Users list correctly excludes password data")
 
 
 class TestAdminUserDetails:
@@ -172,7 +172,7 @@ class TestAdminUserDetails:
         for field in analytics_fields:
             assert field in analytics, f"Missing analytics field: {field}"
         
-        print(f"✓ User details endpoint returned full data")
+        print("✓ User details endpoint returned full data")
         print(f"  User: {data.get('name')} ({data.get('email')})")
         print(f"  Orders: {len(data.get('orders', []))}")
         print(f"  Cart items: {len(data.get('cart_items', []))}")
@@ -186,7 +186,7 @@ class TestAdminUserDetails:
         response = requests.get(f"{BASE_URL}/api/admin/users/nonexistent-user-id/details", headers=headers)
         
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"✓ User details correctly returns 404 for non-existent user")
+        print("✓ User details correctly returns 404 for non-existent user")
     
     def test_user_details_unauthorized(self, test_user_token):
         """Test user details requires admin auth"""
@@ -194,7 +194,7 @@ class TestAdminUserDetails:
         response = requests.get(f"{BASE_URL}/api/admin/users/{user_id}/details")
         
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ User details correctly requires admin authentication")
+        print("✓ User details correctly requires admin authentication")
 
 
 class TestUserMessages:
@@ -216,7 +216,7 @@ class TestUserMessages:
         assert "message" in data, "Missing response message"
         assert "id" in data, "Missing message id"
         
-        print(f"✓ Message sent to admin successfully")
+        print("✓ Message sent to admin successfully")
         print(f"  Message ID: {data.get('id')}")
     
     def test_get_user_messages(self, test_user_token):
@@ -248,7 +248,7 @@ class TestUserMessages:
         response = requests.post(f"{BASE_URL}/api/user/messages", json=message_data)
         
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Sending message correctly requires authentication")
+        print("✓ Sending message correctly requires authentication")
 
 
 class TestAdminMessages:
@@ -291,16 +291,16 @@ class TestAdminMessages:
             read_response = requests.patch(f"{BASE_URL}/api/admin/messages/{message_id}/read", headers=headers)
             
             assert read_response.status_code == 200, f"Expected 200, got {read_response.status_code}"
-            print(f"✓ Message marked as read successfully")
+            print("✓ Message marked as read successfully")
         else:
-            print(f"✓ No messages to mark as read (skipped)")
+            print("✓ No messages to mark as read (skipped)")
     
     def test_admin_messages_unauthorized(self):
         """Test admin messages requires admin auth"""
         response = requests.get(f"{BASE_URL}/api/admin/messages")
         
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Admin messages correctly requires authentication")
+        print("✓ Admin messages correctly requires authentication")
 
 
 class TestSiteSettingsUserAuth:
@@ -318,7 +318,7 @@ class TestSiteSettingsUserAuth:
         assert "user_signup_enabled" in data, "Missing user_signup_enabled setting"
         assert "require_email_verification" in data, "Missing require_email_verification setting"
         
-        print(f"✓ User auth settings present")
+        print("✓ User auth settings present")
         print(f"  Signup enabled: {data.get('user_signup_enabled')}")
         print(f"  Email verification required: {data.get('require_email_verification')}")
     
@@ -349,7 +349,7 @@ class TestSiteSettingsUserAuth:
         })
         assert revert_response.status_code == 200
         
-        print(f"✓ User signup toggle works correctly")
+        print("✓ User signup toggle works correctly")
         print(f"  Toggled from {current_value} to {new_value} and back")
     
     def test_toggle_email_verification(self, admin_token):
@@ -374,7 +374,7 @@ class TestSiteSettingsUserAuth:
         })
         assert revert_response.status_code == 200
         
-        print(f"✓ Email verification toggle works correctly")
+        print("✓ Email verification toggle works correctly")
 
 
 class TestUserRegistrationWithDisabledSignup:
@@ -404,7 +404,7 @@ class TestUserRegistrationWithDisabledSignup:
             "user_signup_enabled": True
         })
         
-        print(f"✓ Registration correctly blocked when signup disabled")
+        print("✓ Registration correctly blocked when signup disabled")
 
 
 class TestExistingUserLogin:
@@ -422,10 +422,10 @@ class TestExistingUserLogin:
             data = response.json()
             assert "access_token" in data
             assert "user" in data
-            print(f"✓ Existing test user login successful")
+            print("✓ Existing test user login successful")
             print(f"  User: {data['user'].get('name')} ({data['user'].get('email')})")
         elif response.status_code == 401:
-            print(f"✓ Test user does not exist or wrong password (expected)")
+            print("✓ Test user does not exist or wrong password (expected)")
         else:
             print(f"? Unexpected response: {response.status_code}")
 

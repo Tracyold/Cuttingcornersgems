@@ -27,7 +27,7 @@ class TestAdminAuth:
         assert "access_token" in data
         assert data.get("is_admin") == True
         assert data.get("token_type") == "bearer"
-        print(f"✓ Admin login successful, token received")
+        print("✓ Admin login successful, token received")
         return data["access_token"]
     
     def test_admin_login_invalid_username(self):
@@ -37,7 +37,7 @@ class TestAdminAuth:
             "password": ADMIN_PASSWORD
         })
         assert response.status_code == 401
-        print(f"✓ Invalid username correctly rejected")
+        print("✓ Invalid username correctly rejected")
     
     def test_admin_login_invalid_password(self):
         """Test admin login with invalid password"""
@@ -46,7 +46,7 @@ class TestAdminAuth:
             "password": "wrongpassword"
         })
         assert response.status_code == 401
-        print(f"✓ Invalid password correctly rejected")
+        print("✓ Invalid password correctly rejected")
 
 
 class TestAdminDashboard:
@@ -90,7 +90,7 @@ class TestAdminDashboard:
         """Test dashboard stats requires authentication"""
         response = requests.get(f"{BASE_URL}/api/admin/dashboard/stats")
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Dashboard stats correctly requires authentication")
+        print("✓ Dashboard stats correctly requires authentication")
 
 
 class TestAdminSoldItems:
@@ -122,7 +122,7 @@ class TestAdminSoldItems:
         """Test sold items requires authentication"""
         response = requests.get(f"{BASE_URL}/api/admin/sold")
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Sold items correctly requires authentication")
+        print("✓ Sold items correctly requires authentication")
 
 
 class TestAdminSettings:
@@ -156,7 +156,7 @@ class TestAdminSettings:
         for field in settings_fields:
             assert field in data, f"Missing settings field: {field}"
         
-        print(f"✓ Settings endpoint returned all expected fields")
+        print("✓ Settings endpoint returned all expected fields")
         print(f"  SMS: {data.get('sms_enabled')}, Stripe: {data.get('stripe_enabled')}, Email: {data.get('email_enabled')}")
     
     def test_update_settings(self, admin_token):
@@ -176,7 +176,7 @@ class TestAdminSettings:
         response = requests.patch(f"{BASE_URL}/api/admin/settings", headers=headers, json=update_data)
         assert response.status_code == 200
         
-        print(f"✓ Settings update and revert successful")
+        print("✓ Settings update and revert successful")
     
     def test_email_test_connection(self, admin_token):
         """Test email test connection endpoint (MOCKED)"""
@@ -245,7 +245,7 @@ class TestAdminProducts:
         # Delete the test product
         delete_response = requests.delete(f"{BASE_URL}/api/admin/products/{product_id}", headers=headers)
         assert delete_response.status_code == 200, f"Delete failed: {delete_response.text}"
-        print(f"✓ Product deleted successfully")
+        print("✓ Product deleted successfully")
 
 
 class TestAdminGallery:
@@ -295,7 +295,7 @@ class TestAdminGallery:
         # Delete the test item
         delete_response = requests.delete(f"{BASE_URL}/api/admin/gallery/{item_id}", headers=headers)
         assert delete_response.status_code == 200, f"Delete failed: {delete_response.text}"
-        print(f"✓ Gallery item deleted successfully")
+        print("✓ Gallery item deleted successfully")
 
 
 class TestAdminInquiries:

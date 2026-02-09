@@ -43,7 +43,7 @@ class TestSeedTestData:
         assert "name_your_price" in data["created"]
         assert "sold_item" in data["created"]
         
-        print(f"✓ Seed test data created successfully")
+        print("✓ Seed test data created successfully")
         print(f"  Product Inquiry ID: {data['created']['product_inquiry']}")
         print(f"  Sell Inquiry ID: {data['created']['sell_inquiry']}")
         print(f"  NYP Inquiry ID: {data['created']['name_your_price']}")
@@ -53,7 +53,7 @@ class TestSeedTestData:
         """Test seed test data requires authentication"""
         response = requests.post(f"{BASE_URL}/api/admin/seed-test-data")
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Seed test data correctly requires authentication")
+        print("✓ Seed test data correctly requires authentication")
 
 
 class TestArchivedDataEndpoints:
@@ -134,7 +134,7 @@ class TestArchivedDataEndpoints:
             response = requests.get(f"{BASE_URL}{endpoint}")
             assert response.status_code in [401, 403], f"Expected 401/403 for {endpoint}, got {response.status_code}"
         
-        print(f"✓ All archived endpoints correctly require authentication")
+        print("✓ All archived endpoints correctly require authentication")
 
 
 class TestArchiveRunProcess:
@@ -154,7 +154,7 @@ class TestArchiveRunProcess:
         assert "inquiries" in data["archived"]
         assert "bookings" in data["archived"]
         
-        print(f"✓ Archive process completed")
+        print("✓ Archive process completed")
         print(f"  Archived sold: {data['archived']['sold']}")
         print(f"  Archived inquiries: {data['archived']['inquiries']}")
         print(f"  Archived bookings: {data['archived']['bookings']}")
@@ -163,7 +163,7 @@ class TestArchiveRunProcess:
         """Test archive run requires authentication"""
         response = requests.post(f"{BASE_URL}/api/admin/data/archive/run")
         assert response.status_code in [401, 403], f"Expected 401/403, got {response.status_code}"
-        print(f"✓ Archive run correctly requires authentication")
+        print("✓ Archive run correctly requires authentication")
 
 
 class TestAnalyticsSettings:
@@ -213,7 +213,7 @@ class TestAnalyticsSettings:
         assert response.status_code == 200
         data = response.json()
         assert data["success"] == False
-        print(f"✓ Analytics test correctly rejects invalid tracking ID")
+        print("✓ Analytics test correctly rejects invalid tracking ID")
     
     def test_analytics_test_connection_unknown_provider(self, admin_token):
         """Test analytics test connection with unknown provider"""
@@ -227,7 +227,7 @@ class TestAnalyticsSettings:
         assert response.status_code == 200
         data = response.json()
         assert data["success"] == False
-        print(f"✓ Analytics test correctly rejects unknown provider")
+        print("✓ Analytics test correctly rejects unknown provider")
     
     def test_analytics_settings_update(self, admin_token):
         """Test updating analytics settings"""
@@ -252,12 +252,12 @@ class TestAnalyticsSettings:
         
         # Verify settings were updated
         assert data.get("analytics_enabled") == True or data.get("analytics_enabled") is None  # May not be in response model
-        print(f"✓ Analytics settings updated successfully")
+        print("✓ Analytics settings updated successfully")
         
         # Revert settings
         revert_data = {"analytics_enabled": False}
         requests.patch(f"{BASE_URL}/api/admin/settings", headers=headers, json=revert_data)
-        print(f"✓ Analytics settings reverted")
+        print("✓ Analytics settings reverted")
 
 
 class TestSoldItemsWithInvoice:
@@ -283,12 +283,12 @@ class TestSoldItemsWithInvoice:
             for field in invoice_fields:
                 assert field in item, f"Missing invoice field: {field}"
             
-            print(f"✓ Sold item has all invoice fields")
+            print("✓ Sold item has all invoice fields")
             print(f"  Invoice: {item.get('invoice_number', 'N/A')}")
             print(f"  Total Paid: ${item.get('total_paid', 0)}")
             print(f"  Tracking: {item.get('tracking_number', 'N/A')}")
         else:
-            print(f"✓ Sold items endpoint works (no items to verify)")
+            print("✓ Sold items endpoint works (no items to verify)")
     
     def test_update_sold_item_tracking(self, admin_token):
         """Test updating sold item tracking info"""
@@ -309,9 +309,9 @@ class TestSoldItemsWithInvoice:
             update_response = requests.patch(f"{BASE_URL}/api/admin/sold/{item_id}", headers=headers, json=update_data)
             
             assert update_response.status_code == 200, f"Expected 200, got {update_response.status_code}"
-            print(f"✓ Sold item tracking updated successfully")
+            print("✓ Sold item tracking updated successfully")
         else:
-            print(f"✓ No sold items to update (skipped)")
+            print("✓ No sold items to update (skipped)")
 
 
 class TestNameYourPriceInquiries:
@@ -334,12 +334,12 @@ class TestNameYourPriceInquiries:
             for field in nyp_fields:
                 assert field in item, f"Missing NYP field: {field}"
             
-            print(f"✓ NYP inquiry has all required fields")
+            print("✓ NYP inquiry has all required fields")
             print(f"  Customer: {item.get('name')}")
             print(f"  Product: {item.get('product_title')}")
             print(f"  Offered Price: ${item.get('price')}")
         else:
-            print(f"✓ NYP inquiries endpoint works (no items to verify)")
+            print("✓ NYP inquiries endpoint works (no items to verify)")
 
 
 class TestDashboardStatsWithNewData:
@@ -359,7 +359,7 @@ class TestDashboardStatsWithNewData:
         assert data.get("sell_inquiries", 0) >= 0
         assert data.get("nyp_inquiries", 0) >= 0
         
-        print(f"✓ Dashboard stats verified")
+        print("✓ Dashboard stats verified")
         print(f"  Sold: {data.get('sold')}")
         print(f"  Product Inquiries: {data.get('product_inquiries')}")
         print(f"  Sell Inquiries: {data.get('sell_inquiries')}")

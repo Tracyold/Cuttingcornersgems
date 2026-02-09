@@ -1090,6 +1090,29 @@ async def admin_delete_product(product_id: str, admin: dict = Depends(get_admin_
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
+    # Data integrity check: verify product is not referenced elsewhere
+    # Check if product exists in any carts
+    cart_with_product = await db.carts.find_one(
+        {"items.product_id": product_id},
+        {"_id": 0, "user_id": 1}
+    )
+    if cart_with_product:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Cannot delete product. It is currently in {1} user's cart. Remove it from carts first."
+        )
+    
+    # Check if product exists in any orders
+    order_with_product = await db.orders.find_one(
+        {"items.product_id": product_id},
+        {"_id": 0, "id": 1}
+    )
+    if order_with_product:
+        raise HTTPException(
+            status_code=409,
+            detail="Cannot delete product. It exists in order history. Consider marking as out of stock instead."
+        )
+    
     await archive_before_delete(product, "product", "archived_products")
     await db.products.delete_one({"id": product_id})
     

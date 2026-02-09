@@ -580,13 +580,6 @@ async def admin_update_gallery_item(item_id: str, updates: GalleryItemUpdate, ad
         raise HTTPException(status_code=404, detail="Gallery item not found")
     return GalleryItem(**item)
 
-@api_router.delete("/admin/gallery/{item_id}")
-async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admin_user)):
-    result = await db.gallery.delete_one({"id": item_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=404, detail="Gallery item not found")
-    return {"message": "Gallery item deleted"}
-
 # ============ ADMIN INQUIRIES ROUTES ============
 
 @api_router.get("/admin/bookings")

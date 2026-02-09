@@ -119,13 +119,17 @@ const Gallery = () => {
                     <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
                       <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
                       <h3 className="font-serif text-sm mb-2">{item.title}</h3>
-                      {item.description && (
-                        <p className="text-gray-400 text-xs leading-relaxed">{item.description}</p>
+                      {item.gemstone_type && (
+                        <p className="text-xs text-gray-400 mt-1">Gem Type: {item.gemstone_type}</p>
+                      )}
+                      {item.color && (
+                        <p className="text-xs text-gray-400">Color: {item.color}</p>
                       )}
                       {item.carat && (
-                        <p className="text-xs text-gray-500 mt-2 font-mono">{item.carat}</p>
+                        <p className="text-xs text-gray-400">Weight: {item.carat}</p>
                       )}
-                      <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
+                      <p className="text-xs text-gray-600 mt-3 uppercase tracking-wider">Not For Sale</p>
+                      <p className="text-[10px] text-gray-600 mt-2">Tap to close</p>
                     </div>
                   ) : (
                     <img

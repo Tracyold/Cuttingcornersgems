@@ -182,7 +182,7 @@ class TestAnalyticsSettings:
         data = response.json()
         
         assert "success" in data
-        assert data["success"] == True
+        assert data["success"] is True
         assert "message" in data
         print(f"✓ Analytics test connection (Google) successful: {data['message']}")
     
@@ -198,7 +198,7 @@ class TestAnalyticsSettings:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         
-        assert data["success"] == True
+        assert data["success"] is True
         print(f"✓ Analytics test connection (Plausible) successful: {data['message']}")
     
     def test_analytics_test_connection_invalid_tracking_id(self, admin_token):
@@ -212,7 +212,7 @@ class TestAnalyticsSettings:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] == False
+        assert data["success"] is False
         print("✓ Analytics test correctly rejects invalid tracking ID")
     
     def test_analytics_test_connection_unknown_provider(self, admin_token):
@@ -226,7 +226,7 @@ class TestAnalyticsSettings:
         
         assert response.status_code == 200
         data = response.json()
-        assert data["success"] == False
+        assert data["success"] is False
         print("✓ Analytics test correctly rejects unknown provider")
     
     def test_analytics_settings_update(self, admin_token):
@@ -251,7 +251,7 @@ class TestAnalyticsSettings:
         data = response.json()
         
         # Verify settings were updated
-        assert data.get("analytics_enabled") == True or data.get("analytics_enabled") is None  # May not be in response model
+        assert data.get("analytics_enabled") is True or data.get("analytics_enabled") is None  # May not be in response model
         print("✓ Analytics settings updated successfully")
         
         # Revert settings

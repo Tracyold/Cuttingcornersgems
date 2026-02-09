@@ -25,7 +25,7 @@ class TestAdminAuth:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         assert "access_token" in data
-        assert data.get("is_admin") == True
+        assert data.get("is_admin") is True
         assert data.get("token_type") == "bearer"
         print("✓ Admin login successful, token received")
         return data["access_token"]
@@ -169,7 +169,7 @@ class TestAdminSettings:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
-        assert data.get("email_enabled") == True
+        assert data.get("email_enabled") is True
         
         # Revert the setting
         update_data = {"email_enabled": False}

@@ -40,3 +40,15 @@ Failed: 2
 Total:  19
 ==========================================
 ✗ SOME TESTS FAILED
+=== BASELINE EXCEPTIONS DOCUMENTATION ===
+
+Exception 1: POST /api/auth/signup
+Expected: 200 | Actual: 404
+Response Body: {"detail":"Not Found"}
+HTTP_CODE:404
+
+Exception 2: GET /api/admin/stats
+Expected: 200 | Actual: 404
+Response Body: {"detail":"Not Found"}
+HTTP_CODE:404
+

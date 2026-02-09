@@ -65,6 +65,26 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Philosophy Section - Color Conscious Careful Cutting */}
+      <section className="section-spacing py-24">
+        <div className="container-custom max-w-4xl">
+          <div className="space-y-6 text-left">
+            <p className="text-2xl md:text-3xl font-serif opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
+              <span className="text-[#d4af37]">Color</span> is the goal.
+            </p>
+            <p className="text-2xl md:text-3xl font-serif opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+              <span className="text-[#d4af37]">Conscious</span> of the weight.
+            </p>
+            <p className="text-2xl md:text-3xl font-serif opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
+              <span className="text-[#d4af37]">Careful</span> with my approach.
+            </p>
+            <p className="text-2xl md:text-3xl font-serif opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
+              <span className="text-[#d4af37]">Cutting</span> is my craft.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section className="section-spacing" data-testid="services-section">
         <div className="container-custom">

@@ -1568,6 +1568,47 @@ async def seed_test_data(admin: dict = Depends(get_admin_user)):
         }
     }
 
+# ============ INTEGRITY & CLEANLINESS ENDPOINTS ============
+
+@api_router.get("/admin/integrity-report")
+async def get_integrity_report(admin: dict = Depends(get_admin_user)):
+    """
+    Generate data integrity report (admin-only, read-only)
+    Checks for orphaned references and data inconsistencies
+    """
+    from services.integrity import generate_integrity_report
+    report = await generate_integrity_report(db)
+    return report
+
+@api_router.get("/admin/cleanliness-report")
+async def get_cleanliness_report(admin: dict = Depends(get_admin_user)):
+    """
+    Generate system cleanliness report (admin-only, read-only)
+    Checks for unused data and maintenance needs
+    """
+    from services.integrity import generate_cleanliness_report
+    report = await generate_cleanliness_report(db)
+    return report
+
+@api_router.post("/admin/repair/cart-references")
+async def repair_cart_references(admin: dict = Depends(get_admin_user)):
+    """
+    Repair orphaned cart references (admin-only, behind CLEANLINESS_ENABLE_REPAIR flag)
+    Removes cart items referencing deleted products
+    """
+    from services.integrity import repair_orphaned_cart_references
+    result = await repair_orphaned_cart_references(db)
+    return result
+
+@api_router.post("/admin/repair/empty-carts")
+async def repair_empty_carts_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Remove empty carts (admin-only, behind CLEANLINESS_ENABLE_REPAIR flag)
+    """
+    from services.integrity import repair_empty_carts
+    result = await repair_empty_carts(db)
+    return result
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

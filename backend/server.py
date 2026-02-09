@@ -471,7 +471,7 @@ async def get_optional_user(credentials: Optional[HTTPAuthorizationCredentials] 
         if user_id:
             user = await db.users.find_one({"id": user_id}, {"_id": 0})
             return user
-    except:
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, Exception):
         pass
     return None
 

@@ -1637,6 +1637,25 @@ async def get_ttl_status_endpoint(admin: dict = Depends(get_admin_user)):
     status = await get_ttl_status(db)
     return status
 
+@api_router.get("/admin/system/maintenance-status")
+async def get_maintenance_status_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Get automated maintenance service status (admin-only, read-only)
+    """
+    from services.maintenance import get_maintenance_service
+    maintenance = get_maintenance_service(db)
+    return maintenance.get_status()
+
+@api_router.post("/admin/system/run-maintenance")
+async def run_maintenance_now_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Manually trigger maintenance cycle (admin-only)
+    """
+    from services.maintenance import get_maintenance_service
+    maintenance = get_maintenance_service(db)
+    await maintenance.run_maintenance_cycle()
+    return {"message": "Maintenance cycle completed", "timestamp": datetime.now(timezone.utc).isoformat()}
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

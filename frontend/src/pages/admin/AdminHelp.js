@@ -188,6 +188,148 @@ const helpContent = {
       { label: 'Resend', url: 'https://resend.com' },
       { label: 'Mailgun', url: 'https://mailgun.com' }
     ]
+  },
+  'system-tools': {
+    title: 'System Tools Guide',
+    icon: Shield,
+    sections: [
+      {
+        title: 'What System Tools Are',
+        content: `
+          System Tools are admin-only operational utilities for database maintenance, integrity checking, and system diagnostics.
+          
+          **Tool Categories**:
+          - **READ-ONLY**: Generate reports without changing data
+          - **STRUCTURAL**: Modify database structure (indexes) without changing records
+          - **DATA-MODIFYING**: Clean or repair data records
+          
+          These tools are designed for:
+          - Routine maintenance
+          - Troubleshooting data issues
+          - Performance optimization
+          - System health monitoring
+        `
+      },
+      {
+        title: 'How to Use System Tools',
+        content: `
+          **Step-by-step process**:
+          
+          1. **Open System Tools tab** in admin navigation
+          2. **Re-enter admin password** to unlock (valid for 10 minutes)
+          3. **Select a tool** from the list
+          4. **Click "Run"** button
+          5. **Read the warning modal** carefully
+          6. **Click "I Understand — Run Now"** to proceed (or Cancel)
+          7. **Wait for completion** (some tools may take 10-30 seconds)
+          8. **Download output** as TXT or JSON for record-keeping
+          
+          **Re-authentication requirement**: Tools auto-lock after 10 minutes for safety.
+        `
+      },
+      {
+        title: 'What NOT to Do',
+        content: `
+          ⚠️  **Critical warnings**:
+          
+          1. **DO NOT** run DATA-MODIFYING tools unless you understand the warning
+          2. **DO NOT** enable repair flags (if mentioned in outputs) without database backups
+          3. **DO NOT** repeatedly run "Ensure Indexes" during peak traffic hours
+          4. **DO NOT** treat TTL as reversible — TTL deletes are automatic once enabled
+          5. **DO NOT** run repair operations without reviewing integrity/cleanliness reports first
+          6. **DO NOT** interrupt a running tool (wait for completion)
+          7. **DO NOT** share tool outputs publicly (may contain system information)
+          
+          **Best practice**: Always run READ-ONLY reports before DATA-MODIFYING operations.
+        `
+      },
+      {
+        title: 'Tool Reference',
+        content: `
+          **1. Integrity Report** (READ-ONLY)
+          - **Purpose**: Scan for orphaned references and data inconsistencies
+          - **Impact**: Database read load increase during scan
+          - **What it affects**: Nothing (read-only)
+          - **When to run**: Weekly, or when investigating data issues
+          - **Endpoint**: GET /api/admin/integrity-report
+          
+          **2. Cleanliness Report** (READ-ONLY)
+          - **Purpose**: Analyze unused data, empty collections, inactive flags, schema status
+          - **Impact**: Database read load during analysis
+          - **What it affects**: Nothing (read-only)
+          - **When to run**: Weekly, before running repairs
+          - **Endpoint**: GET /api/admin/cleanliness-report
+          
+          **3. Ensure Indexes** (STRUCTURAL)
+          - **Purpose**: Create missing database indexes for performance
+          - **Impact**: CPU usage during index creation, improved query speed after
+          - **What it affects**: Database structure only (no data changes)
+          - **When to run**: After schema changes, or if performance degrades
+          - **Endpoint**: POST /api/admin/system/ensure-indexes
+          
+          **4. Setup TTL Indexes** (STRUCTURAL)
+          - **Purpose**: Configure automatic data expiration rules
+          - **Impact**: Future automatic deletion of expired records
+          - **What it affects**: Archive collections (data may auto-delete in future)
+          - **When to run**: Only when you want to enable automatic data cleanup
+          - **Endpoint**: POST /api/admin/system/setup-ttl
+          - **⚠️  WARNING**: Requires AUDIT_TTL_DAYS environment variable
+          
+          **5. TTL Status** (READ-ONLY)
+          - **Purpose**: Check which collections have TTL enabled
+          - **Impact**: None
+          - **What it affects**: Nothing (read-only)
+          - **When to run**: Anytime
+          - **Endpoint**: GET /api/admin/system/ttl-status
+          
+          **6. Maintenance Status** (READ-ONLY)
+          - **Purpose**: Check automated maintenance service status
+          - **Impact**: None
+          - **What it affects**: Nothing (read-only)
+          - **When to run**: Anytime
+          - **Endpoint**: GET /api/admin/system/maintenance-status
+          
+          **7. Run Maintenance** (DATA-MODIFYING)
+          - **Purpose**: Execute maintenance routines (archiving, cleanup, health checks)
+          - **Impact**: May clean internal temporary records
+          - **What it affects**: Old bookings (>90 days), temporary system records
+          - **When to run**: Monthly, or as needed for cleanup
+          - **Endpoint**: POST /api/admin/system/run-maintenance
+          
+          **8. Repair Cart References** (DATA-MODIFYING)
+          - **Purpose**: Remove cart items referencing deleted products
+          - **Impact**: Removes broken cart entries
+          - **What it affects**: User carts with invalid product references
+          - **When to run**: After integrity report shows cart issues
+          - **Endpoint**: POST /api/admin/repair/cart-references
+          - **⚠️  WARNING**: Requires CLEANLINESS_ENABLE_REPAIR=true
+          
+          **9. Repair Empty Carts** (DATA-MODIFYING)
+          - **Purpose**: Delete abandoned empty cart records
+          - **Impact**: Removes empty cart entries from database
+          - **What it affects**: Only carts with zero items
+          - **When to run**: After cleanliness report shows many empty carts
+          - **Endpoint**: POST /api/admin/repair/empty-carts
+          - **⚠️  WARNING**: Requires CLEANLINESS_ENABLE_REPAIR=true
+        `
+      },
+      {
+        title: 'Security Note',
+        content: `
+          **Re-authentication gate**: The 10-minute password re-entry requirement exists to prevent accidental tool execution.
+          
+          **Important**: This is a UI safety feature. It does not change the backend security model.
+          
+          All system tools require admin JWT token authentication on the backend. The re-auth gate simply:
+          - Refreshes your admin session token
+          - Adds a time-based UI lock
+          - Prevents accidental clicks
+          
+          **Your admin token**: Already provides full authorization. The re-auth ensures intentional action.
+        `
+      }
+    ],
+    links: []
   }
 };
 

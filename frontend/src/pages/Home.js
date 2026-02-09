@@ -69,7 +69,7 @@ const Home = () => {
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
             <span className="text-[#d4af37]">Cutting</span> Corners — Not the <span className="text-[#d4af37]">Quality</span>
           </h1>
-          <p className="text-gray-400 text-base md:text-lg max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
+          <p className="text-gray-400 text-sm md:text-base max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
             Professional gemstone cutter focused on color, yield, and stone potential for jewelry professionals nationwide.
           </p>
         </div>

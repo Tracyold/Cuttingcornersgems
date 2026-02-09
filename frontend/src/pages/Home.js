@@ -190,97 +190,30 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Work */}
-      <section className="section-spacing py-16" data-testid="featured-section">
-        <div className="container-custom">
-          <div className="flex items-center justify-between mb-12">
-            <div>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-2">Recent Work</p>
-              <h2 className="font-serif text-3xl md:text-4xl">Featured Gems</h2>
-            </div>
-            <Link to="/gallery" className="btn-ghost inline-flex items-center gap-2" data-testid="view-all-gallery-btn">
-              View All <ArrowRight className="w-4 h-4" />
+      {/* Buy/Sell Tiles */}
+      <section className="section-spacing py-16">
+        <div className="container-custom max-w-4xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Buy Tile */}
+            <Link 
+              to="/shop"
+              className="group bg-black border border-white/10 rounded p-16 flex items-center justify-center hover:border-[#d4af37] transition-all duration-300"
+            >
+              <h3 className="font-serif text-5xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
+                Buy
+              </h3>
+            </Link>
+
+            {/* Sell Tile */}
+            <Link 
+              to="/sell"
+              className="group bg-black border border-white/10 rounded p-16 flex items-center justify-center hover:border-[#d4af37] transition-all duration-300"
+            >
+              <h3 className="font-serif text-5xl text-white group-hover:text-[#d4af37] transition-colors duration-300">
+                Sell
+              </h3>
             </Link>
           </div>
-
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="aspect-[4/3] bg-white/5 animate-pulse rounded" />
-              ))}
-            </div>
-          ) : (
-            <>
-              {/* Mobile: Single column */}
-              <div className="grid grid-cols-1 gap-4 md:hidden">
-                {featured.slice(0, 3).map((item, i) => (
-                  <div
-                    key={item.id}
-                    onClick={() => toggleMobileItem(item.id)}
-                    className="relative aspect-[4/3] overflow-hidden cursor-pointer opacity-0 transition-all duration-700 rounded"
-                    style={{ animationDelay: `${i * 100}ms` }}
-                    data-scroll-reveal
-                    data-testid={`featured-mobile-${i}`}
-                  >
-                    {expandedMobileItem === item.id ? (
-                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-6 text-center z-10">
-                        <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
-                        <h3 className="font-serif text-base mb-2">{item.title}</h3>
-                        {item.description && (
-                          <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
-                        )}
-                        {item.carat && (
-                          <p className="text-sm text-gray-500 mt-2 font-mono">{item.carat}</p>
-                        )}
-                        <p className="text-xs text-gray-600 mt-3">Tap to close</p>
-                      </div>
-                    ) : (
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              {/* Desktop: 3 columns in one row */}
-              <div className="hidden md:grid grid-cols-3 gap-6">
-                {featured.slice(0, 3).map((item, i) => (
-                  <Link
-                    key={item.id}
-                    to="/gallery"
-                    className="group relative aspect-[4/3] overflow-hidden gem-card opacity-0 transition-all duration-700 rounded"
-                    style={{ animationDelay: `${i * 150}ms` }}
-                    data-scroll-reveal
-                    data-testid={`featured-item-${i}`}
-                  >
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                      <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">{item.category}</p>
-                      <h3 className="font-serif text-base">{item.title}</h3>
-                      {item.carat && <p className="text-xs text-gray-400 mt-1">{item.carat}</p>}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* Mobile loading state */}
-          {loading && (
-            <div className="grid grid-cols-1 gap-4 md:hidden">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="aspect-[4/3] bg-white/5 animate-pulse rounded" />
-              ))}
-            </div>
-          )}
         </div>
       </section>
 

@@ -166,11 +166,25 @@ const Home = () => {
             
             {/* Image - Right Side */}
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <img 
-                src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/sqy5b97p_IMG_3573.jpeg" 
-                alt="Workshop" 
-                className="w-full h-auto rounded"
-              />
+              <div className="relative group overflow-hidden rounded">
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/sqy5b97p_IMG_3573.jpeg" 
+                  alt="Workshop" 
+                  className="w-full h-auto"
+                />
+                {/* Black overlay - visible by default, fades on hover */}
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/0 transition-all duration-500" />
+                
+                {/* Blurry black edges - always visible */}
+                <div className="absolute inset-0 pointer-events-none" style={{
+                  boxShadow: 'inset 0 0 60px 20px rgba(0,0,0,0.8)'
+                }} />
+                
+                {/* "Studio" text overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500">
+                  <p className="text-white font-serif text-4xl">Studio</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

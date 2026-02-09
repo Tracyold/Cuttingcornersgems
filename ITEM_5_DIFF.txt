@@ -1,0 +1,48 @@
+========================================
+ITEM 5: DAILY AUTORUN (CLEANLINESS_AUTORUN FLAG)
+========================================
+
+NEW ENDPOINTS ADDED:
+1. GET /api/admin/system/maintenance-status (admin-only, read-only)
+2. POST /api/admin/system/run-maintenance (admin-only, manually trigger maintenance)
+
+STARTUP BEHAVIOR:
+- Maintenance service initialized on startup
+- Only starts if CLEANLINESS_AUTORUN=true
+- Default: Disabled (preserves existing behavior)
+
+SHUTDOWN BEHAVIOR:
+- Maintenance service gracefully stopped on shutdown
+
+AUTOMATED MAINTENANCE TASKS (when enabled):
+- Generates integrity report
+- Generates cleanliness report
+- Auto-archives old data (>90 days)
+- Logs status to application logs
+- Runs every 24 hours (configurable via AUTORUN_INTERVAL_HOURS)
+
+GUARDRAILS VERIFIED:
+✓ G2: Behind CLEANLINESS_AUTORUN flag (default: false)
+✓ G2: Preserves behavior by default (no autorun)
+✓ G4: No endpoint contract changes
+
+CHANGED ENDPOINTS: 0
+
+EXISTING ENDPOINT STATUS CHANGES: 0
+
+FILES CREATED:
+- /app/backend/services/maintenance.py
+
+FILES MODIFIED:
+- /app/backend/server.py (added startup/shutdown handlers + 2 admin endpoints)
+
+TEST RESULTS:
+- Maintenance status: Shows disabled (correct default)
+- Manual run: Completes successfully without errors
+- No automated tasks running (correct)
+
+ACTIVATION INSTRUCTIONS (for future use):
+1. Set environment variable: CLEANLINESS_AUTORUN=true
+2. (Optional) Set AUTORUN_INTERVAL_HOURS=24 (default is 24)
+3. Restart backend
+4. Maintenance will run automatically every 24 hours

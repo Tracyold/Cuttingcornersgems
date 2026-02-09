@@ -361,7 +361,7 @@ class SellInquiryResponse(BaseModel):
     asking_price: str
     negotiable: bool
     photo_count: int
-    status: str = "pending"
+    inquiry_status: str = "pending"
     created_at: str
 
 # Sold Item Models

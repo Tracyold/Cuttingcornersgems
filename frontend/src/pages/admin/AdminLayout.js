@@ -37,6 +37,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/sold', label: 'Sold Items', icon: Receipt },
     { path: '/admin/data', label: 'Data & Archives', icon: Database },
     { path: '/admin/users', label: 'Users', icon: Users },
+    { path: '/admin/system-tools', label: 'System Tools', icon: Wrench },
     { type: 'divider' },
     { path: '/admin/settings/stripe', label: 'Payments', icon: CreditCard },
     { path: '/admin/settings/storage', label: 'Cloud Storage', icon: Cloud },

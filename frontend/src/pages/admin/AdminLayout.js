@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Image, Settings, CreditCard, 
   Cloud, Shield, Users, MessageSquare, LogOut, Menu, X,
-  HelpCircle, ChevronRight, Receipt, Mail, Database, BarChart3
+  HelpCircle, ChevronRight, Receipt, Mail, Database, BarChart3, Wrench
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 

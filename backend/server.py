@@ -31,6 +31,11 @@ ADMIN_USERNAME = "postvibe"
 ADMIN_PASSWORD_HASH = bcrypt.hashpw("adm1npa$$word".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 app = FastAPI()
+
+# Add cache control middleware
+from middleware.cache_control import CacheControlMiddleware
+app.add_middleware(CacheControlMiddleware)
+
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 

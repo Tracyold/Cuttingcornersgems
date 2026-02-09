@@ -32,6 +32,7 @@ import GeneralSettings from './pages/admin/GeneralSettings';
 import EmailSettings from './pages/admin/EmailSettings';
 import AnalyticsSettings from './pages/admin/AnalyticsSettings';
 import AdminHelp from './pages/admin/AdminHelp';
+import AdminSystemTools from './pages/admin/AdminSystemTools';
 
 import './App.css';
 

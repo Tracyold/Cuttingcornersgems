@@ -148,8 +148,8 @@ const Home = () => {
       <section className="section-spacing py-24">
         <div className="container-custom max-w-6xl">
           <div className="text-center mb-16">
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight mb-4">My Four C's</h2>
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>Philosophy</p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight mb-4">My Four C's</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Text - Left Side */}

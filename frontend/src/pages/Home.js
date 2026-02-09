@@ -249,7 +249,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-              <div className="aspect-[4/5] overflow-hidden relative">
+              <div className="aspect-square overflow-hidden relative">
                 <div className="absolute inset-0 shadow-[inset_0_0_30px_15px_rgba(0,0,0,0.7)] z-10 pointer-events-none" />
                 <img
                   src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/c2cwyfwb_IMG_5555.jpeg"

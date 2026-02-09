@@ -101,3 +101,62 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Fix two critical issues: (1) Client-side cache revalidation after mutations in admin panels, and (2) Data integrity checks on product deletion to prevent orphaned references in carts/orders"
+
+backend:
+  - task: "Add data integrity check to product deletion endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py (line 1087-1115)"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added validation checks in DELETE /api/admin/products/{product_id} endpoint. Now checks if product exists in carts or orders before deletion. Returns 409 Conflict with helpful message if references found. This prevents orphaned data and maintains database integrity."
+
+frontend:
+  - task: "Integrate cache revalidation in AdminProducts component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/admin/AdminProducts.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Modified handleSubmit() and handleDelete() functions to call fetchProducts() with await after mutations. This ensures the product list refreshes automatically after create/update/delete operations, eliminating stale data display. Also added better error handling to show specific error messages from backend."
+
+  - task: "Integrate cache revalidation in AdminGallery component"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/admin/AdminGallery.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Modified handleSubmit() and handleDelete() functions to call fetchItems() with await after mutations. This ensures the gallery list refreshes automatically after create/update/delete operations, eliminating stale data display."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Add data integrity check to product deletion endpoint"
+    - "Integrate cache revalidation in AdminProducts component"
+    - "Integrate cache revalidation in AdminGallery component"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Fixed both P0 and P1 issues. Issue 1 (P0): Added await to fetchProducts()/fetchItems() calls after mutations in admin panels to ensure immediate data refresh. Issue 2 (P1): Added integrity checks in product deletion endpoint to prevent deletion if product is referenced in carts or orders. Need testing agent to verify: (1) Admin can add/edit/delete products and gallery items with automatic list refresh, (2) Product deletion is blocked with appropriate error message when product exists in cart/orders, (3) Products without references can be deleted successfully."

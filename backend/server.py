@@ -1688,6 +1688,7 @@ async def startup_db_indexes():
     from services.indexes import ensure_indexes
     from services.ttl import setup_ttl_indexes
     from services.maintenance import get_maintenance_service
+    from services.schema_guard import ensure_schema_version
     
     # Create standard indexes
     results = await ensure_indexes(db)
@@ -1699,6 +1700,10 @@ async def startup_db_indexes():
         logger.info(f"TTL indexes created: {len(ttl_results['indexes_created'])}")
     else:
         logger.info("TTL indexes skipped (AUDIT_TTL_DAYS not set)")
+    
+    # D4: Initialize system metadata (idempotent)
+    schema_result = await ensure_schema_version(db)
+    logger.info(f"Schema version: {schema_result.get('status', 'unknown')}")
     
     # Start automated maintenance service (only if CLEANLINESS_AUTORUN is true)
     maintenance = get_maintenance_service(db)

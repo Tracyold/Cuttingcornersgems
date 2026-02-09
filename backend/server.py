@@ -315,7 +315,7 @@ class BookingResponse(BaseModel):
     service: str
     stone_type: str
     description: str
-    status: str = "pending"
+    booking_status: str = "pending"
     created_at: str
     user_id: Optional[str] = None
 

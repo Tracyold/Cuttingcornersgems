@@ -1,0 +1,47 @@
+========================================
+ITEM 4: AUDIT LOG RETENTION TTL
+========================================
+
+NEW ENDPOINTS ADDED:
+1. POST /api/admin/system/setup-ttl (admin-only, manually trigger TTL setup)
+2. GET /api/admin/system/ttl-status (admin-only, read-only, check TTL status)
+
+STARTUP BEHAVIOR:
+- TTL indexes checked on startup
+- Only created if AUDIT_TTL_DAYS environment variable is set
+- Default: TTL disabled (preserves existing behavior)
+
+TTL-ENABLED COLLECTIONS (when AUDIT_TTL_DAYS is set):
+- archived_bookings (expires based on archived_at)
+- archived_inquiries (expires based on archived_at)
+- archived_products (expires based on archived_at)
+- archived_gallery (expires based on archived_at)
+- user_messages (expires based on created_at)
+- bookings (expires based on created_at)
+
+GUARDRAILS VERIFIED:
+✓ G2: TTL behind AUDIT_TTL_DAYS flag (default: not set = disabled)
+✓ G2: Preserves behavior by default (no TTL)
+✓ G3: Idempotent (safe to call multiple times)
+✓ G4: No endpoint contract changes
+
+CHANGED ENDPOINTS: 0
+
+EXISTING ENDPOINT STATUS CHANGES: 0
+
+FILES CREATED:
+- /app/backend/services/ttl.py
+
+FILES MODIFIED:
+- /app/backend/server.py (added startup TTL check + 2 admin endpoints)
+
+TEST RESULTS:
+- TTL status check: Shows disabled (correct default)
+- TTL setup: Returns skipped message (correct)
+- No TTL indexes created without env var (preserves behavior)
+
+ACTIVATION INSTRUCTIONS (for future use):
+1. Set environment variable: AUDIT_TTL_DAYS=90
+2. Restart backend
+3. TTL indexes will be created automatically
+4. Old data will auto-delete after 90 days

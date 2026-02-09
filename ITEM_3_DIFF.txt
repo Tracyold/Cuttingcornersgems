@@ -1,0 +1,40 @@
+========================================
+ITEM 3: MONGO INDEXES (IDEMPOTENT)
+========================================
+
+NEW ENDPOINTS ADDED:
+1. POST /api/admin/system/ensure-indexes (admin-only, manually trigger index creation)
+
+STARTUP BEHAVIOR:
+- Indexes automatically created on backend startup
+- Idempotent: safe to call multiple times
+
+INDEXES CREATED (39 total):
+Collections: users, products, gallery, carts, orders, bookings, 
+product_inquiries, sell_inquiries, name_your_price_inquiries, 
+sold_items, user_messages
+
+Index Types:
+- Unique indexes: id fields, email fields, user_id (carts), invoice_number
+- Single field indexes: category, status, created_at, in_stock, featured
+- Compound indexes: (category, in_stock), (user_id, created_at)
+
+GUARDRAILS VERIFIED:
+✓ G3: Index creation is idempotent (safe to run multiple times)
+✓ G3: No document shape changes (indexes only)
+✓ G4: No endpoint contract changes
+
+CHANGED ENDPOINTS: 0
+
+EXISTING ENDPOINT STATUS CHANGES: 0
+
+FILES CREATED:
+- /app/backend/services/indexes.py
+
+FILES MODIFIED:
+- /app/backend/server.py (added startup event handler + admin endpoint)
+
+TEST RESULTS:
+- 39 indexes created successfully
+- Idempotent verification: re-run shows "existing" instead of errors
+- No impact on existing API responses

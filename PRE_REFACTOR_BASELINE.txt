@@ -1,6 +1,6 @@
 ==========================================
 API ENDPOINT BASELINE TEST
-Base URL: https://wall-cuts.preview.emergentagent.com/api
+Base URL: https://admin-tools-suite.preview.emergentagent.com/api
 ==========================================
 
 === PUBLIC ENDPOINTS ===

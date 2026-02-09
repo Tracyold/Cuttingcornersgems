@@ -1,0 +1,36 @@
+========================================
+ITEM 1 & 2: INTEGRITY & CLEANLINESS ENDPOINTS
+========================================
+
+NEW ENDPOINTS ADDED:
+1. GET /api/admin/integrity-report (admin-only, read-only)
+2. GET /api/admin/cleanliness-report (admin-only, read-only)
+3. POST /api/admin/repair/cart-references (admin-only, behind CLEANLINESS_ENABLE_REPAIR=false)
+4. POST /api/admin/repair/empty-carts (admin-only, behind CLEANLINESS_ENABLE_REPAIR=false)
+
+CHANGED ENDPOINTS: 0
+
+EXISTING ENDPOINT STATUS CHANGES: 0
+
+BASELINE COMPARISON:
+- All 17 passing endpoints still passing
+- 2 baseline exceptions unchanged
+- No contract changes
+
+FILES CREATED:
+- /app/backend/services/__init__.py
+- /app/backend/services/integrity.py
+
+FILES MODIFIED:
+- /app/backend/server.py (added 4 endpoints before root handler)
+
+GUARDRAILS VERIFIED:
+✓ G1: All new endpoints admin-only
+✓ G1: Reports are read-only
+✓ G2: Repair endpoints behind CLEANLINESS_ENABLE_REPAIR flag (default false)
+✓ G4: No endpoint contract changes
+
+TEST RESULTS:
+- Integrity report: Returns healthy status, statistics
+- Cleanliness report: Returns score 95, recommendations
+- Repair endpoints: Return error when flag disabled (correct behavior)

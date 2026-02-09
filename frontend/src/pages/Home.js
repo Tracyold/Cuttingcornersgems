@@ -165,12 +165,12 @@ const Home = () => {
       </section>
 
       {/* Featured Work */}
-      <section className="section-spacing bg-[#0A0A0A]" data-testid="featured-section">
+      <section className="section-spacing py-16" data-testid="featured-section">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+          <div className="flex items-center justify-between mb-12">
             <div>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Recent Work</p>
-              <h2 className="section-title">Featured Gems</h2>
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-2">Recent Work</p>
+              <h2 className="font-serif text-3xl md:text-4xl">Featured Gems</h2>
             </div>
             <Link to="/gallery" className="btn-ghost inline-flex items-center gap-2" data-testid="view-all-gallery-btn">
               View All <ArrowRight className="w-4 h-4" />
@@ -178,34 +178,35 @@ const Home = () => {
           </div>
 
           {loading ? (
-            <div className="gallery-grid hidden md:grid">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="aspect-[4/3] bg-white/5 animate-pulse rounded" />
               ))}
             </div>
           ) : (
             <>
-              {/* Mobile: 2-column tap-to-flip grid */}
-              <div className="grid grid-cols-2 gap-3 md:hidden">
-                {featured.map((item, i) => (
+              {/* Mobile: Single column */}
+              <div className="grid grid-cols-1 gap-4 md:hidden">
+                {featured.slice(0, 3).map((item, i) => (
                   <div
                     key={item.id}
                     onClick={() => toggleMobileItem(item.id)}
-                    className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
-                    style={{ animationDelay: `${i * 50}ms` }}
+                    className="relative aspect-[4/3] overflow-hidden cursor-pointer opacity-0 transition-all duration-700 rounded"
+                    style={{ animationDelay: `${i * 100}ms` }}
+                    data-scroll-reveal
                     data-testid={`featured-mobile-${i}`}
                   >
                     {expandedMobileItem === item.id ? (
-                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
+                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-6 text-center z-10">
                         <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
-                        <h3 className="font-serif text-sm mb-2">{item.title}</h3>
+                        <h3 className="font-serif text-base mb-2">{item.title}</h3>
                         {item.description && (
-                          <p className="text-gray-400 text-xs leading-relaxed">{item.description}</p>
+                          <p className="text-gray-400 text-sm leading-relaxed">{item.description}</p>
                         )}
                         {item.carat && (
-                          <p className="text-xs text-gray-500 mt-2 font-mono">{item.carat}</p>
+                          <p className="text-sm text-gray-500 mt-2 font-mono">{item.carat}</p>
                         )}
-                        <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
+                        <p className="text-xs text-gray-600 mt-3">Tap to close</p>
                       </div>
                     ) : (
                       <img
@@ -218,14 +219,15 @@ const Home = () => {
                 ))}
               </div>
 
-              {/* Desktop: Original hover grid */}
-              <div className="gallery-grid hidden md:grid">
-                {featured.map((item, i) => (
+              {/* Desktop: 3 columns in one row */}
+              <div className="hidden md:grid grid-cols-3 gap-6">
+                {featured.slice(0, 3).map((item, i) => (
                   <Link
                     key={item.id}
                     to="/gallery"
-                    className="group relative aspect-square overflow-hidden gem-card opacity-0 animate-fade-in"
-                    style={{ animationDelay: `${i * 100}ms` }}
+                    className="group relative aspect-[4/3] overflow-hidden gem-card opacity-0 transition-all duration-700 rounded"
+                    style={{ animationDelay: `${i * 150}ms` }}
+                    data-scroll-reveal
                     data-testid={`featured-item-${i}`}
                   >
                     <img
@@ -234,10 +236,10 @@ const Home = () => {
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                      <p className="spec-text text-gray-400 mb-1">{item.category}</p>
-                      <h3 className="font-serif text-lg">{item.title}</h3>
-                      {item.carat && <p className="spec-text mt-1">{item.carat}</p>}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      <p className="text-xs uppercase tracking-wider text-gray-400 mb-1">{item.category}</p>
+                      <h3 className="font-serif text-base">{item.title}</h3>
+                      {item.carat && <p className="text-xs text-gray-400 mt-1">{item.carat}</p>}
                     </div>
                   </Link>
                 ))}
@@ -247,7 +249,7 @@ const Home = () => {
 
           {/* Mobile loading state */}
           {loading && (
-            <div className="grid grid-cols-2 gap-3 md:hidden">
+            <div className="grid grid-cols-1 gap-4 md:hidden">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className="aspect-square bg-white/5 animate-pulse" />
               ))}

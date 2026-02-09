@@ -20,41 +20,35 @@ CURRENT_SCHEMA_VERSION = "1.0.0"
 async def ensure_schema_version(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     """
     Ensure schema_version document exists and is current
-    Only runs if SCHEMA_DRIFT_GUARD_ENABLED=true
+    Idempotent write on startup - report only, no enforcement
     """
-    if not SCHEMA_DRIFT_GUARD_ENABLED:
-        return {
-            "status": "disabled",
-            "message": "Schema drift guard disabled. Set SCHEMA_DRIFT_GUARD_ENABLED=true to enable"
-        }
-    
-    # Check for schema_version document
-    schema_doc = await db.schema_version.find_one({"_id": "main"})
+    # Always check/initialize, regardless of flag (idempotent)
+    schema_doc = await db.system_metadata.find_one({"id": "main"})
     
     if not schema_doc:
-        # Initialize schema version
+        # Initialize system metadata
         schema_doc = {
-            "_id": "main",
-            "version": CURRENT_SCHEMA_VERSION,
+            "id": "main",
+            "schema_version": CURRENT_SCHEMA_VERSION,
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "migrations": []
         }
-        await db.schema_version.insert_one(schema_doc)
-        logger.info(f"Schema version initialized: {CURRENT_SCHEMA_VERSION}")
-        return {"status": "initialized", "version": CURRENT_SCHEMA_VERSION}
+        await db.system_metadata.insert_one(schema_doc)
+        logger.info(f"System metadata initialized: schema_version={CURRENT_SCHEMA_VERSION}")
+        return {"status": "initialized", "schema_version": CURRENT_SCHEMA_VERSION}
     
-    # Check if version matches
-    if schema_doc["version"] != CURRENT_SCHEMA_VERSION:
-        logger.warning(f"Schema version mismatch: DB={schema_doc['version']}, Code={CURRENT_SCHEMA_VERSION}")
+    # Check if version matches (report only, no rejection)
+    if schema_doc.get("schema_version") != CURRENT_SCHEMA_VERSION:
+        logger.warning(f"Schema version mismatch: DB={schema_doc.get('schema_version')}, Code={CURRENT_SCHEMA_VERSION}")
         return {
             "status": "version_mismatch",
-            "db_version": schema_doc["version"],
+            "db_version": schema_doc.get("schema_version"),
             "code_version": CURRENT_SCHEMA_VERSION,
-            "message": "Schema migration may be required"
+            "message": "Schema version differs - informational only, no enforcement"
         }
     
-    return {"status": "current", "version": CURRENT_SCHEMA_VERSION}
+    return {"status": "current", "schema_version": CURRENT_SCHEMA_VERSION}
 
 
 async def backfill_missing_field(

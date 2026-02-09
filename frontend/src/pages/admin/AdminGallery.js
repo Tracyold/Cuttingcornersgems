@@ -309,9 +309,11 @@ const AdminGallery = () => {
         await axios.post(`${API_URL}/admin/gallery`, formData, getAuthHeaders());
         toast.success('Gallery item created');
       }
-      fetchItems();
+      
       setShowModal(false);
       resetForm();
+      // Revalidate: refetch gallery items after mutation
+      await fetchItems();
     } catch (error) {
       toast.error('Failed to save gallery item');
     }
@@ -322,7 +324,8 @@ const AdminGallery = () => {
     try {
       await axios.delete(`${API_URL}/admin/gallery/${id}`, getAuthHeaders());
       toast.success('Gallery item deleted');
-      fetchItems();
+      // Revalidate: refetch gallery items after deletion
+      await fetchItems();
     } catch (error) {
       toast.error('Failed to delete gallery item');
     }

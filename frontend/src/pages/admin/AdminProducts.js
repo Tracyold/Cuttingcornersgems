@@ -483,9 +483,11 @@ const AdminProducts = () => {
         await axios.post(`${API_URL}/admin/products`, submitData, getAuthHeaders());
         toast.success('Product created');
       }
-      fetchProducts();
+      
       setShowModal(false);
       resetForm();
+      // Revalidate: refetch products after mutation
+      await fetchProducts();
     } catch (error) {
       toast.error('Failed to save product');
     }
@@ -496,9 +498,11 @@ const AdminProducts = () => {
     try {
       await axios.delete(`${API_URL}/admin/products/${id}`, getAuthHeaders());
       toast.success('Product deleted');
-      fetchProducts();
+      // Revalidate: refetch products after deletion
+      await fetchProducts();
     } catch (error) {
-      toast.error('Failed to delete product');
+      const errorMsg = error.response?.data?.detail || 'Failed to delete product';
+      toast.error(errorMsg);
     }
   };
 

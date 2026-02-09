@@ -51,21 +51,7 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
             # Public endpoints: short cache (60 seconds)
             response.headers["Cache-Control"] = "public, max-age=60"
             
-            # Add ETag for conditional requests
-            if response.status_code == 200 and hasattr(response, "body"):
-                try:
-                    # Generate ETag from response body
-                    body_hash = hashlib.md5(response.body).hexdigest()
-                    etag = f'"{body_hash}"'
-                    response.headers["ETag"] = etag
-                    
-                    # Check If-None-Match header
-                    if_none_match = request.headers.get("if-none-match")
-                    if if_none_match == etag:
-                        # Return 304 Not Modified
-                        response.status_code = 304
-                        response.body = b""
-                except:
-                    pass  # If body processing fails, skip ETag
+            # ETag generation frozen - header-only, no 304 response code changes
+            # Future: Add ETag header without response code modification
         
         return response

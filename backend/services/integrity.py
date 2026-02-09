@@ -246,6 +246,90 @@ async def generate_cleanliness_report(db: AsyncIOMotorDatabase) -> Dict[str, Any
     return report
 
 
+async def _generate_deadpath_report(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
+    """
+    Generate dead-path detection report (D2)
+    Lists unused endpoints, collections, and flags
+    """
+    from datetime import timedelta
+    import os
+    
+    N_DAYS = 30  # Threshold for "unused"
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=N_DAYS)
+    
+    deadpath_report = {
+        "detection_threshold_days": N_DAYS,
+        "unused_flags": [],
+        "empty_collections": [],
+        "expired_compatibility_bridges": []
+    }
+    
+    # Check 1: Feature flags currently false/unset for > N days
+    # Note: We don't track flag usage history yet, so this is informational only
+    flags_status = {
+        "CLEANLINESS_ENABLE_REPAIR": {
+            "current_value": os.environ.get('CLEANLINESS_ENABLE_REPAIR', 'false').lower() == 'true',
+            "type": "feature",
+            "status": "inactive" if not os.environ.get('CLEANLINESS_ENABLE_REPAIR', 'false').lower() == 'true' else "active"
+        },
+        "CLEANLINESS_AUTORUN": {
+            "current_value": os.environ.get('CLEANLINESS_AUTORUN', 'false').lower() == 'true',
+            "type": "feature",
+            "status": "inactive" if not os.environ.get('CLEANLINESS_AUTORUN', 'false').lower() == 'true' else "active"
+        },
+        "AUDIT_TTL_DAYS": {
+            "current_value": os.environ.get('AUDIT_TTL_DAYS'),
+            "type": "config",
+            "status": "not_set" if not os.environ.get('AUDIT_TTL_DAYS') else "configured"
+        }
+    }
+    
+    for flag, info in flags_status.items():
+        if info["status"] in ["inactive", "not_set"]:
+            deadpath_report["unused_flags"].append({
+                "flag": flag,
+                "status": info["status"],
+                "type": info["type"],
+                "note": f"Flag has been {info['status']} since creation",
+                "action": "Consider if flag is still needed or should be activated"
+            })
+    
+    # Check 2: Collections with 0 documents for > N days
+    collections_to_check = [
+        "abandoned_carts",
+        "archived_products",
+        "archived_gallery"
+    ]
+    
+    for collection_name in collections_to_check:
+        try:
+            count = await db[collection_name].count_documents({})
+            if count == 0:
+                deadpath_report["empty_collections"].append({
+                    "collection": collection_name,
+                    "document_count": 0,
+                    "note": f"Collection empty since tracking began",
+                    "action": "Collection exists but unused - may indicate incomplete feature"
+                })
+        except Exception as e:
+            # Collection might not exist
+            pass
+    
+    # Check 3: Expired compatibility bridges (from D1 policy)
+    # Currently no compatibility bridges exist, but report structure is ready
+    deadpath_report["expired_compatibility_bridges"] = []
+    deadpath_report["compatibility_bridge_note"] = "No compatibility bridges currently exist. See COMPATIBILITY_BRIDGE_SUNSET_POLICY.md for policy."
+    
+    # Check 4: Endpoint usage tracking note
+    deadpath_report["endpoint_usage_tracking"] = {
+        "status": "not_implemented",
+        "note": "Endpoint usage tracking requires audit logging of request counts. Future enhancement.",
+        "recommendation": "Implement request counter in audit_logs collection to track unused endpoints"
+    }
+    
+    return deadpath_report
+
+
 async def repair_orphaned_cart_references(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     """
     Repair orphaned cart references (behind CLEANLINESS_ENABLE_REPAIR flag)

@@ -24,6 +24,29 @@ const Home = () => {
     fetchFeatured();
   }, []);
 
+  // Scroll reveal effect for philosophy section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const elements = document.querySelectorAll('[data-scroll-reveal]');
+    elements.forEach((el) => {
+      el.style.transform = 'translateY(30px)';
+      observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const toggleMobileItem = (itemId) => {
     setExpandedMobileItem(prev => prev === itemId ? null : itemId);
   };

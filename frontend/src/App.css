@@ -100,7 +100,13 @@
 
 /* Hero section */
 .hero-section {
-    @apply min-h-screen flex items-center justify-center relative overflow-hidden;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 /* Container */

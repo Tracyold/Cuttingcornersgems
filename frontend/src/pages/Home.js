@@ -250,8 +250,8 @@ const Home = () => {
           {/* Mobile loading state */}
           {loading && (
             <div className="grid grid-cols-1 gap-4 md:hidden">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="aspect-[4/3] bg-white/5 animate-pulse rounded" />
               ))}
             </div>
           )}

@@ -46,7 +46,7 @@ const Home = () => {
           <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
             <span className="text-[#d4af37]">Cutting</span> Corners — Not the <span className="text-[#d4af37]">Quality</span>
           </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
+          <p className="text-gray-400 text-xl md:text-2xl max-w-2xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
             A Tailored <span className="text-[#d4af37]">Gem</span> Experience.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in delay-300">

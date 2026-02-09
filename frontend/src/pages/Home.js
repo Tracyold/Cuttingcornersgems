@@ -198,7 +198,7 @@ const Home = () => {
       <section className="section-spacing" data-testid="about-section">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
+            <div className="relative opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
               <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 text-center">About the Cutter</p>
               <div className="aspect-square overflow-hidden relative">
                 <div className="absolute inset-0 shadow-[inset_0_0_30px_15px_rgba(0,0,0,0.7)] z-10 pointer-events-none" />

@@ -475,6 +475,37 @@ const AdminGallery = () => {
                 <input type="checkbox" checked={formData.featured} onChange={(e) => setFormData(prev => ({ ...prev, featured: e.target.checked }))} className="w-4 h-4" />
                 <span className="text-sm">Featured on Homepage</span>
               </label>
+              
+              {/* Era Selection */}
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Era (Temporal Category)</label>
+                <select
+                  value={formData.era || ''}
+                  onChange={(e) => setFormData(prev => ({ ...prev, era: e.target.value || null }))}
+                  className="input-dark h-10 text-sm w-full"
+                  data-testid="era-select"
+                >
+                  <option value="">None</option>
+                  {ERAS.map(era => (
+                    <option key={era} value={era}>{era}</option>
+                  ))}
+                </select>
+              </div>
+              
+              {/* Humble Beginnings Toggle */}
+              <label className="flex items-center gap-3">
+                <input 
+                  type="checkbox" 
+                  checked={formData.humble_beginnings} 
+                  onChange={(e) => setFormData(prev => ({ ...prev, humble_beginnings: e.target.checked }))} 
+                  className="w-4 h-4"
+                  data-testid="humble-beginnings-checkbox"
+                />
+                <span className="text-sm">
+                  Humble Beginnings <span className="text-gray-500">(Gated content - requires $1000 spend)</span>
+                </span>
+              </label>
+              
               <div className="flex gap-4 pt-4">
                 <button type="button" onClick={() => setShowModal(false)} className="btn-secondary flex-1">Cancel</button>
                 <button type="submit" className="btn-primary flex-1">{editingItem ? 'Update' : 'Create'}</button>

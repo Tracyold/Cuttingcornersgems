@@ -1973,16 +1973,36 @@ async def mark_products_sold(order_items: list):
 
 async def insert_sold_item_record(order: dict, sold_at: str):
     """Internal: insert sold_items record for lifecycle tracking."""
-    product_ids = [item.get("product_id") for item in order.get("items", []) if item.get("product_id")]
-    sold_item = {
-        "id": str(uuid.uuid4()),
-        "order_id": order.get("id"),
-        "product_ids": product_ids,
-        "total_paid": order.get("total", 0),
-        "sold_at": sold_at,
-        "is_deleted": False,
-    }
-    await db.sold_items.insert_one(sold_item)
+    # For each item in the order, create a sold_item record with required fields
+    user = await db.users.find_one({"id": order.get("user_id")}, {"_id": 0})
+    
+    for item in order.get("items", []):
+        product_id = item.get("product_id")
+        if not product_id:
+            continue
+            
+        product = await db.products.find_one({"id": product_id}, {"_id": 0})
+        
+        sold_item = {
+            "id": str(uuid.uuid4()),
+            "order_id": order.get("id"),
+            "product_id": product_id,
+            "product_title": item.get("title") or (product.get("title") if product else "Unknown"),
+            "product_image": product.get("image_url") if product else None,
+            "buyer_name": user.get("name", "Unknown") if user else "Unknown",
+            "buyer_email": user.get("email", "") if user else "",
+            "buyer_phone": user.get("phone") if user else None,
+            "user_id": order.get("user_id"),
+            "shipping_address": order.get("shipping_address"),
+            "item_price": item.get("price", 0),
+            "shipping_cost": 0,
+            "total_paid": item.get("price", 0) * item.get("quantity", 1),
+            "payment_method": order.get("payment_provider", "manual"),
+            "sold_at": sold_at,
+            "paid_at": sold_at,
+            "is_deleted": False,
+        }
+        await db.sold_items.insert_one(sold_item)
 
 
 @api_router.post("/admin/orders/{order_id}/mark-paid")

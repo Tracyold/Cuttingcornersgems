@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Receipt, Package, Calendar, Truck, Mail, User, CreditCard, ChevronDown, ChevronUp, Send, ExternalLink, Trash2 } from 'lucide-react';
+import { Receipt, Package, Calendar, Truck, Mail, User, CreditCard, ChevronDown, ChevronUp, Send, ExternalLink, Trash2, Clock, Check, RotateCcw, DollarSign } from 'lucide-react';
 import { toast } from 'sonner';
 import { adminApi } from '../../api/adminApi';
 

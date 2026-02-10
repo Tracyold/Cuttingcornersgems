@@ -323,6 +323,39 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
                 )}
               </div>
 
+              {/* HB/NYP Override */}
+              {!isDeleted && (
+                <div className="border border-amber-500/20 p-4 space-y-3" data-testid="override-section">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400" />
+                      HB / NYP Override
+                    </h4>
+                    <button
+                      onClick={handleToggleOverride}
+                      disabled={overrideLoading}
+                      className={`relative w-11 h-6 rounded-full transition-colors ${user.nyp_override_enabled ? 'bg-amber-500' : 'bg-gray-700'}`}
+                      data-testid="override-toggle"
+                    >
+                      <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${user.nyp_override_enabled ? 'translate-x-5' : ''}`} />
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    {user.nyp_override_enabled 
+                      ? 'User has full access to Humble Beginnings & Name Your Price.' 
+                      : 'Enable to grant threshold-gated access without purchases.'}
+                  </p>
+                  <input
+                    type="text"
+                    value={overrideNote}
+                    onChange={e => setOverrideNote(e.target.value)}
+                    placeholder="Optional note (e.g., VIP, comp'd)"
+                    className="w-full bg-white/5 border border-white/10 px-3 py-1.5 text-sm text-gray-300 placeholder:text-gray-600 focus:border-amber-500/50 focus:outline-none"
+                    data-testid="override-note"
+                  />
+                </div>
+              )}
+
               {/* Actions */}
               <div className="pt-4 border-t border-white/10 flex flex-wrap gap-3">
                 <button

@@ -153,6 +153,81 @@ class DbContentStore(ContentStoreInterface):
 
 
 # ==============================================================================
+# FILE-BACKED ADAPTER (Design/Dev with Persistence)
+# ==============================================================================
+
+class FileContentStore(ContentStoreInterface):
+    """
+    File-backed content storage for design-stage persistence.
+    
+    Loads from JSON file at initialization, saves after every mutation.
+    Allows content to survive preview refreshes and restarts.
+    """
+    
+    def __init__(self, base_dir: str = None):
+        """
+        Initialize with file storage.
+        
+        Args:
+            base_dir: Override for persistence directory
+        """
+        from config.persistence import PERSISTENCE_DIR, CONTENT_STUDIO_FILE
+        from services.persistence.json_store import JsonStore
+        
+        self._base_dir = base_dir or PERSISTENCE_DIR
+        self._store = JsonStore(self._base_dir)
+        self._filename = CONTENT_STUDIO_FILE
+        self._cache: Optional[StudioContent] = None
+        self._load_from_file()
+        logger.info(f"FileContentStore: Initialized with file {self._filename}")
+    
+    def _load_from_file(self) -> None:
+        """Load content from JSON file into cache."""
+        data = self._store.load(self._filename, default=None)
+        if data is not None:
+            try:
+                self._cache = StudioContent(**data)
+                logger.debug(f"FileContentStore: Loaded existing content v{self._cache.version}")
+            except Exception as e:
+                logger.warning(f"FileContentStore: Failed to parse file, using defaults: {e}")
+                self._cache = get_default_studio_content()
+        else:
+            self._cache = get_default_studio_content()
+            self._save_to_file()  # Persist defaults
+    
+    def _save_to_file(self) -> None:
+        """Save current cache to JSON file."""
+        if self._cache is not None:
+            self._store.save(self._filename, self._cache.model_dump())
+    
+    async def get_studio_content(self) -> StudioContent:
+        """Retrieve Studio content from cache."""
+        if self._cache is None:
+            self._load_from_file()
+        return self._cache
+    
+    async def save_studio_content(self, content: StudioContent) -> StudioContent:
+        """Save Studio content to cache and file."""
+        content.updated_at = datetime.now(timezone.utc)
+        if self._cache is not None:
+            content.version = self._cache.version + 1
+        else:
+            content.version = 1
+        
+        self._cache = content
+        self._save_to_file()
+        logger.debug(f"FileContentStore: Saved content v{content.version}")
+        return self._cache
+    
+    async def reset_studio_content(self) -> StudioContent:
+        """Reset content to defaults and persist."""
+        self._cache = get_default_studio_content()
+        self._save_to_file()
+        logger.info("FileContentStore: Reset content to defaults")
+        return self._cache
+
+
+# ==============================================================================
 # FACTORY / ADAPTER SELECTION
 # ==============================================================================
 
@@ -164,10 +239,11 @@ def get_content_store(db=None, force_memory: bool = False) -> ContentStoreInterf
     """
     Factory function to get appropriate content store based on environment.
     
-    Selection logic:
+    Selection logic (updated for PERSISTENCE_MODE):
     - force_memory=True: Always return InMemoryContentStore
-    - ENV != "production" OR db is None: InMemoryContentStore
-    - Otherwise: DbContentStore
+    - PERSISTENCE_MODE=FILE: FileContentStore (design-stage persistence)
+    - PERSISTENCE_MODE=MEMORY: InMemoryContentStore
+    - PERSISTENCE_MODE=DB and db available: DbContentStore
     
     Args:
         db: Optional MongoDB database instance
@@ -178,24 +254,37 @@ def get_content_store(db=None, force_memory: bool = False) -> ContentStoreInterf
     """
     global _content_store_instance
     
-    env = os.environ.get("ENV", "development").lower()
-    is_production = env == "production"
+    from config.persistence import PERSISTENCE_MODE
     
     if force_memory:
         logger.info("ContentStore: Using InMemoryContentStore (forced)")
         return InMemoryContentStore()
     
-    if not is_production or db is None:
-        if _content_store_instance is None or not isinstance(_content_store_instance, InMemoryContentStore):
-            _content_store_instance = InMemoryContentStore()
-            logger.info(f"ContentStore: Using InMemoryContentStore (env={env}, db_available={db is not None})")
+    # Use PERSISTENCE_MODE to select adapter
+    if PERSISTENCE_MODE == "FILE":
+        if _content_store_instance is None or not isinstance(_content_store_instance, FileContentStore):
+            _content_store_instance = FileContentStore()
+            logger.info("ContentStore: Using FileContentStore (FILE mode)")
         return _content_store_instance
     
-    # Production with DB available
-    if _content_store_instance is None or not isinstance(_content_store_instance, DbContentStore):
-        _content_store_instance = DbContentStore(db)
-        logger.info("ContentStore: Using DbContentStore (production)")
-    return _content_store_instance
+    elif PERSISTENCE_MODE == "MEMORY":
+        if _content_store_instance is None or not isinstance(_content_store_instance, InMemoryContentStore):
+            _content_store_instance = InMemoryContentStore()
+            logger.info("ContentStore: Using InMemoryContentStore (MEMORY mode)")
+        return _content_store_instance
+    
+    else:  # DB mode
+        if db is None:
+            # Fallback to file if DB not available
+            if _content_store_instance is None or not isinstance(_content_store_instance, FileContentStore):
+                _content_store_instance = FileContentStore()
+                logger.warning("ContentStore: DB mode but no db, falling back to FileContentStore")
+            return _content_store_instance
+        
+        if _content_store_instance is None or not isinstance(_content_store_instance, DbContentStore):
+            _content_store_instance = DbContentStore(db)
+            logger.info("ContentStore: Using DbContentStore (DB mode)")
+        return _content_store_instance
 
 
 def reset_content_store_instance() -> None:

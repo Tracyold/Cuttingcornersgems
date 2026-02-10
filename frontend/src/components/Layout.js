@@ -170,7 +170,7 @@ const Layout = ({ children }) => {
             <div className="md:col-span-2">
               <h3 className="title-sm text-2xl mb-4">Cutting Corners</h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-md">
-                Precision gemstone cutting by Michael Wall. Based in Tempe, Arizona. 
+                Conscious gemstone cutting by Michael Wall. Based in Tempe, Arizona. 
                 Specializing in sapphires, tourmalines, emeralds, and more.
               </p>
             </div>

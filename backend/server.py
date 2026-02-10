@@ -263,6 +263,8 @@ class GalleryItemCreate(BaseModel):
     carat: Optional[str] = None
     dimensions: Optional[str] = None
     featured: bool = False
+    era: Optional[str] = None  # "PAST" | "PRESENT" | "FUTURE"
+    humble_beginnings: bool = False  # Part of gated "Humble Beginnings" collection
 
 class GalleryItemUpdate(BaseModel):
     title: Optional[str] = None
@@ -276,6 +278,8 @@ class GalleryItemUpdate(BaseModel):
     carat: Optional[str] = None
     dimensions: Optional[str] = None
     featured: Optional[bool] = None
+    era: Optional[str] = None
+    humble_beginnings: Optional[bool] = None
 
 class GalleryItem(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -291,6 +295,8 @@ class GalleryItem(BaseModel):
     carat: Optional[str] = None
     dimensions: Optional[str] = None
     featured: bool = False
+    era: Optional[str] = None
+    humble_beginnings: bool = False
 
 # Name Your Price Inquiry
 class NameYourPriceInquiry(BaseModel):

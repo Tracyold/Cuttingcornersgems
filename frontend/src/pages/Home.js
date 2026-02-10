@@ -24,7 +24,7 @@ const Home = () => {
     fetchFeatured();
   }, []);
 
-  // Scroll reveal effect for philosophy section
+  // Scroll reveal effect
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -66,10 +66,10 @@ const Home = () => {
           <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-6 opacity-0 animate-fade-in transition-all duration-700" data-scroll-reveal>
             Tempe, Arizona
           </p>
-          <h1 className="page-title title-xl text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
+          <h1 className="page-title title-xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
             <span className="text-[#d4af37]">Cutting</span> Corners — Not the <span className="text-[#d4af37]">Quality</span>
           </h1>
-          <p className="text-gray-400 text-base md:text-lg lg:text-xl max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
+          <p className="text-gray-400 text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
             Professional gemstone cutter focused on color, yield, and stone potential for jewelry professionals nationwide.
           </p>
         </div>
@@ -80,12 +80,62 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Philosophy Section - Color Conscious Careful Cutting */}
+      <section className="section-spacing py-24" data-testid="philosophy-section">
+        <div className="container-custom max-w-6xl">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Philosophy</p>
+            <h2 className="title-xl tracking-tight mb-4">My Four C's</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Text - Left Side */}
+            <div className="space-y-6 text-left">
+              <p className="text-xl md:text-2xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
+                <span className="text-[#d4af37]">Color</span> is the goal.
+              </p>
+              <p className="text-xl md:text-2xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+                <span className="text-[#d4af37]">Conscious</span> of the weight.
+              </p>
+              <p className="text-xl md:text-2xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
+                <span className="text-[#d4af37]">Careful</span> with my approach.
+              </p>
+              <p className="text-xl md:text-2xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
+                <span className="text-[#d4af37]">Cutting</span> is my craft.
+              </p>
+            </div>
+            
+            {/* Image - Right Side */}
+            <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+              <div className="relative group overflow-hidden rounded">
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/sqy5b97p_IMG_3573.jpeg" 
+                  alt="Workshop" 
+                  className="w-full h-auto"
+                />
+                {/* Black overlay - visible by default, fades on hover */}
+                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/0 transition-all duration-500" />
+                
+                {/* Blurry black edges - always visible */}
+                <div className="absolute inset-0 pointer-events-none" style={{
+                  boxShadow: 'inset 0 0 60px 20px rgba(0,0,0,0.8)'
+                }} />
+                
+                {/* "Studio" text overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500">
+                  <p className="text-white title-sm text-sm">Studio</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section className="section-spacing" data-testid="services-section">
         <div className="container-custom">
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">What I Do</p>
-            <h2 className="title-xl text-3xl md:text-4xl lg:text-5xl tracking-tight">Services</h2>
+            <h2 className="title-xl tracking-tight">Services</h2>
           </div>
 
           {/* Desktop: 3 column grid */}
@@ -136,56 +186,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Philosophy Section - Color Conscious Careful Cutting */}
-      <section className="section-spacing py-24">
-        <div className="container-custom max-w-6xl">
-          <div className="text-center mb-16">
-            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Philosophy</p>
-            <h2 className="title-xl text-3xl md:text-4xl lg:text-5xl tracking-tight mb-4">My Four C's</h2>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            {/* Text - Left Side */}
-            <div className="space-y-6 text-left">
-              <p className="text-lg md:text-xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
-                <span className="text-[#d4af37]">Color</span> is the goal.
-              </p>
-              <p className="text-lg md:text-xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-                <span className="text-[#d4af37]">Conscious</span> of the weight.
-              </p>
-              <p className="text-lg md:text-xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
-                <span className="text-[#d4af37]">Careful</span> with my approach.
-              </p>
-              <p className="text-lg md:text-xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
-                <span className="text-[#d4af37]">Cutting</span> is my craft.
-              </p>
-            </div>
-            
-            {/* Image - Right Side */}
-            <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <div className="relative group overflow-hidden rounded">
-                <img 
-                  src="https://customer-assets.emergentagent.com/job_41f4dd21-9bc3-4ce6-811a-c8c6525c59b8/artifacts/sqy5b97p_IMG_3573.jpeg" 
-                  alt="Workshop" 
-                  className="w-full h-auto"
-                />
-                {/* Black overlay - visible by default, fades on hover */}
-                <div className="absolute inset-0 bg-black/60 group-hover:bg-black/0 transition-all duration-500" />
-                
-                {/* Blurry black edges - always visible */}
-                <div className="absolute inset-0 pointer-events-none" style={{
-                  boxShadow: 'inset 0 0 60px 20px rgba(0,0,0,0.8)'
-                }} />
-                
-                {/* "Studio" text overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500">
-                  <p className="text-white title-sm text-4xl">Studio</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* About Section */}
       <section className="section-spacing" data-testid="about-section">
         <div className="container-custom">
@@ -209,7 +209,7 @@ const Home = () => {
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
               <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
-              <h2 className="page-title title-xl text-3xl md:text-4xl lg:text-5xl mb-6">Michael Wall</h2>
+              <h2 className="page-title title-xl mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
                   Based in Tempe, Arizona, I've been part of the gemstone industry since 2013, 
@@ -223,8 +223,8 @@ const Home = () => {
                 </p>
               </div>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Link to="/booking" className="btn-primary" data-testid="about-booking-btn">
-                  Book a Consultation
+                <Link to="/gallery" className="btn-primary" data-testid="about-portfolio-btn">
+                  View Portfolio
                 </Link>
                 <a href="tel:4802854595" className="btn-secondary" data-testid="about-call-btn">
                   Call 480-286-4595
@@ -239,7 +239,7 @@ const Home = () => {
       <section className="section-spacing bg-[#0A0A0A] relative overflow-hidden" data-testid="cta-section">
         <div className="absolute inset-0 hero-glow opacity-50" />
         <div className="container-custom relative z-10 text-center">
-          <h2 className="page-title title-xl text-3xl md:text-4xl lg:text-5xl mb-6">Ready to Start?</h2>
+          <h2 className="page-title title-xl mb-6">Ready to Start?</h2>
           <p className="text-gray-400 text-lg max-w-xl mx-auto mb-10">
             Whether you have a rough stone waiting to be transformed or need expert advice on your next project, 
             I'm here to help.

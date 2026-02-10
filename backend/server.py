@@ -643,8 +643,9 @@ async def admin_get_orders(include_deleted: bool = False, admin: dict = Depends(
     return orders
 
 @api_router.get("/admin/users")
-async def admin_get_users(admin: dict = Depends(get_admin_user)):
-    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).to_list(1000)
+async def admin_get_users(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(1000)
     
     # Add summary data for each user
     for user in users:

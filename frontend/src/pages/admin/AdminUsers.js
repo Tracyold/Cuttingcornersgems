@@ -385,10 +385,12 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedUser, setExpandedUser] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const fetchUsers = async () => {
     try {
-      const data = await adminApi.get('/admin/users');
+      const qs = showDeleted ? '?include_deleted=true' : '';
+      const data = await adminApi.get(`/admin/users${qs}`);
       setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -399,7 +401,7 @@ const AdminUsers = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [showDeleted]);
 
   if (loading) {
     return (

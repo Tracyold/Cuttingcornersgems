@@ -15,6 +15,7 @@ import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
 import SellInquiry from './pages/SellInquiry';
 import Studio from './pages/Studio';
+import ResetPassword from './pages/ResetPassword';
 
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';

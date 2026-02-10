@@ -1,0 +1,68 @@
+{
+  "summary": "Admin Dashboard Stats Parity and Recent Activity Features - All tests passed. 15/15 backend API tests (100%) and all frontend UI tests passed. Dashboard stat cards show non-deleted counts matching list endpoints. Recent Activity includes deleted items (with DELETED badge) and pending items (with PENDING badge). Items can have both badges. Deleted items have opacity-60 styling.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend Test 1: GET /api/admin/dashboard/stats returns 200 with expected fields",
+    "Backend Test 2: Dashboard bookings count matches /api/admin/bookings list count (0 = 0)",
+    "Backend Test 3: Dashboard users count matches /api/admin/users list count (3 = 3)",
+    "Backend Test 4: Dashboard orders count matches /api/admin/orders list count (4 = 4)",
+    "Backend Test 5: Dashboard sold count matches /api/admin/sold list count (0 = 0)",
+    "Backend Test 6: Dashboard product_inquiries matches list count (1 = 1)",
+    "Backend Test 7: Dashboard sell_inquiries matches list count (3 = 3)",
+    "Backend Test 8: Dashboard nyp_inquiries matches list count (4 = 4)",
+    "Backend Test 9: Bookings include_deleted=true returns deleted items (2 deleted out of 2 total)",
+    "Backend Test 10: Product-inquiries include_deleted=true returns deleted items (3 deleted out of 4 total)",
+    "Backend Test 11: Sell-inquiries include_deleted=true returns deleted items (1 deleted out of 4 total)",
+    "Backend Test 12: Orders include_deleted=true works (0 deleted currently)",
+    "Backend Test 13: Bookings have status field for pending detection",
+    "Backend Test 14: Orders have status field for pending detection",
+    "Backend Test 15: Items can have both is_deleted=true AND status=pending",
+    "Frontend Test 16: Dashboard stat cards show correct non-deleted counts (data-testid='stat-bookings' shows 0)",
+    "Frontend Test 17: Recent Activity includes deleted items with DELETED badge (data-testid='badge-deleted')",
+    "Frontend Test 18: Recent Activity includes pending items with PENDING badge (data-testid='badge-pending')",
+    "Frontend Test 19: Items with both DELETED AND PENDING badges display correctly",
+    "Frontend Test 20: Deleted activity items have opacity-60 styling"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_dashboard_stats_parity.py",
+    "/app/test_reports/pytest/pytest_dashboard_stats.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_dashboard_stats_parity.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (15/15 tests passed)",
+    "frontend": "100% (5/5 feature tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "No seed data created - tested with existing data showing 2 deleted bookings, 3 deleted product inquiries, 1 deleted sell inquiry, 10 pending items total",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Dashboard stats parity feature is complete. Key behaviors verified: 1) Dashboard /api/admin/dashboard/stats returns counts using {is_deleted: {$ne: true}} filter matching list page defaults. 2) Products and Gallery counts use {} filter (no is_deleted field on those collections). 3) All list endpoints support ?include_deleted=true query param. 4) Frontend AdminDashboard.js fetches recent activity with include_deleted=true for all 5 sources. 5) Activity items show PENDING badge (yellow) when status='pending' and DELETED badge (red) when is_deleted=true. 6) Items can have both badges. 7) Deleted items have opacity-60 class for visual dimming."
+}

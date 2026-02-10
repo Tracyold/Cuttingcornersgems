@@ -813,8 +813,9 @@ async def admin_delete_user(
 # ============ ADMIN SOLD ITEMS ROUTES ============
 
 @api_router.get("/admin/sold", response_model=List[SoldItemResponse])
-async def admin_get_sold_items(admin: dict = Depends(get_admin_user)):
-    sold_items = await db.sold_items.find({}, {"_id": 0}).sort("sold_at", -1).to_list(1000)
+async def admin_get_sold_items(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    sold_items = await db.sold_items.find(query, {"_id": 0}).sort("sold_at", -1).to_list(1000)
     return sold_items
 
 @api_router.patch("/admin/sold/{item_id}")
@@ -1531,9 +1532,10 @@ async def user_self_delete(current_user: dict = Depends(get_current_user)):
     }
 
 @api_router.get("/admin/messages")
-async def admin_get_messages(admin: dict = Depends(get_admin_user)):
+async def admin_get_messages(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
     """Admin: Get all user messages"""
-    messages = await db.user_messages.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    messages = await db.user_messages.find(query, {"_id": 0}).sort("created_at", -1).to_list(500)
     return messages
 
 @api_router.patch("/admin/messages/{message_id}/read")

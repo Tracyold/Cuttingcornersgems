@@ -107,7 +107,6 @@ const ExpandableCard = ({ item, type, children, productData }) => {
 };
 
 const AdminInquiries = () => {
-  const { getAuthHeaders } = useAdmin();
   const [activeTab, setActiveTab] = useState('bookings');
   const [data, setData] = useState({
     bookings: [],
@@ -124,24 +123,24 @@ const AdminInquiries = () => {
 
   const fetchData = async () => {
     try {
-      const [bookings, productInquiries, sellInquiries, nameYourPrice, productsRes] = await Promise.all([
-        axios.get(`${API_URL}/admin/bookings`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/product-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/sell-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/name-your-price-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/products`, getAuthHeaders()),
+      const [bookingsData, productInquiriesData, sellInquiriesData, nameYourPriceData, productsData] = await Promise.all([
+        adminApi.get('/admin/bookings'),
+        adminApi.get('/admin/product-inquiries'),
+        adminApi.get('/admin/sell-inquiries'),
+        adminApi.get('/admin/name-your-price-inquiries'),
+        adminApi.get('/admin/products'),
       ]);
       
       // Create product lookup map
       const productMap = {};
-      productsRes.data.forEach(p => { productMap[p.id] = p; });
+      productsData.forEach(p => { productMap[p.id] = p; });
       setProducts(productMap);
       
       setData({
-        bookings: bookings.data,
-        productInquiries: productInquiries.data,
-        sellInquiries: sellInquiries.data,
-        nameYourPrice: nameYourPrice.data
+        bookings: bookingsData,
+        productInquiries: productInquiriesData,
+        sellInquiries: sellInquiriesData,
+        nameYourPrice: nameYourPriceData
       });
     } catch (error) {
       console.error('Failed to fetch inquiries:', error);

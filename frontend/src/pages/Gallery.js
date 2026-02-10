@@ -282,7 +282,23 @@ const Gallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
             {/* Sidebar */}
             <aside className="md:sticky md:top-28 md:h-fit" data-testid="gallery-sidebar">
-              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-6">Categories</h3>
+              {/* Era Filter */}
+              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Era</h3>
+              <nav className="space-y-1 mb-8">
+                {ERAS.map(era => (
+                  <button
+                    key={era.id}
+                    onClick={() => setSelectedEra(era.id)}
+                    className={`category-item block w-full text-left ${selectedEra === era.id ? 'active' : ''}`}
+                    data-testid={`era-${era.id}`}
+                  >
+                    {era.name}
+                  </button>
+                ))}
+              </nav>
+              
+              {/* Category Filter */}
+              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Category</h3>
               <nav className="space-y-1">
                 {CATEGORIES.map(cat => (
                   <button
@@ -310,28 +326,48 @@ const Gallery = () => {
                   <p className="text-gray-500">No items found in this category.</p>
                 </div>
               ) : (
-                <div className="gallery-grid">
-                  {items.map((item, index) => (
-                    <div
-                      key={item.id}
-                      onClick={() => openLightbox(index)}
-                      className="group relative aspect-square overflow-hidden gem-card cursor-pointer opacity-0 animate-fade-in"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                      data-testid={`gallery-item-${index}`}
-                    >
-                      <img
-                        src={item.image_url}
-                        alt={item.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                        <p className="spec-text text-gray-400 mb-1">{item.category}</p>
-                        <h3 className="font-serif text-base">{item.title}</h3>
+                <>
+                  {/* Humble Beginnings Gated Section */}
+                  {humbleItems.length > 0 && (
+                    <HumbleBeginningsSection
+                      items={items}
+                      entitlements={entitlements}
+                      isAuthenticated={isAuthenticated}
+                      onItemClick={(index) => openLightbox(index, true)}
+                    />
+                  )}
+                  
+                  {/* Regular Gallery Grid */}
+                  {regularItems.length > 0 && (
+                    <>
+                      {humbleItems.length > 0 && (
+                        <h2 className="text-xl font-serif text-white mb-6">Collection</h2>
+                      )}
+                      <div className="gallery-grid">
+                        {regularItems.map((item, index) => (
+                          <div
+                            key={item.id}
+                            onClick={() => openLightbox(index)}
+                            className="group relative aspect-square overflow-hidden gem-card cursor-pointer opacity-0 animate-fade-in"
+                            style={{ animationDelay: `${index * 50}ms` }}
+                            data-testid={`gallery-item-${index}`}
+                          >
+                            <img
+                              src={item.image_url}
+                              alt={item.title}
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                              <p className="spec-text text-gray-400 mb-1">{item.era || item.category}</p>
+                              <h3 className="font-serif text-base">{item.title}</h3>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    </>
+                  )}
+                </>
               )}
             </div>
           </div>

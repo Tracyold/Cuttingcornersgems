@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MessageSquare, DollarSign, Phone, Mail, Calendar, ChevronDown, ChevronUp, ExternalLink, Tag, Image as ImageIcon, Package } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi } from '../../api/adminApi';
 
 // Expandable Card Component
 const ExpandableCard = ({ item, type, children, productData }) => {

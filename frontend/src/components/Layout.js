@@ -64,7 +64,7 @@ const Layout = ({ children }) => {
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="font-display text-xl" style={{ letterSpacing: '0.04em' }} data-testid="logo-link">
-              Cutting Corners
+              Cutting Corners Gems
             </Link>
 
             {/* Desktop Navigation */}

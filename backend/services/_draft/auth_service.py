@@ -1,16 +1,20 @@
 """
-Authentication Service
-Handles user and admin authentication logic
+DRAFT - NOT USED
+================
+This AuthService module is quarantined. server.py implements auth inline.
+If you plan to refactor auth into a service, update this file and integrate.
+Otherwise, delete this file to reduce confusion.
+
+Original purpose: Authentication Service - Handles user and admin authentication logic
 """
 import jwt
 import bcrypt
 from datetime import datetime, timezone, timedelta
-from typing import Dict, Optional
+from typing import Dict
 from fastapi import HTTPException
 
-# Admin credentials
-ADMIN_USERNAME = "postvibe"
-ADMIN_PASSWORD_HASH = bcrypt.hashpw("adm1npa$$word".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+# NOTE: Do not define credentials here. Use config.security for all credentials.
+# from config.security import ADMIN_USERNAME, ADMIN_PASSWORD_HASH, JWT_SECRET
 
 
 class AuthService:

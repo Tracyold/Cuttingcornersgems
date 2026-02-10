@@ -150,9 +150,9 @@ const Home = () => {
               { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
               { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
-              { icon: Gem, title: 'Sell Gemstones', desc: 'Curate gemstone collections for collectors and enthusiasts.' },
+              { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },
               { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
-              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale gemstone purchasing for jewelers and dealers.' },
+              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale purchasing from jewelers and dealers.' },
             ].map((service, i) => (
               <div 
                 key={service.title}
@@ -173,9 +173,9 @@ const Home = () => {
               { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
               { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
-              { icon: Gem, title: 'Sell Gemstones', desc: 'Curate gemstone collections for collectors and enthusiasts.' },
+              { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },
               { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
-              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale gemstone purchasing for jewelers and dealers.' },
+              { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale purchasing from jewelers and dealers.' },
             ].map((service, i) => (
               <div 
                 key={service.title}
@@ -220,7 +220,7 @@ const Home = () => {
                   is on med-high weight retention cuts that maximize both value and beauty.
                 </p>
                 <p>
-                  I work closely with jewelers across the industry, specializing in colored gemstones—sapphires, 
+                  I work closely with jewelers across the industry, specializing in natural colored gemstones including sapphires, 
                   tourmalines, emeralds, tanzanites, and more. Whether you need a custom cut, re-polish, 
                   or expert consultation, I'm here to deliver results that exceed expectations.
                 </p>

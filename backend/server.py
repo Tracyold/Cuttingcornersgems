@@ -2738,6 +2738,111 @@ async def add_user_message(
     return {"message": "Message added", "message_count": len(thread.messages)}
 
 
+@api_router.post("/negotiations/{negotiation_id}/accept")
+async def user_accept_counter(
+    negotiation_id: str,
+    user: dict = Depends(get_current_user)
+):
+    """
+    User accepts the latest admin counter-offer.
+    Creates agreement + committed order without marking product sold.
+    """
+    if user.get("purchase_blocked", False) or user.get("is_deleted", False):
+        raise HTTPException(status_code=403, detail="Purchases disabled for this account")
+
+    store = get_negotiation_store(db)
+    thread = await store.get_thread(negotiation_id)
+
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    if thread.user_id != user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if thread.status != "OPEN":
+        raise HTTPException(status_code=400, detail="Negotiation is not open")
+
+    # Find latest admin COUNTER offer
+    latest_counter = None
+    for msg in reversed(thread.messages):
+        if msg.sender_role == "ADMIN" and msg.kind == "COUNTER" and msg.amount is not None:
+            latest_counter = msg
+            break
+
+    if not latest_counter:
+        raise HTTPException(status_code=400, detail="No admin counter-offer to accept")
+
+    # Check product not sold
+    product = await db.products.find_one({"id": thread.product_id}, {"_id": 0})
+    if product and product.get("is_sold"):
+        raise HTTPException(status_code=400, detail="This product has already been sold")
+
+    amount = latest_counter.amount
+
+    # Add ACCEPT message from user
+    thread = await store.add_message(
+        negotiation_id=negotiation_id,
+        sender_role="USER",
+        kind="ACCEPT",
+        amount=amount,
+        text=f"Accepted counter-offer of ${amount:,.2f}"
+    )
+
+    # Create agreement with purchase token (24h TTL)
+    agreement = await store.create_agreement_on_accept(
+        negotiation_id=negotiation_id,
+        accepted_amount=amount,
+        ttl_minutes=1440  # 24 hours
+    )
+
+    # Update thread status
+    await store.set_status(negotiation_id, "ACCEPTED")
+
+    # Create purchase token
+    token_store = get_purchase_token_store()
+    await token_store.create_token(
+        user_id=thread.user_id,
+        product_id=thread.product_id,
+        amount=amount,
+        agreement_id=agreement.agreement_id,
+        ttl_minutes=1440
+    )
+
+    # Create committed order
+    now = datetime.now(timezone.utc)
+    order_id = str(uuid.uuid4())
+    order = {
+        "id": order_id,
+        "user_id": user["id"],
+        "items": [{
+            "product_id": thread.product_id,
+            "title": thread.product_title,
+            "price": amount,
+            "quantity": 1,
+        }],
+        "total": amount,
+        "status": "pending",
+        "shipping_address": "",
+        "created_at": now.isoformat(),
+        "commit_expires_at": (now + timedelta(hours=24)).isoformat(),
+        "paid_at": None,
+        "payment_provider": None,
+        "source": "negotiation",
+        "purchase_token": agreement.purchase_token,
+        "negotiation_id": negotiation_id,
+    }
+    await db.orders.insert_one(order)
+
+    return {
+        "negotiation_id": negotiation_id,
+        "agreement": {
+            "status": agreement.status,
+            "amount": amount,
+            "purchase_token": agreement.purchase_token,
+            "expires_at": agreement.purchase_token_expires_at.isoformat(),
+        },
+        "order_id": order_id,
+    }
+
+
 @api_router.get("/negotiations/{negotiation_id}/agreement")
 async def get_negotiation_agreement(
     negotiation_id: str,

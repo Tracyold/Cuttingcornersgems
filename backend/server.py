@@ -569,8 +569,9 @@ async def update_site_settings(updates: SiteSettingsUpdate, admin: dict = Depend
 # ============ ADMIN PRODUCT ROUTES ============
 
 @api_router.get("/admin/products", response_model=List[ProductResponse])
-async def admin_get_products(admin: dict = Depends(get_admin_user)):
-    products = await db.products.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_products(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    products = await db.products.find(query, {"_id": 0}).to_list(1000)
     return products
 
 @api_router.post("/admin/products", response_model=ProductResponse)

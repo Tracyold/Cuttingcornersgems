@@ -69,6 +69,16 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
 
+# User Status Models (Admin Controls)
+class UserStatusUpdate(BaseModel):
+    purchase_blocked: Optional[bool] = None
+    purchase_block_reason: Optional[str] = None
+
+class UserDeleteResponse(BaseModel):
+    message: str
+    user_id: str
+    is_deleted: bool
+
 # Admin Models
 class AdminLogin(BaseModel):
     username: str

@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   Users, Mail, Calendar, Phone, ShoppingCart, Package, 
   MousePointer, Eye, Clock, MessageSquare, ChevronDown, 
-  ChevronUp, ExternalLink, AlertTriangle, TrendingUp
+  ChevronUp, ExternalLink, AlertTriangle, TrendingUp, Key
 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
+import { toast } from 'sonner';
 
 // Expandable User Card
 const UserCard = ({ user, expanded, onToggle }) => {
   const [details, setDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';

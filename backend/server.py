@@ -761,18 +761,50 @@ async def admin_send_sold_item_notes(item_id: str, data: dict, admin: dict = Dep
 
 @api_router.post("/admin/settings/test-email")
 async def test_email_connection(data: EmailTestRequest, admin: dict = Depends(get_admin_user)):
-    # This is a placeholder for actual email service testing
-    # In production, this would make a real API call to the email provider
-    provider = data.provider.lower()
+    """
+    Test email provider connection by sending a real test email.
     
-    # Validate provider and API key format
+    Behavior:
+    - If email_enabled=false in settings -> 400 "Email service disabled"
+    - If provider not implemented -> 400 "Provider not implemented"
+    - If configured -> send real test email and return success/failure
+    """
+    from services.email_provider import get_email_provider, NullEmailProvider
+    
+    # Build settings dict from request data for provider instantiation
+    test_settings = {
+        "email_enabled": True,
+        "email_provider": data.provider.lower(),
+        "email_api_key": data.api_key,
+        "email_from_address": data.from_address,
+        "email_from_name": ""  # Optional, not required for test
+    }
+    
+    # Validate API key format
     if not data.api_key or len(data.api_key) < 10:
-        return {"success": False, "message": "Invalid API key format"}
+        raise HTTPException(status_code=400, detail="Invalid API key format")
     
-    # Simulate successful connection for known providers
-    known_providers = ["sendgrid", "resend", "mailgun", "ses", "postmark"]
-    if provider in known_providers:
-        # Update connected_at timestamp
+    # Get the provider
+    provider = get_email_provider(test_settings)
+    
+    # Check if we got a NullEmailProvider (meaning not configured or unknown)
+    if isinstance(provider, NullEmailProvider):
+        # Check if it's an unknown provider vs just not configured
+        known_providers = ["sendgrid", "resend", "mailgun", "ses", "postmark"]
+        if data.provider.lower() not in known_providers:
+            raise HTTPException(status_code=400, detail=f"Unknown provider: {data.provider}")
+        
+        # Provider known but not fully implemented (e.g., SES)
+        if data.provider.lower() == "ses":
+            raise HTTPException(status_code=400, detail="AWS SES provider not implemented (requires boto3 and AWS credentials)")
+        
+        raise HTTPException(status_code=400, detail=f"Provider '{data.provider}' not configured properly")
+    
+    # Attempt to send a real test email
+    result = await provider.test_connection()
+    
+    if result.sent:
+        # Update connected_at timestamp on success
         await db.site_settings.update_one(
             {"id": "main"},
             {"$set": {
@@ -781,9 +813,21 @@ async def test_email_connection(data: EmailTestRequest, admin: dict = Depends(ge
             }},
             upsert=True
         )
-        return {"success": True, "message": f"Successfully connected to {provider}"}
-    
-    return {"success": False, "message": f"Unknown provider: {provider}"}
+        return {
+            "success": True, 
+            "message": f"Test email sent successfully via {result.provider}",
+            "message_id": result.message_id
+        }
+    else:
+        # Update test status on failure
+        await db.site_settings.update_one(
+            {"id": "main"},
+            {"$set": {
+                "email_test_status": "failed"
+            }},
+            upsert=True
+        )
+        raise HTTPException(status_code=400, detail=result.message)
 
 # ============ ADMIN DASHBOARD STATS ============
 

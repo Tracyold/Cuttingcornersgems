@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Lock, Unlock, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 

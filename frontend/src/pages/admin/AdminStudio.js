@@ -132,9 +132,7 @@ const AdminStudio = () => {
   const fetchContent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/content/studio`, {
-        headers: getAuthHeaders()
-      });
+      const response = await axios.get(`${API_URL}/admin/content/studio`, getAuthHeaders());
       setContent(response.data);
     } catch (error) {
       toast.error('Failed to load Studio content');
@@ -146,9 +144,7 @@ const AdminStudio = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await axios.put(`${API_URL}/admin/content/studio`, content, {
-        headers: getAuthHeaders()
-      });
+      await axios.put(`${API_URL}/admin/content/studio`, content, getAuthHeaders());
       toast.success('Studio content saved!');
       fetchContent(); // Refresh to get updated version
     } catch (error) {
@@ -163,9 +159,7 @@ const AdminStudio = () => {
       return;
     }
     try {
-      await axios.post(`${API_URL}/dev/content/studio/reset`, {}, {
-        headers: getAuthHeaders()
-      });
+      await axios.post(`${API_URL}/dev/content/studio/reset`, {}, getAuthHeaders());
       toast.success('Content reset to defaults');
       fetchContent();
     } catch (error) {

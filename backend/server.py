@@ -216,6 +216,7 @@ class ProductCreate(BaseModel):
     images: List[str] = []
     videos: List[str] = []
     in_stock: bool = True
+    is_sold: bool = False
     
     # GIA fields
     gia_certified: bool = False
@@ -240,6 +241,8 @@ class ProductUpdate(BaseModel):
     images: Optional[List[str]] = None
     videos: Optional[List[str]] = None
     in_stock: Optional[bool] = None
+    is_sold: Optional[bool] = None
+    sold_at: Optional[str] = None
     gia_certified: Optional[bool] = None
     gia_report_number: Optional[str] = None
     gia_report_image: Optional[str] = None
@@ -262,6 +265,8 @@ class ProductResponse(BaseModel):
     images: List[str] = []
     videos: List[str] = []
     in_stock: bool = True
+    is_sold: bool = False
+    sold_at: Optional[str] = None
     gia_certified: bool = False
     gia_report_number: Optional[str] = None
     gia_report_image: Optional[str] = None

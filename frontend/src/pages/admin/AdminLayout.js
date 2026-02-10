@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Image, Settings, CreditCard, 
   Cloud, Shield, Users, MessageSquare, LogOut, Menu, X,
-  HelpCircle, ChevronRight, Receipt, Mail, Database, BarChart3, Wrench, Film
+  HelpCircle, ChevronRight, Receipt, Mail, Database, BarChart3, Wrench, Film,
+  DollarSign
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 
@@ -35,6 +36,7 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/gallery', label: 'Gallery', icon: Image },
     { path: '/admin/studio', label: 'Studio Content', icon: Film },
     { path: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { path: '/admin/negotiations', label: 'Negotiations', icon: DollarSign },
     { path: '/admin/sold', label: 'Sold Items', icon: Receipt },
     { path: '/admin/data', label: 'Data & Archives', icon: Database },
     { path: '/admin/users', label: 'Users', icon: Users },

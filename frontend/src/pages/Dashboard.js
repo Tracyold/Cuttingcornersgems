@@ -580,6 +580,85 @@ const NameYourPriceTab = () => {
   );
 };
 
+// Pending Invoice Card with countdown timer
+const PendingInvoiceCard = ({ order, index, onRefresh }) => {
+  const [timeLeft, setTimeLeft] = useState('');
+  const [payLoading, setPayLoading] = useState(false);
+
+  useEffect(() => {
+    const update = () => {
+      const expires = new Date(order.commit_expires_at);
+      const now = new Date();
+      const diff = expires - now;
+      if (diff <= 0) { setTimeLeft('Expired'); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft(`${h}h ${m}m ${s}s`);
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [order.commit_expires_at]);
+
+  const handlePayNow = async () => {
+    setPayLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${API_URL}/payments/checkout-session`, 
+        { order_id: order.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.checkout_url) {
+        window.location = res.data.checkout_url;
+      } else if (res.data.error_code === 'PAYMENT_PROVIDER_NOT_CONFIGURED') {
+        toast.error('Payment not configured yet.');
+      } else if (res.data.error_code) {
+        toast.error(res.data.error_code);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Payment failed');
+    } finally {
+      setPayLoading(false);
+    }
+  };
+
+  const formatPrice = (price) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(price);
+
+  return (
+    <div className="gem-card p-6 border border-yellow-500/20" data-testid={`pending-invoice-${index}`}>
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <p className="spec-text text-gray-500">Order #{order.id.slice(0, 8)}</p>
+          <p className="font-mono text-lg">{formatPrice(order.total)}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-gray-500 uppercase tracking-widest">Expires in</p>
+          <p className={`font-mono text-sm ${timeLeft === 'Expired' ? 'text-red-400' : 'text-yellow-400'}`} data-testid={`countdown-${index}`}>
+            {timeLeft}
+          </p>
+        </div>
+      </div>
+      <div className="space-y-1 mb-4">
+        {order.items?.map((item, i) => (
+          <div key={i} className="flex justify-between text-sm text-gray-400">
+            <span>{item.title} x{item.quantity}</span>
+            <span>{formatPrice(item.price * item.quantity)}</span>
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={handlePayNow}
+        disabled={payLoading || timeLeft === 'Expired'}
+        className="btn-primary w-full disabled:opacity-50"
+        data-testid={`pay-now-btn-${index}`}
+      >
+        {payLoading ? 'Processing...' : 'Pay Now'}
+      </button>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const { user, logout, isAuthenticated, entitlements } = useAuth();
   const navigate = useNavigate();

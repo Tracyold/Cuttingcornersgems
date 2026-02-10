@@ -4,6 +4,7 @@ Single source of truth for credentials and secrets
 """
 import os
 import logging
+import bcrypt
 
 logger = logging.getLogger(__name__)
 
@@ -24,23 +25,18 @@ else:
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
-# Admin Credentials
-# Required: ADMIN_USERNAME and ADMIN_PASSWORD_HASH from environment
-# No plaintext passwords in source code
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
-ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH")
-
-def validate_admin_config():
+# Admin Credentials - initialized at module load
+def _init_admin_credentials():
     """
-    Validate admin configuration at startup.
-    In production: raises if missing.
-    In development: logs warning and uses defaults.
+    Initialize admin credentials from environment or development defaults.
+    Called at module load time to ensure credentials are available immediately.
     """
-    global ADMIN_USERNAME, ADMIN_PASSWORD_HASH
+    username = os.environ.get("ADMIN_USERNAME")
+    password_hash = os.environ.get("ADMIN_PASSWORD_HASH")
     
-    if ADMIN_USERNAME and ADMIN_PASSWORD_HASH:
+    if username and password_hash:
         logger.info("Admin credentials loaded from environment")
-        return True
+        return username, password_hash
     
     if IS_PRODUCTION:
         raise RuntimeError(
@@ -48,10 +44,21 @@ def validate_admin_config():
         )
     
     # Development fallback - generate hash at runtime (not stored in source)
-    import bcrypt
     logger.warning("Using development admin defaults - NOT FOR PRODUCTION")
-    ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "postvibe")
-    # Hash generated at runtime, not stored as plaintext
+    username = os.environ.get("ADMIN_USERNAME", "postvibe")
     default_password = os.environ.get("ADMIN_DEFAULT_PASSWORD", "adm1npa$$word")
-    ADMIN_PASSWORD_HASH = bcrypt.hashpw(default_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    password_hash = bcrypt.hashpw(default_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    return username, password_hash
+
+# Initialize credentials at module load
+ADMIN_USERNAME, ADMIN_PASSWORD_HASH = _init_admin_credentials()
+
+def validate_admin_config():
+    """
+    Validate admin configuration (called at startup for logging).
+    Credentials are already initialized at module load.
+    """
+    if ADMIN_USERNAME and ADMIN_PASSWORD_HASH:
+        return True
     return False

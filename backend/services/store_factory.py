@@ -38,15 +38,18 @@ def get_order_store(db=None):
     return _get_order_store(db)
 
 
-def get_negotiation_store():
+def get_negotiation_store(db=None):
     """
     Get negotiation store instance.
+    
+    Args:
+        db: Optional MongoDB database instance
     
     Returns:
         NegotiationStoreInterface implementation
     """
     from services.negotiation_store import get_negotiation_store as _get_negotiation_store
-    return _get_negotiation_store()
+    return _get_negotiation_store(db)
 
 
 def get_purchase_token_store():

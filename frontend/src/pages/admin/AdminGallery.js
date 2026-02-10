@@ -302,10 +302,10 @@ const AdminGallery = () => {
     e.preventDefault();
     try {
       if (editingItem) {
-        await axios.patch(`${API_URL}/admin/gallery/${editingItem.id}`, formData, getAuthHeaders());
+        await adminApi.patch(`/admin/gallery/${editingItem.id}`, formData);
         toast.success('Gallery item updated');
       } else {
-        await axios.post(`${API_URL}/admin/gallery`, formData, getAuthHeaders());
+        await adminApi.post('/admin/gallery', formData);
         toast.success('Gallery item created');
       }
       
@@ -321,7 +321,7 @@ const AdminGallery = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this gallery item?')) return;
     try {
-      await axios.delete(`${API_URL}/admin/gallery/${id}`, getAuthHeaders());
+      await adminApi.delete(`/admin/gallery/${id}`);
       toast.success('Gallery item deleted');
       // Revalidate: refetch gallery items after deletion
       await fetchItems();

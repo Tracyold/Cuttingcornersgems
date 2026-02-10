@@ -63,7 +63,7 @@ const ResetPassword = () => {
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
             <Check className="w-8 h-8 text-green-400" />
           </div>
-          <h1 className="page-title title-xl text-2xl mb-4">Password Reset Complete/h1>
+          <h1 className="page-title title-xl text-2xl mb-4">Password Reset Complete</h1>
           <p className="text-gray-400 mb-6">
             Your password has been successfully updated. You can now sign in with your new password.
           </p>

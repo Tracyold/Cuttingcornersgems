@@ -14,6 +14,7 @@ import Cart from './pages/Cart';
 import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
 import SellInquiry from './pages/SellInquiry';
+import Studio from './pages/Studio';
 
 // Admin pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -28,6 +29,7 @@ import AdminData from './pages/admin/AdminData';
 import StripeSettings from './pages/admin/StripeSettings';
 import StorageSettings from './pages/admin/StorageSettings';
 import SecuritySettings from './pages/admin/SecuritySettings';
+import AdminStudio from './pages/admin/AdminStudio';
 import GeneralSettings from './pages/admin/GeneralSettings';
 import EmailSettings from './pages/admin/EmailSettings';
 import AnalyticsSettings from './pages/admin/AnalyticsSettings';

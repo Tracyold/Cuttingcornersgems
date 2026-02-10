@@ -352,7 +352,7 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
 
         {/* Buttons */}
         <div className="space-y-3 pt-4">
-          <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50">
+          <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="get-last-refusal-btn">
             Get Last Refusal
           </button>
           <button onClick={handleBuy} className="btn-primary w-full" data-testid="product-buy-btn">
@@ -368,9 +368,18 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
             </button>
           )}
         </div>
+
+        {/* Name Your Price Section */}
+        <NameYourPriceSection 
+          product={product} 
+          entitlements={entitlements} 
+          isAuthenticated={isAuthenticated}
+          onNamePrice={handleNamePrice}
+        />
       </div>
 
       {showInquiry && <InquiryPopup product={product} onClose={() => setShowInquiry(false)} />}
+      {showNypForm && <InquiryPopup product={product} onClose={() => setShowNypForm(false)} isOffer={true} />}
     </div>
   );
 

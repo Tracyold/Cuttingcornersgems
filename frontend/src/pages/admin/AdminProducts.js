@@ -563,19 +563,35 @@ const AdminProducts = () => {
           </div>
         ) : (
           products.map(product => (
-            <div key={product.id} className="gem-card p-4 flex gap-4 items-center">
-              <img src={product.image_url} alt={product.title} className="w-20 h-20 object-cover" />
+            <div key={product.id} className={`gem-card p-4 flex gap-4 items-center ${product.is_sold ? 'opacity-70' : ''}`} data-testid={`product-card-${product.id}`}>
+              <div className="relative">
+                <img src={product.image_url} alt={product.title} className="w-20 h-20 object-cover" />
+                {product.is_sold && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-red-400 text-xs font-bold tracking-widest">SOLD</span>
+                  </div>
+                )}
+              </div>
               <div className="flex-1 min-w-0">
                 <h3 className="title-sm text-lg truncate">{product.title}</h3>
                 <p className="text-sm text-gray-500">{product.category} • {product.carat || 'N/A'}</p>
                 <p className="text-sm font-mono">${product.price?.toLocaleString() || 'No price'}</p>
                 <div className="flex gap-2 mt-1">
+                  {product.is_sold && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5" data-testid="badge-sold">SOLD</span>}
                   {product.gia_certified && <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5">GIA</span>}
                   {product.name_your_price && <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5">Name Your Price</span>}
-                  {!product.in_stock && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5">Out of Stock</span>}
+                  {!product.in_stock && !product.is_sold && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5">Out of Stock</span>}
                 </div>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={() => handleToggleSold(product)}
+                  className={`p-2 hover:bg-white/10 rounded ${product.is_sold ? 'text-red-400' : 'text-gray-400'}`}
+                  title={product.is_sold ? 'Mark as available' : 'Mark as sold'}
+                  data-testid="toggle-sold-btn"
+                >
+                  <Tag className="w-4 h-4" />
+                </button>
                 <button onClick={() => openModal(product)} className="p-2 hover:bg-white/10 rounded">
                   <Edit className="w-4 h-4 text-gray-400" />
                 </button>

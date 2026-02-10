@@ -57,6 +57,16 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Payment Infrastructure & Sold Lifecycle Fix (Feb 2026 - Completed)
+- **Semantic fix**: POST /api/orders no longer auto-marks products SOLD; creates order with `status:"pending"`, `commit_expires_at` (24h), `paid_at: null`
+- **Admin mark-paid**: POST /api/admin/orders/{order_id}/mark-paid → sets `paid_at`, `status:"paid"`, triggers `mark_products_sold()`
+- **Payment provider adapter**: NullPaymentProvider (when Stripe disabled) / StripePaymentProvider (when enabled + keys set)
+- **POST /api/payments/checkout-session**: returns Stripe URL or `PAYMENT_PROVIDER_NOT_CONFIGURED`
+- **PDF invoice**: GET /api/orders/{order_id}/invoice.pdf — watermark "PAID" or "NOT PAID"
+- **Cart popup**: After checkout, shows message directing to account page for payment
+- **Dashboard Pending Invoices**: Countdown timer + Pay Now button per pending order
+- **POST /api/purchase/checkout**: delegates to Stripe provider when configured (existing NOT_CONFIGURED behavior preserved)
+
 ## Dashboard Count Parity + Recent Activity (Feb 2026 - Completed)
 - Dashboard stat counts now use `is_deleted: {$ne: true}` filter, matching list page defaults
 - Recent Activity includes ALL items (deleted + pending), fetched with `?include_deleted=true`

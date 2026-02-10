@@ -143,6 +143,20 @@ export const adminApi = {
   async getFullResponse(urlPath) {
     const config = buildAuthConfig();
     return axios.get(`${API_BASE_URL}${urlPath}`, config);
+  },
+
+  /**
+   * Download file as blob
+   * @param {string} urlPath - Path relative to /api
+   * @returns {Promise<Blob>} File blob
+   */
+  async downloadBlob(urlPath) {
+    const config = buildAuthConfig();
+    const response = await axios.get(`${API_BASE_URL}${urlPath}`, {
+      ...config,
+      responseType: 'blob'
+    });
+    return response.data;
   }
 };
 

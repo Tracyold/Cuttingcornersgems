@@ -29,25 +29,26 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       // Fetch stats from dedicated endpoint
+      // Recent activity: include_deleted=true to show ALL items
       const [statsData, bookingsData, productInquiriesData, sellInquiriesData, nypInquiriesData, ordersData] = await Promise.all([
         adminApi.get('/admin/dashboard/stats'),
-        adminApi.get('/admin/bookings'),
-        adminApi.get('/admin/product-inquiries'),
-        adminApi.get('/admin/sell-inquiries'),
-        adminApi.get('/admin/name-your-price-inquiries'),
-        adminApi.get('/admin/orders'),
+        adminApi.get('/admin/bookings?include_deleted=true'),
+        adminApi.get('/admin/product-inquiries?include_deleted=true'),
+        adminApi.get('/admin/sell-inquiries?include_deleted=true'),
+        adminApi.get('/admin/name-your-price-inquiries?include_deleted=true'),
+        adminApi.get('/admin/orders?include_deleted=true'),
       ]);
 
       setStats(statsData);
 
-      // Combine and sort recent activity
+      // Combine and sort recent activity, with deleted + pending flags
       const allActivity = [
-        ...bookingsData.map(b => ({ ...b, type: 'booking', typeLabel: 'Booking' })),
-        ...ordersData.map(o => ({ ...o, type: 'order', typeLabel: 'Order' })),
-        ...productInquiriesData.map(i => ({ ...i, type: 'inquiry', typeLabel: 'Inquiry' })),
-        ...sellInquiriesData.map(i => ({ ...i, type: 'sell', typeLabel: 'Sell Inquiry' })),
-        ...nypInquiriesData.map(i => ({ ...i, type: 'nyp', typeLabel: 'Name Your Price' })),
-      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
+        ...bookingsData.map(b => ({ ...b, type: 'booking', typeLabel: 'Booking', activity_is_deleted: !!b.is_deleted, activity_is_pending: b.status === 'pending' })),
+        ...ordersData.map(o => ({ ...o, type: 'order', typeLabel: 'Order', activity_is_deleted: !!o.is_deleted, activity_is_pending: o.status === 'pending' })),
+        ...productInquiriesData.map(i => ({ ...i, type: 'inquiry', typeLabel: 'Inquiry', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
+        ...sellInquiriesData.map(i => ({ ...i, type: 'sell', typeLabel: 'Sell Inquiry', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
+        ...nypInquiriesData.map(i => ({ ...i, type: 'nyp', typeLabel: 'Name Your Price', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
+      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
 
       setRecentActivity(allActivity);
     } catch (error) {

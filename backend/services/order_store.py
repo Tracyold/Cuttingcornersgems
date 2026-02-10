@@ -196,59 +196,40 @@ class FileOrderStore(OrderStoreInterface):
 # ==============================================================================
 
 class DbOrderStore(OrderStoreInterface):
-    """
-    MongoDB-backed order storage for production.
+    """MongoDB-backed order storage for production."""
     
-    STUB IMPLEMENTATION - Requires database connection.
-    Replace TODO placeholders when wiring to actual database.
-    """
-    
-    def __init__(self, db=None):
-        """
-        Initialize with database connection.
-        
-        Args:
-            db: Motor async MongoDB database instance
-        """
+    def __init__(self, db):
         self.db = db
+        self._collection = "orders_store"
     
     async def list_orders_for_user(self, user_id: str) -> List[Order]:
-        """Retrieve all orders for a user from database."""
-        # TODO: Implement when wiring to MongoDB
-        # orders_cursor = self.db.orders.find(
-        #     {"user_id": user_id},
-        #     {"_id": 0}
-        # ).sort("created_at", -1)
-        # docs = await orders_cursor.to_list(1000)
-        # return [Order(**doc) for doc in docs]
-        raise NotImplementedError("DbOrderStore requires database connection")
+        cursor = self.db[self._collection].find(
+            {"user_id": user_id}, {"_id": 0}
+        ).sort("created_at", -1)
+        docs = await cursor.to_list(1000)
+        return [Order(**doc) for doc in docs]
     
     async def record_order(self, order: Order) -> None:
-        """Persist an order to database."""
-        # TODO: Implement when wiring to MongoDB
-        # order_dict = order.model_dump()
-        # await self.db.orders.insert_one(order_dict)
-        raise NotImplementedError("DbOrderStore requires database connection")
+        order_dict = order.model_dump()
+        for key, val in order_dict.items():
+            if isinstance(val, datetime):
+                order_dict[key] = val.isoformat()
+        await self.db[self._collection].insert_one(order_dict)
     
     async def get_order(self, order_id: str) -> Optional[Order]:
-        """Retrieve a specific order by ID from database."""
-        # TODO: Implement when wiring to MongoDB
-        # doc = await self.db.orders.find_one({"order_id": order_id}, {"_id": 0})
-        # return Order(**doc) if doc else None
-        raise NotImplementedError("DbOrderStore requires database connection")
+        doc = await self.db[self._collection].find_one(
+            {"order_id": order_id}, {"_id": 0}
+        )
+        return Order(**doc) if doc else None
     
     async def update_order_status(self, order_id: str, status: OrderStatus) -> bool:
-        """Update order status in database."""
-        # TODO: Implement when wiring to MongoDB
-        # result = await self.db.orders.update_one(
-        #     {"order_id": order_id},
-        #     {"$set": {"status": status}}
-        # )
-        # return result.modified_count > 0
-        raise NotImplementedError("DbOrderStore requires database connection")
+        result = await self.db[self._collection].update_one(
+            {"order_id": order_id},
+            {"$set": {"status": status}}
+        )
+        return result.modified_count > 0
     
     async def clear_all(self) -> None:
-        """Clear all orders (for testing only - disabled in production)."""
         raise NotImplementedError("clear_all is disabled for DbOrderStore")
 
 

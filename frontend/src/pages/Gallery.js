@@ -341,7 +341,7 @@ const Gallery = () => {
                   {regularItems.length > 0 && (
                     <>
                       {humbleItems.length > 0 && (
-                        <h2 className="text-xl font-serif text-white mb-6">Collection</h2>
+                        <h2 className="text-xl title-sm text-white mb-6">Collection</h2>
                       )}
                       <div className="gallery-grid">
                         {regularItems.map((item, index) => (

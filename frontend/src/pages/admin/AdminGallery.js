@@ -414,6 +414,20 @@ const AdminGallery = () => {
                   </select>
                 </div>
                 <div>
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Era</label>
+                  <select
+                    value={formData.era || ''}
+                    onChange={(e) => setFormData(prev => ({ ...prev, era: e.target.value || null }))}
+                    className="input-dark h-10 text-sm"
+                    data-testid="era-select-inline"
+                  >
+                    <option value="">None</option>
+                    {ERAS.map(era => (
+                      <option key={era} value={era}>{era}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Gem Type</label>
                   <input type="text" value={formData.gemstone_type} onChange={(e) => setFormData(prev => ({ ...prev, gemstone_type: e.target.value }))} className="input-dark h-10 text-sm" />
                 </div>

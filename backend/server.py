@@ -1681,6 +1681,51 @@ async def run_maintenance_now_endpoint(admin: dict = Depends(get_admin_user)):
     await maintenance.run_maintenance_cycle()
     return {"message": "Maintenance cycle completed", "timestamp": datetime.now(timezone.utc).isoformat()}
 
+# ============ SCHEMA ADMIN ENDPOINTS ============
+
+@api_router.get("/admin/schema/status")
+async def get_schema_status_endpoint(admin: dict = Depends(get_admin_user)):
+    """
+    Get current schema version and status (admin-only, read-only)
+    """
+    from services.schema_guard import get_schema_status
+    schema_status = await get_schema_status(db)
+    return schema_status
+
+@api_router.post("/admin/schema/validate")
+async def validate_schema_endpoint(data: dict, admin: dict = Depends(get_admin_user)):
+    """
+    Validate required fields in a collection (admin-only, read-only)
+    Request body: {"collection": "users", "required_fields": ["id", "email", "name"]}
+    """
+    from services.schema_guard import validate_required_fields
+    collection = data.get("collection")
+    required_fields = data.get("required_fields", [])
+    
+    if not collection or not required_fields:
+        raise HTTPException(status_code=400, detail="collection and required_fields are required")
+    
+    result = await validate_required_fields(db, collection, required_fields)
+    return result
+
+@api_router.post("/admin/schema/backfill")
+async def backfill_schema_endpoint(data: dict, admin: dict = Depends(get_admin_user)):
+    """
+    Backfill missing field with default value (admin-only, write operation)
+    Request body: {"collection": "users", "field": "token_version", "default_value": 1}
+    Requires SCHEMA_DRIFT_GUARD_ENABLED=true
+    """
+    from services.schema_guard import backfill_missing_field
+    collection = data.get("collection")
+    field = data.get("field")
+    default_value = data.get("default_value")
+    
+    if not collection or not field or default_value is None:
+        raise HTTPException(status_code=400, detail="collection, field, and default_value are required")
+    
+    result = await backfill_missing_field(db, collection, field, default_value)
+    return result
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

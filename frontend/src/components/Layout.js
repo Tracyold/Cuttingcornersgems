@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag, User, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import AuthModal from './AuthModal';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -12,14 +15,33 @@ const Layout = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState('login');
+  const [studioEnabled, setStudioEnabled] = useState(false);
 
-  const navLinks = [
+  // Check if Studio page is enabled
+  useEffect(() => {
+    const checkStudioStatus = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/content/studio/status`);
+        setStudioEnabled(response.data.enabled);
+      } catch (error) {
+        setStudioEnabled(false);
+      }
+    };
+    checkStudioStatus();
+  }, []);
+
+  const baseNavLinks = [
     { path: '/', label: 'Home' },
     { path: '/gallery', label: 'Gallery' },
     { path: '/shop', label: 'Shop' },
     { path: '/sell', label: 'Sell' },
     { path: '/booking', label: 'Book' },
   ];
+
+  // Conditionally add Studio link
+  const navLinks = studioEnabled 
+    ? [...baseNavLinks.slice(0, 2), { path: '/studio', label: 'Studio' }, ...baseNavLinks.slice(2)]
+    : baseNavLinks;
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';

@@ -79,6 +79,12 @@ h2.title-xl,
   letter-spacing: 0.04em !important;
 }
 
+/* About name - extra large display */
+.name-title {
+  font-size: 7rem !important;
+  line-height: 1 !important;
+}
+
 /* Subtitle - Section highlights, subheadings */
 .subtitle,
 .section-subtitle,

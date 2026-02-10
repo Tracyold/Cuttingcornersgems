@@ -211,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <h2 className="page-title title-xl mb-6" style={{ fontSize: '7rem', lineHeight: '1' }}>Michael Wall</h2>
+              <h2 className="page-title title-xl name-title mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
                   Based in Tempe, Arizona, I've been part of the gemstone industry since 2013, 

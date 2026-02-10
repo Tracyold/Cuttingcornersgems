@@ -952,25 +952,26 @@ async def test_email_connection(data: EmailTestRequest, admin: dict = Depends(ge
 
 @api_router.get("/admin/dashboard/stats")
 async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
-    # Get counts
+    nd = {"is_deleted": {"$ne": True}}
+    # Get counts (NON-DELETED only, matching list page defaults)
     products_count = await db.products.count_documents({})
     gallery_count = await db.gallery.count_documents({})
-    bookings_count = await db.bookings.count_documents({})
-    users_count = await db.users.count_documents({})
-    orders_count = await db.orders.count_documents({})
-    sold_count = await db.sold_items.count_documents({})
+    bookings_count = await db.bookings.count_documents(nd)
+    users_count = await db.users.count_documents(nd)
+    orders_count = await db.orders.count_documents(nd)
+    sold_count = await db.sold_items.count_documents(nd)
     
-    # Get inquiry counts
-    product_inquiries_count = await db.product_inquiries.count_documents({})
-    sell_inquiries_count = await db.sell_inquiries.count_documents({})
-    nyp_inquiries_count = await db.name_your_price_inquiries.count_documents({})
+    # Get inquiry counts (NON-DELETED)
+    product_inquiries_count = await db.product_inquiries.count_documents(nd)
+    sell_inquiries_count = await db.sell_inquiries.count_documents(nd)
+    nyp_inquiries_count = await db.name_your_price_inquiries.count_documents(nd)
     
-    # Calculate revenue from sold items
-    sold_items = await db.sold_items.find({}, {"total_paid": 1}).to_list(1000)
+    # Calculate revenue from non-deleted sold items
+    sold_items = await db.sold_items.find(nd, {"total_paid": 1}).to_list(1000)
     total_revenue = sum(item.get("total_paid", 0) for item in sold_items)
     
-    # Get pending items
-    pending_bookings = await db.bookings.count_documents({"status": "pending"})
+    # Get pending items (non-deleted only)
+    pending_bookings = await db.bookings.count_documents({"status": "pending", **nd})
     pending_inquiries = product_inquiries_count  # All inquiries are considered pending until addressed
     
     return {

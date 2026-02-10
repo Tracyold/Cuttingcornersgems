@@ -767,7 +767,6 @@ const AdminProducts = () => {
         <BulkAddModal
           onClose={() => setShowBulkModal(false)}
           onComplete={fetchProducts}
-          getAuthHeaders={getAuthHeaders}
         />
       )}
     </div>

@@ -920,15 +920,28 @@ const Dashboard = () => {
                                 <span className="text-gray-500">Total</span>
                                 <div className="flex items-center gap-3">
                                   <span className="font-mono">{formatPrice(order.total)}</span>
-                                  <a
-                                    href={`${API_URL}/orders/${order.id}/invoice.pdf`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                  <button
+                                    onClick={async () => {
+                                      try {
+                                        const token = localStorage.getItem('token');
+                                        const res = await fetch(`${API_URL}/orders/${order.id}/invoice.pdf`, {
+                                          headers: { Authorization: `Bearer ${token}` }
+                                        });
+                                        if (!res.ok) throw new Error('Failed to download');
+                                        const blob = await res.blob();
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        a.href = url;
+                                        a.download = `invoice-${order.id.slice(0, 8)}.pdf`;
+                                        a.click();
+                                        URL.revokeObjectURL(url);
+                                      } catch { toast.error('Failed to download invoice'); }
+                                    }}
                                     className="text-xs text-gray-500 hover:text-white flex items-center gap-1"
                                     data-testid={`invoice-link-${index}`}
                                   >
                                     <FileText className="w-3 h-3" /> Invoice
-                                  </a>
+                                  </button>
                                 </div>
                               </div>
                             </div>

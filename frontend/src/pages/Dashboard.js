@@ -236,6 +236,7 @@ const Dashboard = () => {
   const tabs = [
     { id: 'orders', label: 'Orders', icon: Package },
     { id: 'bookings', label: 'Bookings', icon: Calendar },
+    { id: 'nyp', label: 'Name Your Price', icon: DollarSign },
     { id: 'messages', label: 'Messages', icon: MessageSquare },
     { id: 'account', label: 'Account', icon: User },
   ];

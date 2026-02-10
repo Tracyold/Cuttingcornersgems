@@ -2382,6 +2382,13 @@ async def checkout_with_token(
     DEV MODE: Returns payment required info but does not process.
     PRODUCTION: TODO - Create Stripe session with negotiated amount.
     """
+    # Check if user is blocked from purchases
+    if user.get("purchase_blocked", False) or user.get("is_deleted", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Purchases disabled for this account"
+        )
+    
     token_store = get_purchase_token_store()
     result = await token_store.verify_token(user["id"], request.purchase_token)
     

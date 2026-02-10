@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAdmin } from '../../context/AdminContext';
 import { toast } from 'sonner';
 import { Save, RotateCcw, Plus, Trash2, GripVertical, Eye, EyeOff, Image, Clock, Wrench, Camera } from 'lucide-react';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi, devApi } from '../../api/adminApi';
 
 // Reusable List Editor Component
 const ListEditor = ({ items, setItems, fields, title, icon: Icon }) => {

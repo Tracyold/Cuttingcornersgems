@@ -3,7 +3,7 @@ import {
   Users, Mail, Calendar, Phone, ShoppingCart, Package, 
   MousePointer, Eye, Clock, MessageSquare, ChevronDown, 
   ChevronUp, ExternalLink, AlertTriangle, TrendingUp, Key,
-  ShieldOff, Trash2, ShieldCheck
+  ShieldOff, Trash2, ShieldCheck, Sparkles
 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import { toast } from 'sonner';

@@ -2761,9 +2761,30 @@ async def checkout_with_token(
             detail=result.get("reason", "Invalid token")
         )
     
-    # DEV MODE: Return checkout info without actual payment
-    # TODO: In production, create Stripe session with amount
-    # On payment success webhook: mark agreement USED and consume token
+    # DEV MODE / Stripe not configured: Return checkout info without actual payment
+    # When Stripe is enabled, delegate to the same provider used by /payments/checkout-session
+    from services.payment_provider import get_payment_provider
+    provider = await get_payment_provider(db)
+    
+    if provider.is_configured():
+        settings = await db.settings.find_one({"id": "main"}, {"_id": 0}) or {}
+        frontend_url = os.environ.get("FRONTEND_URL", "")
+        payment_result = await provider.create_checkout_session(
+            order_id=result["agreement_id"],
+            amount=result["amount"],
+            line_items=[{"title": f"Negotiated: {result['product_id'][:8]}", "price": result["amount"], "quantity": 1}],
+            success_url=f"{frontend_url}/dashboard?payment=success",
+            cancel_url=f"{frontend_url}/dashboard?payment=cancelled",
+        )
+        if payment_result.checkout_url:
+            return PurchaseCheckoutResponse(
+                requires_payment=True,
+                provider="stripe",
+                amount=result["amount"],
+                product_id=result["product_id"],
+                agreement_id=result["agreement_id"],
+                checkout_url=payment_result.checkout_url,
+            )
     
     return PurchaseCheckoutResponse(
         requires_payment=True,

@@ -78,7 +78,7 @@ const BulkAddModal = ({ onClose, onComplete }) => {
       }
 
       for (const form of formsToSubmit) {
-        await axios.post(`${API_URL}/admin/gallery`, form, getAuthHeaders());
+        await adminApi.post('/admin/gallery', form);
       }
 
       toast.success(`${formsToSubmit.length} gallery item(s) added!`);

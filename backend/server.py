@@ -2417,17 +2417,20 @@ async def admin_persistence_status(admin: dict = Depends(get_admin_user)):
     Get current persistence configuration status with file details.
     
     Returns:
-        Current mode, directory, store implementations, and file metadata.
+        Current mode, directory, writable status, store implementations, and file metadata.
     """
-    from config.persistence import PERSISTENCE_MODE, PERSISTENCE_DIR
+    from config.persistence import PERSISTENCE_MODE, PERSISTENCE_DIR, check_persistence_writable
     from services.store_factory import get_persistence_status
     from pathlib import Path
-    import os
     
     base_status = get_persistence_status()
     
-    # Get file details
-    persistence_dir = Path(PERSISTENCE_DIR)
+    # PERSISTENCE_DIR is already a Path object
+    persistence_dir = PERSISTENCE_DIR if isinstance(PERSISTENCE_DIR, Path) else Path(PERSISTENCE_DIR)
+    
+    # Check if directory is writable
+    writable = check_persistence_writable()
+    
     files_info = []
     
     if persistence_dir.exists():
@@ -2471,7 +2474,8 @@ async def admin_persistence_status(admin: dict = Depends(get_admin_user)):
     
     return {
         "mode": PERSISTENCE_MODE,
-        "persistence_dir": str(persistence_dir.absolute()),
+        "directory": str(persistence_dir.absolute()),
+        "writable": writable,
         "stores": base_status.get("stores", {}),
         "files": sorted(files_info, key=lambda x: x["filename"])
     }

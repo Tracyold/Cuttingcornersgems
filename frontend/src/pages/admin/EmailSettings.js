@@ -111,7 +111,7 @@ const EmailSettings = () => {
     <div className="max-w-2xl" data-testid="email-settings-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="title-xl text-3xl mb-2">Email Service</h1>
+          <h1 className="page-title title-xl text-3xl mb-2">Email Service</h1>
           <p className="text-gray-500 text-sm">Configure automatic email notifications</p>
         </div>
         <Link to="/admin/help/email" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">

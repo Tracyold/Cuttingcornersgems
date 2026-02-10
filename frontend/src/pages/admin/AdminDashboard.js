@@ -110,7 +110,7 @@ const AdminDashboard = () => {
 
   return (
     <div data-testid="admin-dashboard">
-      <h1 className="title-xl text-3xl mb-8">Dashboard</h1>
+      <h1 className="page-title title-xl text-3xl mb-8">Dashboard</h1>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">

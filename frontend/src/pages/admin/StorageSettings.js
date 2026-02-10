@@ -104,7 +104,7 @@ const StorageSettings = () => {
     <div className="max-w-2xl" data-testid="storage-settings-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="title-xl text-3xl mb-2">Cloud Storage</h1>
+          <h1 className="page-title title-xl text-3xl mb-2">Cloud Storage</h1>
           <p className="text-gray-500 text-sm">Configure image and video hosting</p>
         </div>
         <Link to="/admin/help/storage" className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm">

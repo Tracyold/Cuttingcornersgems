@@ -341,7 +341,7 @@ const AdminHelp = () => {
     // Help center index
     return (
       <div className="max-w-2xl">
-        <h1 className="title-xl text-3xl mb-8">Help Center</h1>
+        <h1 className="page-title title-xl text-3xl mb-8">Help Center</h1>
         
         <div className="space-y-4">
           {Object.entries(helpContent).map(([key, item]) => (
@@ -385,7 +385,7 @@ const AdminHelp = () => {
         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
           <content.icon className="w-6 h-6 text-gray-400" />
         </div>
-        <h1 className="title-xl text-3xl">{content.title}</h1>
+        <h1 className="page-title title-xl text-3xl">{content.title}</h1>
       </div>
 
       <div className="space-y-8">

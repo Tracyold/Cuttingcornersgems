@@ -359,7 +359,7 @@ ${'='.repeat(60)}
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl title-xl mb-2">System Tools</h1>
+          <h1 className="page-title title-xl text-3xl mb-2">System Tools</h1>
           <p className="text-gray-400">Maintenance and diagnostic utilities</p>
         </div>
         <div className="flex items-center gap-3 text-sm">

@@ -534,7 +534,7 @@ const AdminProducts = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="title-xl text-3xl">Products</h1>
+        <h1 className="page-title title-xl text-3xl">Products</h1>
         <div className="flex gap-3">
           <button onClick={() => setShowBulkModal(true)} className="btn-secondary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Bulk Add

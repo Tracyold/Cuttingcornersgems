@@ -413,7 +413,7 @@ const AdminUsers = () => {
     <div data-testid="admin-users-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="title-xl text-3xl mb-2">Users</h1>
+          <h1 className="page-title title-xl text-3xl mb-2">Users</h1>
           <p className="text-gray-500 text-sm">{users.length} registered user(s)</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">

@@ -359,7 +359,7 @@ ${'='.repeat(60)}
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-serif mb-2">System Tools</h1>
+          <h1 className="text-3xl title-xl mb-2">System Tools</h1>
           <p className="text-gray-400">Maintenance and diagnostic utilities</p>
         </div>
         <div className="flex items-center gap-3 text-sm">
@@ -459,7 +459,7 @@ ${'='.repeat(60)}
                 <AlertTriangle className="w-6 h-6 text-yellow-400" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-serif mb-2">{confirmModal.displayName}</h3>
+                <h3 className="text-xl title-sm mb-2">{confirmModal.displayName}</h3>
                 <span className={`inline-block text-xs px-2 py-1 border rounded ${getImpactBadgeColor(confirmModal.impactLevel)}`}>
                   {confirmModal.impactLevel}
                 </span>

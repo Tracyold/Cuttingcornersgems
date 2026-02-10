@@ -55,7 +55,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
           <X className="w-5 h-5" />
         </button>
 
-        <h2 className="font-serif text-3xl mb-2">
+        <h2 className="title-xl text-3xl mb-2">
           {mode === 'login' ? 'Welcome Back' : 'Create Account'}
         </h2>
         <p className="text-gray-500 text-sm mb-8">

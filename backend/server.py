@@ -1745,7 +1745,7 @@ async def get_gallery_item(item_id: str):
 
 @api_router.get("/products", response_model=List[ProductResponse])
 async def get_products(category: Optional[str] = None, featured: Optional[bool] = None):
-    query = {"in_stock": True}
+    query = {"in_stock": True, "is_sold": {"$ne": True}}
     if category and category != "all":
         query["category"] = category
     if featured:

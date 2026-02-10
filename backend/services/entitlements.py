@@ -6,6 +6,7 @@ Features:
 - Cumulative spend calculation
 - Threshold-based unlock checks (e.g., Name-Your-Price eligibility)
 - Configurable thresholds
+- Admin override for NYP eligibility
 """
 import logging
 from typing import Optional

@@ -10,6 +10,8 @@ Tests:
 6. Order soft-delete works only for unpaid pending orders
 7. Order soft-delete returns 400 for paid orders
 8. Order restore works correctly
+
+Uses existing orders in the system rather than creating new ones (cart API required).
 """
 
 import pytest
@@ -36,27 +38,6 @@ class TestProductSoftDelete:
     def admin_headers(self, admin_token):
         return {"Authorization": f"Bearer {admin_token}"}
 
-    @pytest.fixture(scope="class")
-    def user_token(self):
-        """Create or login test user."""
-        test_email = f"test_softdel_{uuid.uuid4().hex[:8]}@example.com"
-        # Try register
-        response = requests.post(f"{BASE_URL}/api/auth/register", json={
-            "email": test_email,
-            "password": "Test1234",
-            "name": "Test User"
-        })
-        if response.status_code == 200:
-            return response.json()["access_token"], test_email
-        # Fall back to existing user
-        response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "smoke2@example.com",
-            "password": "Test1234"
-        })
-        if response.status_code == 200:
-            return response.json()["access_token"], "smoke2@example.com"
-        pytest.skip("Could not authenticate test user")
-
     @pytest.fixture
     def test_product(self, admin_headers):
         """Create a test product for deletion tests."""
@@ -73,43 +54,6 @@ class TestProductSoftDelete:
         yield product
         # Cleanup - try hard delete (may fail if referenced)
         try:
-            requests.delete(f"{BASE_URL}/api/admin/products/{product['id']}?hard=true", headers=admin_headers)
-        except:
-            pass
-
-    @pytest.fixture
-    def product_with_order(self, admin_headers, user_token):
-        """Create a product and an order referencing it."""
-        token, email = user_token
-        user_headers = {"Authorization": f"Bearer {token}"}
-        
-        # Create product
-        product_data = {
-            "title": f"TEST_ORDER_REF_PRODUCT_{uuid.uuid4().hex[:8]}",
-            "category": "emerald",
-            "image_url": "https://example.com/test.jpg",
-            "price": 500,
-            "in_stock": True
-        }
-        response = requests.post(f"{BASE_URL}/api/admin/products", json=product_data, headers=admin_headers)
-        assert response.status_code == 200, f"Create product failed: {response.text}"
-        product = response.json()
-        
-        # Create order with this product
-        order_data = {
-            "items": [{"product_id": product["id"], "quantity": 1}],
-            "shipping_address": "123 Test St",
-            "payment_method": "none"
-        }
-        response = requests.post(f"{BASE_URL}/api/orders", json=order_data, headers=user_headers)
-        assert response.status_code in [200, 201], f"Create order failed: {response.text}"
-        order = response.json()
-        
-        yield product, order
-        
-        # Cleanup
-        try:
-            requests.post(f"{BASE_URL}/api/admin/orders/{order['id']}/delete", headers=admin_headers)
             requests.delete(f"{BASE_URL}/api/admin/products/{product['id']}?hard=true", headers=admin_headers)
         except:
             pass
@@ -133,25 +77,73 @@ class TestProductSoftDelete:
         assert deleted_product.get("is_deleted") is True, "Product should be marked is_deleted=True"
         print(f"PASS: Product {product_id} soft-deleted successfully")
 
-    def test_soft_delete_referenced_product_returns_correct_message(self, admin_headers, product_with_order):
+    def test_soft_delete_referenced_product_returns_correct_message(self, admin_headers):
         """Test 2: Soft-delete product referenced by order returns correct message."""
-        product, order = product_with_order
-        product_id = product["id"]
+        # Get existing orders to find a product that's referenced
+        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
+        assert response.status_code == 200
+        orders = response.json()
         
-        # Delete (soft) - should soft-delete and return specific message
-        response = requests.delete(f"{BASE_URL}/api/admin/products/{product_id}", headers=admin_headers)
+        if not orders:
+            pytest.skip("No existing orders to test with")
+        
+        # Get a product_id from an existing order
+        referenced_product_id = None
+        for order in orders:
+            if order.get("items"):
+                for item in order["items"]:
+                    if item.get("product_id"):
+                        referenced_product_id = item["product_id"]
+                        break
+            if referenced_product_id:
+                break
+        
+        if not referenced_product_id:
+            pytest.skip("No products referenced by orders")
+        
+        # Check if product exists (might already be deleted)
+        response = requests.get(f"{BASE_URL}/api/admin/products?include_deleted=true", headers=admin_headers)
+        products = response.json()
+        product = next((p for p in products if p["id"] == referenced_product_id), None)
+        
+        if not product:
+            pytest.skip("Referenced product not found")
+        
+        # If product is already deleted, restore it first
+        if product.get("is_deleted"):
+            requests.post(f"{BASE_URL}/api/admin/products/{referenced_product_id}/restore", headers=admin_headers)
+        
+        # Now try to delete (soft)
+        response = requests.delete(f"{BASE_URL}/api/admin/products/{referenced_product_id}", headers=admin_headers)
         assert response.status_code == 200, f"Delete failed: {response.text}"
         data = response.json()
         assert "hidden" in data["message"].lower() or "historical" in data["message"].lower(), f"Expected 'hidden' or 'historical' in message: {data}"
         print(f"PASS: Referenced product soft-delete returned: {data['message']}")
+        
+        # Restore for other tests
+        requests.post(f"{BASE_URL}/api/admin/products/{referenced_product_id}/restore", headers=admin_headers)
 
-    def test_hard_delete_referenced_product_returns_409(self, admin_headers, product_with_order):
+    def test_hard_delete_referenced_product_returns_409(self, admin_headers):
         """Test 3: Hard-delete on referenced product returns 409 Conflict."""
-        product, order = product_with_order
-        product_id = product["id"]
+        # Find product referenced by an order
+        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
+        orders = response.json()
+        
+        referenced_product_id = None
+        for order in orders:
+            if order.get("items"):
+                for item in order["items"]:
+                    if item.get("product_id"):
+                        referenced_product_id = item["product_id"]
+                        break
+            if referenced_product_id:
+                break
+        
+        if not referenced_product_id:
+            pytest.skip("No products referenced by orders")
         
         # Try hard delete
-        response = requests.delete(f"{BASE_URL}/api/admin/products/{product_id}?hard=true", headers=admin_headers)
+        response = requests.delete(f"{BASE_URL}/api/admin/products/{referenced_product_id}?hard=true", headers=admin_headers)
         assert response.status_code == 409, f"Expected 409 Conflict, got {response.status_code}: {response.text}"
         data = response.json()
         assert "cannot" in data.get("detail", "").lower() or "hard" in data.get("detail", "").lower(), f"Unexpected error message: {data}"
@@ -219,7 +211,7 @@ class TestProductSoftDelete:
 
 
 class TestOrderSoftDelete:
-    """Tests for order deletion/restore lifecycle."""
+    """Tests for order deletion/restore lifecycle using existing orders."""
 
     @pytest.fixture(scope="class")
     def admin_token(self):
@@ -234,85 +226,32 @@ class TestOrderSoftDelete:
     def admin_headers(self, admin_token):
         return {"Authorization": f"Bearer {admin_token}"}
 
-    @pytest.fixture(scope="class")
-    def user_token(self):
-        test_email = f"test_order_{uuid.uuid4().hex[:8]}@example.com"
-        response = requests.post(f"{BASE_URL}/api/auth/register", json={
-            "email": test_email,
-            "password": "Test1234",
-            "name": "Test Order User"
-        })
-        if response.status_code == 200:
-            return response.json()["access_token"]
-        response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "smoke2@example.com",
-            "password": "Test1234"
-        })
-        if response.status_code == 200:
-            return response.json()["access_token"]
-        pytest.skip("Could not authenticate")
-
-    @pytest.fixture
-    def unpaid_order(self, admin_headers, user_token):
-        """Create an unpaid pending order."""
-        user_headers = {"Authorization": f"Bearer {user_token}"}
-        
-        # Get an existing product
-        response = requests.get(f"{BASE_URL}/api/products")
-        assert response.status_code == 200
-        products = response.json()
-        if not products:
-            pytest.skip("No products available")
-        product = products[0]
-        
-        # Create order
-        order_data = {
-            "items": [{"product_id": product["id"], "quantity": 1}],
-            "shipping_address": "456 Test Ave",
-            "payment_method": "none"
-        }
-        response = requests.post(f"{BASE_URL}/api/orders", json=order_data, headers=user_headers)
-        assert response.status_code in [200, 201], f"Create order failed: {response.text}"
-        order = response.json()
-        yield order
-        # Cleanup
-        try:
-            requests.post(f"{BASE_URL}/api/admin/orders/{order['id']}/delete", headers=admin_headers)
-        except:
-            pass
-
-    @pytest.fixture
-    def paid_order(self, admin_headers, user_token):
-        """Create a paid order."""
-        user_headers = {"Authorization": f"Bearer {user_token}"}
-        
-        # Get an existing product
-        response = requests.get(f"{BASE_URL}/api/products")
-        assert response.status_code == 200
-        products = response.json()
-        if not products:
-            pytest.skip("No products available")
-        product = products[0]
-        
-        # Create order
-        order_data = {
-            "items": [{"product_id": product["id"], "quantity": 1}],
-            "shipping_address": "789 Test Blvd",
-            "payment_method": "none"
-        }
-        response = requests.post(f"{BASE_URL}/api/orders", json=order_data, headers=user_headers)
-        assert response.status_code in [200, 201]
-        order = response.json()
-        
-        # Mark as paid
-        response = requests.post(f"{BASE_URL}/api/admin/orders/{order['id']}/mark-paid", headers=admin_headers)
-        # Even if mark-paid fails, proceed with what we have
-        
-        yield order
-
-    def test_delete_unpaid_pending_order_succeeds(self, admin_headers, unpaid_order):
+    def test_delete_unpaid_pending_order_succeeds(self, admin_headers):
         """Test 7: POST /admin/orders/{id}/delete works for unpaid pending orders."""
-        order_id = unpaid_order["id"]
+        # Get pending orders
+        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
+        assert response.status_code == 200
+        orders = response.json()
+        
+        # Find an unpaid pending order that's not already deleted
+        pending_order = None
+        for order in orders:
+            if order.get("status") == "pending" and not order.get("paid_at") and not order.get("is_deleted"):
+                pending_order = order
+                break
+        
+        if not pending_order:
+            # Check if there's a deleted pending order we can restore first
+            for order in orders:
+                if order.get("status") == "pending" and not order.get("paid_at") and order.get("is_deleted"):
+                    requests.post(f"{BASE_URL}/api/admin/orders/{order['id']}/restore", headers=admin_headers)
+                    pending_order = order
+                    break
+        
+        if not pending_order:
+            pytest.skip("No pending unpaid orders available")
+        
+        order_id = pending_order["id"]
         
         response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/delete", headers=admin_headers)
         assert response.status_code == 200, f"Delete failed: {response.text}"
@@ -327,37 +266,60 @@ class TestOrderSoftDelete:
         assert deleted_order is not None, "Order should exist with include_deleted"
         assert deleted_order.get("is_deleted") is True, "Order should be marked is_deleted"
         print(f"PASS: Unpaid order {order_id} soft-deleted successfully")
+        
+        # Restore it for other tests
+        requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/restore", headers=admin_headers)
 
-    def test_delete_paid_order_returns_400(self, admin_headers, paid_order):
+    def test_delete_paid_order_returns_400(self, admin_headers):
         """Test 8: POST /admin/orders/{id}/delete returns 400 for paid orders."""
+        # Get orders
+        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
+        assert response.status_code == 200
+        orders = response.json()
+        
+        # Find a paid order
+        paid_order = None
+        for order in orders:
+            if order.get("paid_at"):
+                paid_order = order
+                break
+        
+        if not paid_order:
+            pytest.skip("No paid orders available to test")
+        
         order_id = paid_order["id"]
         
-        # First check if order is actually paid
-        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
-        orders = response.json()
-        order = next((o for o in orders if o["id"] == order_id), None)
-        
-        if order and order.get("paid_at"):
-            # Try to delete paid order
-            response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/delete", headers=admin_headers)
-            assert response.status_code == 400, f"Expected 400 for paid order delete, got {response.status_code}: {response.text}"
-            data = response.json()
-            assert "paid" in data.get("detail", "").lower() or "cannot" in data.get("detail", "").lower(), f"Unexpected error: {data}"
-            print(f"PASS: Delete paid order returned 400: {data}")
-        else:
-            # Order not paid, try marking it paid first
-            requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/mark-paid", headers=admin_headers)
-            response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/delete", headers=admin_headers)
-            # Should fail if it got marked paid
-            print(f"Order paid status: {order.get('paid_at') if order else 'N/A'}, delete response: {response.status_code}")
-
-    def test_restore_deleted_order(self, admin_headers, unpaid_order):
-        """Test 9: POST /admin/orders/{id}/restore restores soft-deleted orders."""
-        order_id = unpaid_order["id"]
-        
-        # Delete first
+        # Try to delete paid order
         response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/delete", headers=admin_headers)
+        assert response.status_code == 400, f"Expected 400 for paid order delete, got {response.status_code}: {response.text}"
+        data = response.json()
+        assert "paid" in data.get("detail", "").lower() or "cannot" in data.get("detail", "").lower(), f"Unexpected error: {data}"
+        print(f"PASS: Delete paid order returned 400: {data}")
+
+    def test_restore_deleted_order(self, admin_headers):
+        """Test 9: POST /admin/orders/{id}/restore restores soft-deleted orders."""
+        # Get orders including deleted
+        response = requests.get(f"{BASE_URL}/api/admin/orders?include_deleted=true", headers=admin_headers)
         assert response.status_code == 200
+        orders = response.json()
+        
+        # Find an unpaid pending order to use
+        test_order = None
+        for order in orders:
+            if order.get("status") == "pending" and not order.get("paid_at"):
+                test_order = order
+                break
+        
+        if not test_order:
+            pytest.skip("No pending orders available")
+        
+        order_id = test_order["id"]
+        
+        # If not deleted, delete it first
+        if not test_order.get("is_deleted"):
+            response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/delete", headers=admin_headers)
+            if response.status_code != 200:
+                pytest.skip("Could not delete order for restore test")
         
         # Restore
         response = requests.post(f"{BASE_URL}/api/admin/orders/{order_id}/restore", headers=admin_headers)

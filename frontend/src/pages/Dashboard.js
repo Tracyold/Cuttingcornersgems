@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Package, Calendar, User, LogOut, MessageSquare, Send, DollarSign, Lock, Unlock, Phone, Bell, ChevronDown, ChevronUp, Check, Clock, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Package, Calendar, User, LogOut, MessageSquare, Send, DollarSign, Lock, Unlock, Phone, Bell, ChevronDown, ChevronUp, Check, Clock, AlertCircle, ArrowLeft, FileText, CreditCard } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import axios from 'axios';

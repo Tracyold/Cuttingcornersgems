@@ -1889,6 +1889,112 @@ async def get_user_orders_dev(user_id: str):
     }
 
 
+@dev_router.post("/content/studio/reset")
+async def reset_studio_content_dev():
+    """
+    DEV-ONLY: Reset Studio content to defaults.
+    
+    Automatically disabled when ENV == "production".
+    """
+    import os
+    from services.content_store import get_content_store
+    
+    env = os.environ.get("ENV", "development").lower()
+    if env == "production":
+        raise HTTPException(
+            status_code=403, 
+            detail="Development endpoints are disabled in production"
+        )
+    
+    store = get_content_store(force_memory=True)
+    content = await store.reset_studio_content()
+    
+    return {
+        "message": "Studio content reset to defaults",
+        "version": content.version
+    }
+
+
+# ============ CONTENT/CMS PUBLIC ENDPOINTS ============
+
+@api_router.get("/content/studio")
+async def get_studio_content_public():
+    """
+    Get Studio page content (public endpoint).
+    Returns 404 if Studio page is disabled.
+    """
+    from services.content_store import get_content_store
+    
+    store = get_content_store(db)
+    content = await store.get_studio_content()
+    
+    if not content.enabled:
+        raise HTTPException(
+            status_code=404,
+            detail="Studio page is currently unavailable"
+        )
+    
+    return content.model_dump()
+
+
+@api_router.get("/content/studio/status")
+async def get_studio_status():
+    """
+    Get Studio page enabled status (lightweight check).
+    Used by nav to determine if Studio link should be shown.
+    """
+    from services.content_store import get_content_store
+    
+    store = get_content_store(db)
+    content = await store.get_studio_content()
+    
+    return {"enabled": content.enabled}
+
+
+# ============ CONTENT/CMS ADMIN ENDPOINTS ============
+
+@api_router.get("/admin/content/studio")
+async def get_studio_content_admin(admin: dict = Depends(get_admin_user)):
+    """
+    Get full Studio page content for admin editing.
+    Returns complete content regardless of enabled status.
+    """
+    from services.content_store import get_content_store
+    
+    store = get_content_store(db)
+    content = await store.get_studio_content()
+    
+    return content.model_dump()
+
+
+@api_router.put("/admin/content/studio")
+async def update_studio_content_admin(data: dict, admin: dict = Depends(get_admin_user)):
+    """
+    Update Studio page content (admin-only).
+    Validates schema, saves via content store.
+    """
+    from services.content_store import get_content_store
+    from models.studio_content import StudioContent
+    
+    try:
+        # Validate and parse the incoming data
+        content = StudioContent(**data)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid content schema: {str(e)}"
+        )
+    
+    store = get_content_store(db)
+    updated = await store.save_studio_content(content)
+    
+    return {
+        "message": "Studio content updated",
+        "version": updated.version,
+        "updated_at": updated.updated_at.isoformat()
+    }
+
+
 # Register dev router under /api prefix (endpoints self-guard against production)
 api_router.include_router(dev_router)
 

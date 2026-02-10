@@ -1726,6 +1726,152 @@ async def backfill_schema_endpoint(data: dict, admin: dict = Depends(get_admin_u
     result = await backfill_missing_field(db, collection, field, default_value)
     return result
 
+# ============ USER ENTITLEMENTS ENDPOINTS ============
+
+@api_router.get("/users/me/entitlements")
+async def get_my_entitlements(user: dict = Depends(get_current_user)):
+    """
+    Get current user's entitlements (total spend, NYP unlock status).
+    Requires authentication.
+    
+    Returns:
+        {
+            "total_spend": float,
+            "unlocked_nyp": bool,
+            "threshold": float,
+            "spend_to_unlock": float
+        }
+    """
+    from services.entitlements import get_user_entitlements
+    from services.order_store import get_order_store
+    
+    store = get_order_store(db)
+    entitlements = await get_user_entitlements(user["user_id"], store)
+    return entitlements
+
+
+# ============ DEVELOPMENT-ONLY ENDPOINTS ============
+# These endpoints are automatically disabled in production
+
+dev_router = APIRouter(prefix="/dev", tags=["development"])
+
+@dev_router.post("/orders/seed")
+async def seed_orders_dev(orders: list):
+    """
+    DEV-ONLY: Seed the InMemoryOrderStore for UI testing without Stripe/DB.
+    
+    Automatically disabled when ENV == "production".
+    
+    Body: List of orders with fields:
+        - order_id: str
+        - user_id: str
+        - order_total: float
+        - status: "PENDING" | "COMPLETED" | "REFUNDED" | "CANCELLED"
+        - created_at: datetime (optional)
+    
+    Returns:
+        {"seeded": int, "message": str}
+    """
+    import os
+    from datetime import datetime, timezone
+    from models.order import Order, OrderStatus
+    from services.order_store import get_order_store
+    
+    env = os.environ.get("ENV", "development").lower()
+    if env == "production":
+        raise HTTPException(
+            status_code=403, 
+            detail="Development endpoints are disabled in production"
+        )
+    
+    store = get_order_store(force_memory=True)
+    seeded_count = 0
+    
+    for order_data in orders:
+        try:
+            # Handle status conversion
+            status_val = order_data.get("status", "COMPLETED")
+            if isinstance(status_val, str):
+                status_val = OrderStatus(status_val.upper())
+            
+            # Handle created_at
+            created_at = order_data.get("created_at")
+            if created_at is None:
+                created_at = datetime.now(timezone.utc)
+            elif isinstance(created_at, str):
+                created_at = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
+            
+            order = Order(
+                order_id=order_data["order_id"],
+                user_id=order_data["user_id"],
+                order_total=float(order_data["order_total"]),
+                status=status_val,
+                created_at=created_at
+            )
+            await store.record_order(order)
+            seeded_count += 1
+        except Exception as e:
+            logger.warning(f"Failed to seed order: {e}")
+    
+    return {
+        "seeded": seeded_count,
+        "message": f"Successfully seeded {seeded_count} orders to InMemoryOrderStore"
+    }
+
+
+@dev_router.delete("/orders/clear")
+async def clear_orders_dev():
+    """
+    DEV-ONLY: Clear all orders from InMemoryOrderStore.
+    
+    Automatically disabled when ENV == "production".
+    """
+    import os
+    from services.order_store import get_order_store
+    
+    env = os.environ.get("ENV", "development").lower()
+    if env == "production":
+        raise HTTPException(
+            status_code=403, 
+            detail="Development endpoints are disabled in production"
+        )
+    
+    store = get_order_store(force_memory=True)
+    await store.clear_all()
+    
+    return {"message": "InMemoryOrderStore cleared"}
+
+
+@dev_router.get("/orders/{user_id}")
+async def get_user_orders_dev(user_id: str):
+    """
+    DEV-ONLY: Get all orders for a user from InMemoryOrderStore.
+    
+    Automatically disabled when ENV == "production".
+    """
+    import os
+    from services.order_store import get_order_store
+    
+    env = os.environ.get("ENV", "development").lower()
+    if env == "production":
+        raise HTTPException(
+            status_code=403, 
+            detail="Development endpoints are disabled in production"
+        )
+    
+    store = get_order_store(force_memory=True)
+    orders = await store.list_orders_for_user(user_id)
+    
+    return {
+        "user_id": user_id,
+        "orders": [order.model_dump() for order in orders],
+        "count": len(orders)
+    }
+
+
+# Register dev router (endpoints self-guard against production)
+app.include_router(dev_router)
+
 @api_router.get("/")
 async def root():
     return {"message": "Cutting Corners API", "status": "running"}

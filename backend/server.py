@@ -2550,6 +2550,7 @@ from models.negotiation import AdminCounterRequest, AdminAcceptRequest, AdminClo
 @api_router.get("/admin/negotiations")
 async def admin_list_negotiations(
     status: Optional[str] = None,
+    include_deleted: bool = False,
     admin: dict = Depends(get_admin_user)
 ):
     """List negotiations (admin view)."""
@@ -2560,8 +2561,19 @@ async def admin_list_negotiations(
         filter_status = status.upper()
     
     summaries = await store.list_threads_for_admin(filter_status)
-    return [
-        {
+    
+    # Apply soft-delete filter
+    if not include_deleted:
+        # Check DB for is_deleted flag
+        deleted_ids = set()
+        cursor = db.negotiation_threads.find({"is_deleted": True}, {"negotiation_id": 1, "_id": 0})
+        async for doc in cursor:
+            deleted_ids.add(doc["negotiation_id"])
+        summaries = [s for s in summaries if s.negotiation_id not in deleted_ids]
+    
+    result = []
+    for s in summaries:
+        item = {
             "negotiation_id": s.negotiation_id,
             "user_id": s.user_id,
             "user_email": s.user_email,
@@ -2575,8 +2587,13 @@ async def admin_list_negotiations(
             "last_amount": s.last_amount,
             "message_count": s.message_count
         }
-        for s in summaries
-    ]
+        if include_deleted:
+            doc = await db.negotiation_threads.find_one(
+                {"negotiation_id": s.negotiation_id}, {"_id": 0, "is_deleted": 1}
+            )
+            item["is_deleted"] = doc.get("is_deleted", False) if doc else False
+        result.append(item)
+    return result
 
 
 @api_router.get("/admin/negotiations/{negotiation_id}")

@@ -138,6 +138,9 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {user.nyp_override_enabled && (
+              <span className="text-xs bg-amber-500/30 text-amber-400 px-2 py-0.5 font-semibold" data-testid="badge-override">OVERRIDE ON</span>
+            )}
             {isDeleted && (
               <span className="text-xs bg-red-500/30 text-red-400 px-2 py-0.5 font-semibold" data-testid="badge-deleted">DELETED</span>
             )}

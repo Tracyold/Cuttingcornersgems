@@ -340,9 +340,11 @@ const AdminSold = () => {
           <h1 className="page-title title-xl text-3xl mb-2">Sold Items</h1>
           <p className="text-gray-500 text-sm">{soldItems.length} item(s) sold</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Package className="w-4 h-4" />
-          <span>Click to expand invoice details</span>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-toggle-sold">
+            <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
+            Show deleted
+          </label>
         </div>
       </div>
 
@@ -355,11 +357,23 @@ const AdminSold = () => {
       ) : (
         <div className="space-y-4">
           {soldItems.map(item => (
-            <InvoiceCard 
-              key={item.id} 
-              item={item} 
-              onUpdate={fetchSoldItems}
-            />
+            <div key={item.id} className={item.is_deleted ? 'opacity-60' : ''}>
+              <InvoiceCard 
+                item={item} 
+                onUpdate={fetchSoldItems}
+              />
+              <div className="flex items-center gap-2 px-4 pb-2">
+                {item.is_deleted ? (
+                  <>
+                    <span className="text-xs text-red-400">Deleted</span>
+                    <button onClick={() => handleRestore(item.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-sold-${item.id}`}>Restore</button>
+                    <button onClick={() => { if(window.prompt('Type PURGE to confirm') === 'PURGE') handlePurge(item.id); }} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30" data-testid={`purge-sold-${item.id}`}>Purge</button>
+                  </>
+                ) : (
+                  <button onClick={() => handleDelete(item.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-sold-${item.id}`}>Delete</button>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       )}

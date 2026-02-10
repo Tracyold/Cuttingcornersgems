@@ -1778,6 +1778,8 @@ async def add_to_cart(item: CartItem, current_user: dict = Depends(get_current_u
     product = await db.products.find_one({"id": item.product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
+    if product.get("is_sold"):
+        raise HTTPException(status_code=400, detail="This item has been sold")
     
     cart = await db.carts.find_one({"user_id": current_user["id"]})
     if not cart:

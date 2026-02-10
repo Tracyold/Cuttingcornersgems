@@ -83,13 +83,15 @@ const AdminDashboard = () => {
       case 'booking':
         return `Booking from ${item.name} - ${item.service}`;
       case 'order':
-        return `New order - $${item.total?.toLocaleString()}`;
+        return `Order - $${item.total?.toLocaleString()}${item.paid_at ? ' (paid)' : ''}`;
       case 'inquiry':
         return `Product inquiry from ${item.name}`;
       case 'sell':
         return `Sell inquiry from ${item.name} - $${item.asking_price}`;
       case 'nyp':
         return `Name Your Price from ${item.name} - $${item.price}`;
+      case 'negotiation':
+        return `Negotiation ${item.negotiation_id?.slice(0, 8) || ''} - ${item.status || 'OPEN'}`;
       default:
         return 'Activity';
     }
@@ -102,6 +104,7 @@ const AdminDashboard = () => {
       case 'inquiry': return 'bg-yellow-500/20 text-yellow-400';
       case 'sell': return 'bg-purple-500/20 text-purple-400';
       case 'nyp': return 'bg-orange-500/20 text-orange-400';
+      case 'negotiation': return 'bg-cyan-500/20 text-cyan-400';
       default: return 'bg-gray-500/20 text-gray-400';
     }
   };

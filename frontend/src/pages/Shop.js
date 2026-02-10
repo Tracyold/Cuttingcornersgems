@@ -594,7 +594,7 @@ const Shop = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Available</p>
-          <h1 className="section-title">Shop</h1>
+          <h1 className="title-xl">Shop</h1>
         </div>
       </section>
 

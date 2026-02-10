@@ -280,7 +280,6 @@ const InvoiceCard = ({ item, onUpdate }) => {
 };
 
 const AdminSold = () => {
-  const { getAuthHeaders } = useAdmin();
   const [soldItems, setSoldItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -290,8 +289,8 @@ const AdminSold = () => {
 
   const fetchSoldItems = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/sold`, getAuthHeaders());
-      setSoldItems(response.data);
+      const data = await adminApi.get('/admin/sold');
+      setSoldItems(data);
     } catch (error) {
       console.error('Failed to fetch sold items:', error);
     } finally {

@@ -417,7 +417,6 @@ const BulkAddModal = ({ onClose, onComplete }) => {
 };
 
 const AdminProducts = () => {
-  const { getAuthHeaders } = useAdmin();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -431,8 +430,8 @@ const AdminProducts = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/products`, getAuthHeaders());
-      setProducts(response.data);
+      const data = await adminApi.get('/admin/products');
+      setProducts(data);
     } catch (error) {
       toast.error('Failed to fetch products');
     } finally {
@@ -474,10 +473,10 @@ const AdminProducts = () => {
       };
 
       if (editingProduct) {
-        await axios.patch(`${API_URL}/admin/products/${editingProduct.id}`, submitData, getAuthHeaders());
+        await adminApi.patch(`/admin/products/${editingProduct.id}`, submitData);
         toast.success('Product updated');
       } else {
-        await axios.post(`${API_URL}/admin/products`, submitData, getAuthHeaders());
+        await adminApi.post('/admin/products', submitData);
         toast.success('Product created');
       }
       
@@ -493,7 +492,7 @@ const AdminProducts = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this product?')) return;
     try {
-      await axios.delete(`${API_URL}/admin/products/${id}`, getAuthHeaders());
+      await adminApi.delete(`/admin/products/${id}`);
       toast.success('Product deleted');
       // Revalidate: refetch products after deletion
       await fetchProducts();

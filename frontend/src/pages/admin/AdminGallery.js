@@ -513,7 +513,7 @@ const AdminGallery = () => {
 
       {/* Bulk Add Modal */}
       {showBulkModal && (
-        <BulkAddModal onClose={() => setShowBulkModal(false)} onComplete={fetchItems} getAuthHeaders={getAuthHeaders} />
+        <BulkAddModal onClose={() => setShowBulkModal(false)} onComplete={fetchItems} />
       )}
     </div>
   );

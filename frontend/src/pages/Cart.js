@@ -14,6 +14,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [shippingAddress, setShippingAddress] = useState('');
+  const [showOrderConfirm, setShowOrderConfirm] = useState(false);
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {

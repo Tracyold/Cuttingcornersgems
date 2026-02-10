@@ -419,7 +419,12 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
 
       {/* Info Section */}
       <div className="p-6 space-y-4">
-        <h2 className="title-sm text-2xl">{product.title}</h2>
+        <div className="flex items-center gap-3">
+          <h2 className="title-sm text-2xl">{product.title}</h2>
+          {product.is_sold && (
+            <span className="text-xs bg-red-500/20 text-red-400 px-3 py-1 font-bold tracking-widest border border-red-500/30" data-testid="product-sold-badge">SOLD</span>
+          )}
+        </div>
         
         <div className="space-y-3 text-sm">
           <div className="flex justify-between border-b border-white/10 pb-2">
@@ -449,31 +454,41 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
         </div>
 
         {/* Buttons */}
-        <div className="space-y-3 pt-4">
-          <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="get-last-refusal-btn">
-            Get Last Refusal
-          </button>
-          <button onClick={handleBuy} className="btn-primary w-full" data-testid="product-buy-btn">
-            Buy Now
-          </button>
-          {isAuthenticated ? (
-            <button onClick={() => setShowInquiry(true)} className="btn-secondary w-full" data-testid="product-inquiry-btn">
-              Inquiry
+        {product.is_sold ? (
+          <div className="pt-4">
+            <div className="w-full py-3 bg-red-500/10 border border-red-500/30 text-red-400 text-center uppercase tracking-widest text-sm" data-testid="sold-notice">
+              This item has been sold
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-3 pt-4">
+            <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="get-last-refusal-btn">
+              Get Last Refusal
             </button>
-          ) : (
-            <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="product-inquiry-btn-disabled">
-              Sign In to Inquire
+            <button onClick={handleBuy} className="btn-primary w-full" data-testid="product-buy-btn">
+              Buy Now
             </button>
-          )}
-        </div>
+            {isAuthenticated ? (
+              <button onClick={() => setShowInquiry(true)} className="btn-secondary w-full" data-testid="product-inquiry-btn">
+                Inquiry
+              </button>
+            ) : (
+              <button disabled className="w-full py-3 bg-gray-800 text-gray-500 uppercase tracking-widest text-sm cursor-not-allowed opacity-50" data-testid="product-inquiry-btn-disabled">
+                Sign In to Inquire
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Name Your Price Section */}
-        <NameYourPriceSection 
-          product={product} 
-          entitlements={entitlements} 
-          isAuthenticated={isAuthenticated}
-          onNamePrice={handleNamePrice}
-        />
+        {!product.is_sold && (
+          <NameYourPriceSection 
+            product={product} 
+            entitlements={entitlements} 
+            isAuthenticated={isAuthenticated}
+            onNamePrice={handleNamePrice}
+          />
+        )}
       </div>
 
       {showInquiry && <InquiryPopup product={product} onClose={() => setShowInquiry(false)} />}

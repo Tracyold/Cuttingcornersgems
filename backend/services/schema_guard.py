@@ -26,7 +26,7 @@ async def ensure_schema_version(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     Idempotent write on startup - report only, no enforcement
     """
     # Always check/initialize, regardless of flag (idempotent)
-    schema_doc = await db.system_metadata.find_one({"id": "main"})
+    schema_doc = await db[SCHEMA_COLLECTION].find_one({"id": "main"})
     
     if not schema_doc:
         # Initialize system metadata

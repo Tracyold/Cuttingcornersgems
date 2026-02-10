@@ -494,11 +494,21 @@ const AdminProducts = () => {
     try {
       await adminApi.delete(`/admin/products/${id}`);
       toast.success('Product deleted');
-      // Revalidate: refetch products after deletion
       await fetchProducts();
     } catch (error) {
       const errorMsg = error.response?.data?.detail || 'Failed to delete product';
       toast.error(errorMsg);
+    }
+  };
+
+  const handleToggleSold = async (product) => {
+    const newSold = !product.is_sold;
+    try {
+      await adminApi.patch(`/admin/products/${product.id}`, { is_sold: newSold });
+      toast.success(newSold ? 'Marked as SOLD' : 'Marked as available');
+      await fetchProducts();
+    } catch (error) {
+      toast.error('Failed to update sold status');
     }
   };
 

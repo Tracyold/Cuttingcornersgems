@@ -110,7 +110,7 @@ const AnalyticsSettings = () => {
     <div className="max-w-2xl" data-testid="analytics-settings-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl mb-2">Analytics & Data Collection</h1>
+          <h1 className="title-xl text-3xl mb-2">Analytics & Data Collection</h1>
           <p className="text-gray-500 text-sm">Track visitor behavior and engagement</p>
         </div>
         <Link to="/admin/help/analytics" className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1">

@@ -162,7 +162,7 @@ const BulkAddModal = ({ onClose, onComplete }) => {
       <div className="flex-1 flex flex-col">
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h2 className="font-serif text-xl">Bulk Add Products</h2>
+            <h2 className="title-sm text-xl">Bulk Add Products</h2>
             <p className="text-sm text-gray-500">
               {editingIndex !== null ? `Editing item #${editingIndex + 1}` : `Adding item #${savedForms.length + 1}`}
             </p>
@@ -534,7 +534,7 @@ const AdminProducts = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="font-serif text-3xl">Products</h1>
+        <h1 className="title-xl text-3xl">Products</h1>
         <div className="flex gap-3">
           <button onClick={() => setShowBulkModal(true)} className="btn-secondary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Bulk Add
@@ -556,7 +556,7 @@ const AdminProducts = () => {
             <div key={product.id} className="gem-card p-4 flex gap-4 items-center">
               <img src={product.image_url} alt={product.title} className="w-20 h-20 object-cover" />
               <div className="flex-1 min-w-0">
-                <h3 className="font-serif text-lg truncate">{product.title}</h3>
+                <h3 className="title-sm text-lg truncate">{product.title}</h3>
                 <p className="text-sm text-gray-500">{product.category} • {product.carat || 'N/A'}</p>
                 <p className="text-sm font-mono">${product.price?.toLocaleString() || 'No price'}</p>
                 <div className="flex gap-2 mt-1">
@@ -583,7 +583,7 @@ const AdminProducts = () => {
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-[#0A0A0A] border border-white/10 w-full max-w-2xl my-8 relative">
             <div className="sticky top-0 bg-[#0A0A0A] border-b border-white/10 p-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl">{editingProduct ? 'Edit Product' : 'Add Product'}</h2>
+              <h2 className="title-sm text-xl">{editingProduct ? 'Edit Product' : 'Add Product'}</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white">
                 <X className="w-5 h-5" />
               </button>

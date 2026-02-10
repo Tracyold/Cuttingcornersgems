@@ -430,7 +430,7 @@ const AdminNegotiations = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-serif text-2xl">Negotiations</h1>
+          <h1 className="title-sm text-2xl">Negotiations</h1>
           <p className="text-gray-500 text-sm">Name Your Price offers and agreements</p>
         </div>
         <div className="flex gap-2">

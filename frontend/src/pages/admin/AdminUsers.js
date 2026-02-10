@@ -108,7 +108,7 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
       >
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-            <span className="font-serif text-lg">{user.name?.charAt(0).toUpperCase() || '?'}</span>
+            <span className="title-sm text-lg">{user.name?.charAt(0).toUpperCase() || '?'}</span>
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold">{user.name}</h3>
@@ -345,7 +345,7 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
               {showDeleteConfirm && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowDeleteConfirm(false)}>
                   <div className="bg-[#0a0a0a] border border-white/10 p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
-                    <h3 className="font-serif text-xl mb-4">Delete User Account</h3>
+                    <h3 className="title-sm text-xl mb-4">Delete User Account</h3>
                     <p className="text-gray-400 text-sm mb-4">
                       Soft-delete disables login and purchases. Order history, bookings, and inquiries are preserved.
                     </p>
@@ -413,7 +413,7 @@ const AdminUsers = () => {
     <div data-testid="admin-users-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl mb-2">Users</h1>
+          <h1 className="title-xl text-3xl mb-2">Users</h1>
           <p className="text-gray-500 text-sm">{users.length} registered user(s)</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-500">

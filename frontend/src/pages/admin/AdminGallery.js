@@ -140,7 +140,7 @@ const BulkAddModal = ({ onClose, onComplete }) => {
       <div className="flex-1 flex flex-col">
         <div className="p-4 border-b border-white/10 flex items-center justify-between">
           <div>
-            <h2 className="font-serif text-xl">Bulk Add Gallery Items</h2>
+            <h2 className="title-sm text-xl">Bulk Add Gallery Items</h2>
             <p className="text-sm text-gray-500">
               {editingIndex !== null ? `Editing #${editingIndex + 1}` : `Adding #${savedForms.length + 1}`}
             </p>
@@ -355,7 +355,7 @@ const AdminGallery = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h1 className="font-serif text-3xl">Gallery</h1>
+        <h1 className="title-xl text-3xl">Gallery</h1>
         <div className="flex gap-3">
           <button onClick={() => setShowBulkModal(true)} className="btn-secondary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Bulk Add
@@ -382,7 +382,7 @@ const AdminGallery = () => {
               )}
               <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                 <p className="text-xs text-gray-400 uppercase">{item.category}</p>
-                <p className="font-serif text-sm truncate">{item.title}</p>
+                <p className="title-sm text-sm truncate">{item.title}</p>
                 <div className="flex gap-2 mt-2">
                   <button onClick={() => openModal(item)} className="flex-1 py-2 bg-white/20 hover:bg-white/30 text-xs">Edit</button>
                   <button onClick={() => handleDelete(item.id)} className="flex-1 py-2 bg-red-500/20 hover:bg-red-500/30 text-xs text-red-400">Delete</button>
@@ -398,7 +398,7 @@ const AdminGallery = () => {
         <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 overflow-y-auto">
           <div className="bg-[#0A0A0A] border border-white/10 w-full max-w-2xl my-8 relative">
             <div className="sticky top-0 bg-[#0A0A0A] border-b border-white/10 p-4 flex items-center justify-between">
-              <h2 className="font-serif text-xl">{editingItem ? 'Edit' : 'Add'} Gallery Item</h2>
+              <h2 className="title-sm text-xl">{editingItem ? 'Edit' : 'Add'} Gallery Item</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">

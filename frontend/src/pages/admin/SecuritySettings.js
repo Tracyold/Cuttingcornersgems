@@ -121,7 +121,7 @@ const SecuritySettings = () => {
     <div className="max-w-2xl" data-testid="security-settings-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl mb-2">Security Settings</h1>
+          <h1 className="title-xl text-3xl mb-2">Security Settings</h1>
           <p className="text-gray-500 text-sm">Configure 2FA, CAPTCHA, and verification</p>
         </div>
         <Link to="/admin/help/security" className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm">

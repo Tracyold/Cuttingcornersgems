@@ -59,7 +59,7 @@ const GeneralSettings = () => {
     <div className="max-w-2xl" data-testid="general-settings-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl mb-2">Site Settings</h1>
+          <h1 className="title-xl text-3xl mb-2">Site Settings</h1>
           <p className="text-gray-500 text-sm">General website configuration</p>
         </div>
       </div>

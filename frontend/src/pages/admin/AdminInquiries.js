@@ -166,7 +166,7 @@ const AdminInquiries = () => {
 
   return (
     <div data-testid="admin-inquiries-page">
-      <h1 className="font-serif text-3xl mb-8">Inquiries</h1>
+      <h1 className="title-xl text-3xl mb-8">Inquiries</h1>
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-2 mb-6">

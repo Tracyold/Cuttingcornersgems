@@ -308,7 +308,7 @@ ${'='.repeat(60)}
               <Lock className="w-8 h-8 text-yellow-400" />
             </div>
             <div>
-              <h2 className="text-2xl font-serif">System Tools Locked</h2>
+              <h2 className="text-2xl title-xl">System Tools Locked</h2>
               <p className="text-gray-400 text-sm mt-1">Re-enter admin password to unlock</p>
             </div>
           </div>

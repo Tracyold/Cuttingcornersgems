@@ -35,7 +35,7 @@ const AdminLogin = () => {
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/5 flex items-center justify-center">
             <Lock className="w-8 h-8 text-gray-400" />
           </div>
-          <h1 className="font-serif text-3xl mb-2">Admin Access</h1>
+          <h1 className="title-xl text-3xl mb-2">Admin Access</h1>
           <p className="text-gray-500 text-sm">Cutting Corners Management Portal</p>
         </div>
 

@@ -213,7 +213,7 @@ const AdminStudio = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-serif">Studio Content</h1>
+          <h1 className="text-2xl title-xl">Studio Content</h1>
           <p className="text-gray-500 text-sm mt-1">
             Version {content.version} • Last updated: {new Date(content.updated_at).toLocaleString()}
           </p>

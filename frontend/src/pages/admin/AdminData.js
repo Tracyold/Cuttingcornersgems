@@ -234,7 +234,7 @@ const AdminData = () => {
     <div data-testid="admin-data-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-3xl mb-2">Data & Archives</h1>
+          <h1 className="title-xl text-3xl mb-2">Data & Archives</h1>
           <p className="text-gray-500 text-sm">Manage archived and deleted items</p>
         </div>
         <button

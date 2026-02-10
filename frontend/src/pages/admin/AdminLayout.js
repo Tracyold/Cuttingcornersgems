@@ -64,7 +64,7 @@ const AdminLayout = ({ children }) => {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="p-6 border-b border-white/5">
-            <Link to="/admin/dashboard" className="font-serif text-xl">
+            <Link to="/admin/dashboard" className="title-sm text-xl">
               <span className="text-[#d4af37]">Admin</span> Panel
             </Link>
           </div>

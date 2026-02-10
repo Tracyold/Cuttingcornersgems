@@ -1,0 +1,64 @@
+{
+  "summary": "Admin per-user override feature for HB/NYP gating tested successfully. 9/9 backend tests passed (100%) and 10/10 frontend UI tests passed (100%). The feature allows admins to grant threshold-gated access (Humble Beginnings + Name Your Price unlock) without requiring purchases.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend Test 1: PATCH /api/admin/users/{user_id}/entitlements with {override_enabled:true, note:'VIP'} sets nyp_override_enabled=true in user record",
+    "Backend Test 2: GET /api/users/me/entitlements returns unlocked_nyp=true, override_enabled=true, spend_to_unlock=0 when override is ON",
+    "Backend Test 3: PATCH with {override_enabled:false} reverts to spend-based gating (unlocked_nyp=false for user with $0 spend)",
+    "Backend Test 4: Override persists across requests (not session-only) - verified via multiple API calls and admin users list",
+    "Backend Test 5: Admin users list (GET /api/admin/users) includes nyp_override_enabled and nyp_override_note fields",
+    "Backend Test 6: Unauthenticated access to override endpoint returns 403",
+    "Backend Test 7: Non-admin user access to override endpoint returns 403",
+    "Backend Test 8: Cleanup - override disabled after tests",
+    "Frontend Test 5: Admin Users page shows 'OVERRIDE ON' badge (data-testid='badge-override') for users with override enabled",
+    "Frontend Test 6: Expanded user card has HB/NYP Override section (data-testid='override-section') with toggle (data-testid='override-toggle')",
+    "Frontend Test 7: Toggle ON/OFF works and refreshes the user list - badge appears/disappears correctly",
+    "Frontend Test 8: Optional note input (data-testid='override-note') is present and functional",
+    "Frontend Test 9: Gallery Humble Beginnings section (data-testid='humble-beginnings-section') is visible when override is ON for authenticated user",
+    "Frontend Test 10: Shop Name Your Price section shows unlocked state (data-testid='nyp-unlocked-section') when override is ON - 'EXCLUSIVE PRICING UNLOCKED' text and 'NAME YOUR PRICE' button visible"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_admin_override.py",
+    "/app/test_reports/pytest/pytest_override.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_admin_override.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (all 10 feature tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "test_user_email": "override_test@example.com",
+    "test_user_password": "Test1234",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "Used existing test user override_test@example.com and existing Humble Beginnings gallery item",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Admin per-user override feature is fully functional. Key paths tested: 1) Admin at /admin/users can expand user card and toggle HB/NYP override section. 2) Override toggle calls PATCH /api/admin/users/{id}/entitlements. 3) When override ON: user entitlements return unlocked_nyp=true, override_enabled=true, spend_to_unlock=0. 4) Gallery shows Humble Beginnings section (data-testid='humble-beginnings-section') only for authenticated users with unlocked_nyp=true. 5) Shop product detail shows NYP unlocked section (data-testid='nyp-unlocked-section') with 'NAME YOUR PRICE' button for users with unlocked NYP. Test user override_test@example.com left with override OFF after tests."
+}

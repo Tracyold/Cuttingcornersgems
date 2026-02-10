@@ -844,6 +844,17 @@ _negotiation_store: Optional[NegotiationStoreInterface] = None
 def get_negotiation_store(db=None) -> NegotiationStoreInterface:
     """Get the singleton negotiation store instance based on PERSISTENCE_MODE."""
     global _negotiation_store
+    if _negotiation_store is not None:
+        if isinstance(_negotiation_store, DbNegotiationStore):
+            return _negotiation_store
+        if db is not None:
+            from config.persistence import PERSISTENCE_MODE
+            if PERSISTENCE_MODE == "DB":
+                _negotiation_store = DbNegotiationStore(db)
+                logger.info("NegotiationStore: Upgraded to DbNegotiationStore (DB mode)")
+                return _negotiation_store
+        return _negotiation_store
+    
     if _negotiation_store is None:
         from config.persistence import PERSISTENCE_MODE
         

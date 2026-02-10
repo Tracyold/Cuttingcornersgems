@@ -109,7 +109,7 @@ Create a modern and compelling website for a gemstone cutter called "Cutting Cor
 
 ## Test Credentials
 - **Admin**: postvibe / adm1npa$$word
-- **Preview URL**: https://password-reset-ready.preview.emergentagent.com
+- **Preview URL**: https://design-finalize.preview.emergentagent.com
 
 ## Notes
 - All 3rd party integrations are **CONFIGURABLE PLACEHOLDERS**

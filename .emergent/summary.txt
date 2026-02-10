@@ -1,115 +1,187 @@
-<analysis>**original_problem_statement:** The original request was to conduct a series of tests and inventory scans on the application, followed by a large feature implementation for a Name Your Price (NYP) negotiation system. Subsequently, the user requested the implementation of a file-based persistence layer to ensure data survives server restarts during development and is ready for production deployment. The most recent task is to perform a read-only inventory of the existing email service wiring in preparation for adding a forgot password feature.
+<analysis>**original_problem_statement:**
+The user initially requested a read-only inventory of the email service wiring (Phase 1). Upon completion, the user approved Phase 2, which involved the implementation of a provider-agnostic email engine and a Forgot Password feature. This was followed by a mandatory Phase 3 post-check, which included running a newly created continuity gate script.
+
+Subsequently, the user requested the implementation of user and admin controls, including:
+- Admin ability to soft-delete and block/unblock users from making purchases.
+- User ability to self-delete their own account.
+
+Finally, the user initiated a multi-step overhaul of the website's typography:
+1.  Replace existing fonts with a new set of custom OTF fonts (, , ).
+2.  Implement a more granular, role-based typography system with new fonts (, , , , ).
+3.  Refine the title hierarchy, distinguishing between large primary titles ( with ) and smaller secondary titles ( with ).
+4.  Apply  to all primary page titles and make several specific font size adjustments on the landing page.
+5.  The final request is to ensure every title that uses the  font is also sized at .
 
 **User's preferred language**: English
 
 **what currently exists?**
-The project is a full-stack application with a React frontend and a Python (FastAPI) backend. It features a hybrid persistence model:
-1.  **MongoDB**: Persists core data collections like , , , and legacy .
-2.  **File-based JSON Storage**: A newly implemented system that persists data for features that were previously in-memory. This includes Studio CMS content, the new NYP negotiation threads, purchase agreements, and user order history for entitlements. This system is the default for development and is located in .
-The application also includes a complete, multi-step Name Your Price negotiation system, allowing users to make offers on eligible products, receive counter-offers from admins, and purchase at an agreed-upon price. This system is separate from the old, simple inquiry flow. Admin panels and user account tabs have been created to manage this new workflow.
+The project is a full-stack web application with a React frontend and a Python (FastAPI) backend, using MongoDB for data storage in production and a file-based system for development.
+
+Key features implemented in this session include:
+- A provider-agnostic email engine and a complete Forgot Password flow.
+- User self-delete functionality and admin controls for soft-deleting and blocking user purchases.
+- A mandatory  script to ensure code quality and prevent regressions.
+- A robust, role-based typography system using self-hosted custom fonts, controlled via CSS variables.
+
+The frontend is currently in a broken state due to syntax errors introduced during the last set of typography changes.
 
 **Last working item**:
-*   **Last item agent was working**: The agent was executing Phase 1 of a multi-phase task: a **read-only inventory scan of the Email Service tab wiring**. The goal is to understand the current implementation of email settings in the admin panel, including the frontend components, backend APIs, and data storage, as a prerequisite for adding a forgot password feature. The agent had successfully identified the relevant frontend file (), the backend endpoints (), and the Pydantic model () used for storage.
-*   **Status**: IN PROGRESS
-*   **Agent Testing Done**: N/A (Read-only scan)
-*   **Which testing method agent to use?**: NA
-*   **User Testing Done**: N/A
+    - Last item agent was working: The agent was executing a complex typography update. This involved ensuring all main page titles use the  font (), while also making several specific font size adjustments on the Home page as requested. During this process, syntax errors were introduced into several frontend files, and the agent was attempting to fix them when the session ended. A final instruction to make all  titles  was also received but not yet started.
+    - Status: IN PROGRESS
+    - Agent Testing Done: N
+    - Which testing method agent to use? Frontend testing agent. After fixing the syntax errors, the agent must use the screenshot tool to visually verify that all font family and size changes have been correctly applied across all specified pages, particularly the Home page.
+    - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-There are no known pending issues or bugs. All implemented features have passed their respective post-change verification tests.
+  - Issue 1: **(P0)** Frontend is broken due to syntax errors in multiple components.
+  - Issue 2: **(P1)** A new typography rule has not been implemented.
+
+  Issues Detail:
+  - Issue 1: 
+     - Attempted fixes: The agent tried to edit  and  to fix syntax errors, but the fixes were unsuccessful, causing screenshot attempts to fail.
+     - Next debug checklist: 
+        1. View  and .
+        2. Carefully inspect the JSX for mismatched tags, incorrect  assignments, or other syntax issues.
+        3. Restart the frontend dev server and check the terminal output for detailed error messages that point to the exact lines causing the problem.
+        4. Fix the identified syntax errors.
+     - Why fix this issue and what will be achieved with the fix? The frontend is currently non-functional. Fixing this is critical to restore the application's UI and proceed with any further development or testing.
+     - Status:  IN PROGRESS
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? frontend
+     - Blocked on other issue: None. This is the primary blocker.
+  - Issue 2: 
+     - Attempted fixes: None.
+     - Next debug checklist: 
+        1. Once the syntax errors (Issue 1) are resolved, modify the global CSS file at .
+        2. Locate the  class definition.
+        3. Add the Tailwind utility class  to this rule to enforce the size constraint globally for all large titles.
+        4. Alternatively, search the codebase for all instances of  and manually add the  class, but modifying the central CSS rule is the cleaner approach.
+     - Why fix this issue and what will be achieved with the fix? To fulfill the user's latest explicit design requirement for all primary titles.
+     - Status:  NOT STARTED
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? frontend
+     - Blocked on other issue: Issue 1: Frontend is broken due to syntax errors in multiple components.
 
 **In progress Task List**:
-*   **Task 1: Complete the Email Service Tab Wiring Inventory (P0)**
-    *   **Where to resume**: The agent needs to continue the read-only scan initiated in the last user prompt. The next step is to locate the actual email provider/notifier implementation in the backend. This involves searching for the service that consumes the  (e.g., , ) to understand how emails are currently being sent (or stubbed).
-    *   **What will be achieved with this?** A complete map of the existing email functionality, which is essential for proposing and implementing a new forgot password feature without breaking existing configurations.
-    *   **Status**: IN PROGRESS
-    *   **Should Test frontend/backend/both after fix?**: N/A
-    *   **Blocked on something**: No.
+  - Task 1:  Finalize and verify all typography changes.
+
+ Task Detail:
+  - Task 1: 
+     - Where to resume: Start by fixing the syntax errors in the frontend (Issue 1). Once the app is rendering again, implement the  size requirement for all  titles (Issue 2).
+     - What will be achieved with this? The website's typography will be fully aligned with all of the user's specific requests, and the application will be in a stable, testable state.
+     - Status:  IN PROGRESS
+     - Should Test frontend/backend/both after fix? frontend
+     - Blocked on something: Blocked on resolving the critical syntax errors in the frontend code.
 
 **Upcoming and Future Tasks**
-*   **Upcoming Tasks**:
-    *   **P0: Propose and Implement Forgot Password Feature**: Based on the results of the inventory scan, propose a safe, additive plan to introduce password reset functionality. This will involve creating new backend endpoints for initiating the reset and verifying the token, generating and storing reset tokens, and adding the necessary UI components to the frontend (e.g., Forgot Password? link on the login page, and a password reset form).
-*   **Future Tasks**:
-    *   **P1: Implement Real SMS Sending**: The negotiation system includes a . A future task is to replace this with a real SMS service (e.g., Twilio) and enable it via the admin settings.
-    *   **P1: Implement Real Payment Processing**: The checkout flow for negotiated prices is currently a stub. This needs to be integrated with a payment provider like Stripe.
-    *   **P1: Implement DB-backed Stores**: For production scale, the  stubs (, , etc.) should be implemented to use MongoDB, which can be enabled by setting the  environment variable to .
+There are no other upcoming or future tasks mentioned in the conversation history. The current focus is on finalizing the design refinements.
 
 **Completed work in this session**
-*   **NYP Negotiation System (v1)**: Implemented a full negotiation workflow with new backend models (), services (), user/admin endpoints (), a user account tab (), and an admin management page ().
-*   **File-Based Persistence Layer**: Replaced all  stores with a robust, file-based JSON persistence system () that is the new default for development. This ensures data like CMS content and negotiations survive server restarts.
-*   **Deployment-Ready Configuration**: Hardened the persistence layer to be configurable via environment variables (, ), making it compatible with persistent volume mounts in production environments.
-*   **System-Wide Testing**: Conducted multiple, thorough smoke tests and verification checks after each major implementation to ensure no regressions were introduced.
+- **Email & Password Reset Feature:**
+  - Implemented a provider-agnostic email engine ().
+  - Added a secure password reset flow with token management ().
+  - Created frontend UI for Forgot Password and Reset Password pages.
+- **User & Admin Controls:**
+  - Implemented backend logic and endpoints for admin soft-delete/purchase-blocking of users and user self-deletion.
+  - Updated the User model to include  and  flags.
+  - Added UI controls in the admin panel and user dashboard for these features.
+- **Continuity Gate:**
+  - Created and integrated the  script to run automated pre-flight checks.
+- **Typography System Overhaul:**
+  - Migrated from  packages to self-hosted custom fonts.
+  - Established a centralized, role-based typography system using CSS variables (, ).
+  - Systematically applied new font roles (, , etc.) across all frontend components.
+
+**Earlier issues found/mentioned but not fixed**
+   - None. All issues raised by the user during the session were addressed.
+
+**Known issue recurrence from previous fork**
+  - None.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-*   **Backend**: Python, FastAPI
-*   **Frontend**: React.js
-*   **Database**: MongoDB
-*   **Architecture**: Monorepo with a REST API. A key feature is the swappable persistence layer, controlled by the  environment variable, which defaults to a file-based JSON store for development ease and can be switched to a database for production.
-*   **Authentication**: JWT Bearer tokens for both users and admins.
+- **Frontend**: React, Tailwind CSS, Axios.
+- **Backend**: Python (FastAPI), Pydantic, JWT Authentication.
+- **Database**: MongoDB (primary), with a file-based persistence layer for development.
+- **Architecture**: Monorepo with a decoupled frontend and backend, communicating via a REST API.
+- **DevOps**: A Python-based Continuity Gate script () is used for automated checks before finalizing work.
 
 **key DB schema**
-*   **File-Based Stores ():**
-    *   : Stores negotiation threads, including messages and status.
-    *   : Stores accepted price agreements and their associated purchase tokens.
-    *   : Stores all content for the Studio CMS page.
-    *   : Stores user order history for calculating NYP eligibility.
-*   **MongoDB Collections:** , ,  (with a new  field), , and legacy inquiry collections.
+  - **users**: Includes fields , , .
+  - **site_settings**: Contains various email configuration keys like , , etc.
+  - **password_reset_tokens**: Stores single-use, expiring tokens for the password reset flow.
 
 **changes in tech stack**
-No new technologies were added. A significant architectural pattern was introduced: a file-based persistence layer as the default for development, moving away from purely in-memory stores.
+- Font management was moved from npm packages () and Google Fonts to self-hosted OTF/TTF files.
 
 **All files of reference**
-*   **Created**:
-    *   : Defines data models for the negotiation feature.
-    *   , : Provide business logic for negotiations.
-    *   : The core utility for the file-based persistence layer.
-    *   : Central configuration for data persistence mode.
-    *   : Wires up the correct data store based on the configuration.
-    *   : The new admin page to manage all NYP negotiations.
-*   **Updated**:
-    *   : Heavily modified to add over a dozen new endpoints for the negotiation system and persistence management.
-    *   : Enhanced with a Name Your Price tab for authenticated users to view their negotiations.
-    *   : Updated to trigger the new negotiation flow for NYP-eligible items.
-    *   : Modified to include a navigation link to the new Negotiations page.
+- : Modified extensively to add new endpoints for password reset, admin controls, and user self-deletion, along with enforcement logic.
+- : **New file** that defines the provider-agnostic email sending logic.
+- : **New file** that manages the lifecycle of password reset tokens.
+- : **New file** that runs critical pre-flight checks on the codebase.
+- : **New file** that is the single source of truth for font-family role definitions and CSS variables.
+- : **New file** that defines the  rules for all custom fonts.
+- : Modified to use the new CSS variables for its font-family theme.
+- : Most files in this directory were modified to apply the new typographic classes (, , ).
 
 **key api endpoints**
-*   **User Negotiation API**:
-    *   : Creates a new negotiation thread.
-    *   : Lists a user's negotiation threads.
-    *   : Retrieves a specific negotiation thread.
-*   **Admin Negotiation API**:
-    *   : Lists all negotiation threads with filtering.
-    *   : Submits a counter-offer.
-    *   : Accepts a user's offer, creating a purchase agreement.
-*   **Admin Management API**:
-    *   : Diagnostic endpoint to check the status of the file persistence layer.
-    *   : Allows an admin to manually grant NYP eligibility to a user.
+- 
+- 
+- 
+- 
+- 
+-  (Upgraded from a stub)
 
 **Critical Info for New Agent**
-*   The application's persistence model is hybrid. Do not assume all data is in MongoDB. For development, key features like CMS content and negotiations now persist in JSON files in . This is by design and is controlled by the  environment variable.
-*   The Name Your Price functionality is a full negotiation system, not a simple inquiry form. The new workflow uses the  endpoints. Do not confuse it with the legacy inquiry endpoints.
-*   Maintain the established pattern of additive changes. Do not modify or remove existing API contracts for bookings, general inquiries, or product data.
+- **Priority 1 is fixing the frontend.** The application is currently broken due to syntax errors in  and . You must fix these before doing anything else.
+- **The typography system is centralized.** All font styles are controlled by CSS variables and utility classes defined in . Do not apply inline styles or hardcode  in components.
+- **Continuity Gate is mandatory.** After making significant changes, you must run 
+[1m============================================================[0m
+[1m   PREFLIGHT CONTINUITY GATE[0m
+[1m============================================================[0m
+
+  [92m✓[0m CHECK 1 — NO PLAINTEXT ADMIN PASSWORD
+  [92m✓[0m CHECK 2 — NO PRODUCTION JWT FALLBACK
+  [92m✓[0m CHECK 3 — SECURITY SYMBOLS SINGLE SOURCE
+  [92m✓[0m CHECK 4 — SCHEMA COLLECTION INVARIANT
+  [92m✓[0m CHECK 5 — QUARANTINE BOUNDARY
+
+[1m============================================================[0m
+
+[92m[1mGATE STATUS: PASS[0m
+Exit code: 0 and ensure it passes.
+- The session lost behavior observed during screenshot testing is an expected artifact of the testing tool's isolated browser contexts, not a bug. Do not waste time trying to fix it.
+
+**documents and test reports created in this job**
+  - /app/tools/preflight_continuity_gate.py
+
+**Last 10 User Messages and any pending HUMAN messages**
+1.  **PENDING:** Every title that uses Oranienbaum must be set to 2xl.
+2.  **IN PROGRESS:** A set of specific font size and family changes for the landing page and all primary page titles.
+3.  Requested to define and apply  and  classes for a clearer title hierarchy. (Completed)
+4.  Requested a global, role-based typography system using new custom fonts. (Completed)
+5.  Asked for a list of all fonts used on the site. (Answered)
+6.  Asked if a previously used font () was still in the code. (Answered)
+7.  Asked for the font types used on the shop page and the entire site. (Answered)
+8.  Requested implementation of user self-delete and admin user controls (soft-delete, purchase block). (Completed)
+9.  Requested re-validation of the Phase 3 report. (Completed)
+10. Pointed out that the continuity gate was not run and instructed the agent to create and run it. (Completed)
 
 **Project Health Check:**
-*   **Broken**: None.
-*   **Mocked**:
-    *   SMS notifications ( is used).
-    *   Payment processing (checkout endpoint is a stub).
+- **Broken**: The frontend is non-functional due to syntax errors. This is the highest priority to fix.
+- **Mocked**: The email sending service has stubs for several providers (e.g., SES) and requires real API keys to be configured for others (e.g., SendGrid) to function.
 
 **3rd Party Integrations**
-*   **MongoDB**: Primary database for core application data.
+- **Email Providers (via settings):** SendGrid, Resend, Mailgun, Postmark, AWS SES. All require a User-provided API Key. None use the Emergent LLM Key.
 
 **Testing status**
-*   **Testing agent used after significant changes**: NO
-*   **Troubleshoot agent used after agent stuck in loop**: NO
-*   **Test files created**: None.
-*   **Known regressions**: None.
+  - Testing agent used after significant changes: NO
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: []
+  - Known regressions: The entire frontend is currently not rendering due to syntax errors introduced in the last implementation step.
 
 **Credentials to test flow:**
-*   **Admin Username**:  (password is set via an environment variable).
-
-**What agent forgot to execute**
-The agent has successfully executed all tasks as requested by the user and is currently in the middle of the latest requested task. Nothing has been forgotten.</analysis>
+- Admin: Check the backend startup logs or seeded data for the admin user (e.g., ).
+- User: Create a new user through the registration UI.</analysis>

@@ -240,7 +240,7 @@ async def get_gallery_item(item_id: str):
 
 **Products API Test**:
 ```bash
-GET https://password-reset-ready.preview.emergentagent.com/api/products
+GET https://design-finalize.preview.emergentagent.com/api/products
 ```
 
 **Results**:
@@ -255,7 +255,7 @@ Valid UUID format: 6
 
 **Gallery API Test**:
 ```bash
-GET https://password-reset-ready.preview.emergentagent.com/api/gallery
+GET https://design-finalize.preview.emergentagent.com/api/gallery
 ```
 
 **Results**:

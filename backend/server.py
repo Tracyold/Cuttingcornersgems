@@ -34,6 +34,7 @@ from middleware.cache_control import CacheControlMiddleware
 app.add_middleware(CacheControlMiddleware)
 
 api_router = APIRouter(prefix="/api")
+dev_router = APIRouter(prefix="/dev", tags=["development"])
 security = HTTPBearer()
 
 # ============ MODELS ============

@@ -1756,7 +1756,7 @@ async def get_my_entitlements(user: dict = Depends(get_current_user)):
 # dev_router is defined at top of file with api_router
 
 @dev_router.post("/orders/seed")
-async def seed_orders_dev(orders: list):
+async def seed_orders_dev(orders: List[dict]):
     """
     DEV-ONLY: Seed the InMemoryOrderStore for UI testing without Stripe/DB.
     

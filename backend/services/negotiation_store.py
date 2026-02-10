@@ -841,7 +841,7 @@ class DbNegotiationStore(NegotiationStoreInterface):
 _negotiation_store: Optional[NegotiationStoreInterface] = None
 
 
-def get_negotiation_store() -> NegotiationStoreInterface:
+def get_negotiation_store(db=None) -> NegotiationStoreInterface:
     """Get the singleton negotiation store instance based on PERSISTENCE_MODE."""
     global _negotiation_store
     if _negotiation_store is None:
@@ -851,9 +851,12 @@ def get_negotiation_store() -> NegotiationStoreInterface:
             _negotiation_store = FileNegotiationStore()
             logger.info("NegotiationStore: Using FileNegotiationStore (FILE mode)")
         elif PERSISTENCE_MODE == "DB":
-            # TODO: Pass actual DB instance
-            _negotiation_store = DbNegotiationStore(None)
-            logger.info("NegotiationStore: Using DbNegotiationStore (DB mode)")
+            if db is None:
+                _negotiation_store = FileNegotiationStore()
+                logger.warning("NegotiationStore: DB mode but no db, falling back to FileNegotiationStore")
+            else:
+                _negotiation_store = DbNegotiationStore(db)
+                logger.info("NegotiationStore: Using DbNegotiationStore (DB mode)")
         else:
             _negotiation_store = InMemoryNegotiationStore()
             logger.info("NegotiationStore: Using InMemoryNegotiationStore (MEMORY mode)")

@@ -42,7 +42,7 @@ const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemC
         {isUnlocked ? (
           <>
             <Sparkles className="w-5 h-5 text-amber-400" />
-            <h2 className="text-xl font-serif text-amber-400">Humble Beginnings</h2>
+            <h2 className="text-xl title-sm text-amber-400">Humble Beginnings</h2>
             <Unlock className="w-4 h-4 text-amber-400" />
           </>
         ) : (

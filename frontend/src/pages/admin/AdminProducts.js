@@ -95,7 +95,7 @@ const BulkAddModal = ({ onClose, onComplete }) => {
           price_per_carat: form.price_per_carat ? parseFloat(form.price_per_carat) : null,
           price: form.price ? parseFloat(form.price) : null,
         };
-        await axios.post(`${API_URL}/admin/products`, submitData, getAuthHeaders());
+        await adminApi.post('/admin/products', submitData);
       }
 
       toast.success(`${formsToSubmit.length} product(s) added successfully!`);

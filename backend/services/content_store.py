@@ -95,61 +95,68 @@ class InMemoryContentStore(ContentStoreInterface):
 class DbContentStore(ContentStoreInterface):
     """
     MongoDB-backed content storage for production.
-    
-    STUB IMPLEMENTATION - Requires database connection.
-    Replace TODO placeholders when wiring to actual database.
     """
     
-    def __init__(self, db=None):
-        """
-        Initialize with database connection.
-        
-        Args:
-            db: Motor async MongoDB database instance
-        """
+    def __init__(self, db):
         self.db = db
         self.collection_name = "cms_content"
     
     async def get_studio_content(self) -> StudioContent:
         """Retrieve Studio content from database."""
-        # TODO: Implement when wiring to MongoDB
-        # doc = await self.db[self.collection_name].find_one(
-        #     {"content_type": "studio"},
-        #     {"_id": 0}
-        # )
-        # if doc:
-        #     return StudioContent(**doc["content"])
-        # return get_default_studio_content()
-        raise NotImplementedError("DbContentStore requires database connection")
+        doc = await self.db[self.collection_name].find_one(
+            {"content_type": "studio"},
+            {"_id": 0}
+        )
+        if doc and "content" in doc:
+            try:
+                return StudioContent(**doc["content"])
+            except Exception as e:
+                logger.warning(f"DbContentStore: Failed to parse, using defaults: {e}")
+        return get_default_studio_content()
     
     async def save_studio_content(self, content: StudioContent) -> StudioContent:
         """Save Studio content to database."""
-        # TODO: Implement when wiring to MongoDB
-        # content.updated_at = datetime.now(timezone.utc)
-        # 
-        # result = await self.db[self.collection_name].find_one_and_update(
-        #     {"content_type": "studio"},
-        #     {
-        #         "$set": {"content": content.model_dump()},
-        #         "$inc": {"version": 1}
-        #     },
-        #     upsert=True,
-        #     return_document=True
-        # )
-        # return StudioContent(**result["content"])
-        raise NotImplementedError("DbContentStore requires database connection")
+        content.updated_at = datetime.now(timezone.utc)
+        
+        # Get current version
+        existing = await self.db[self.collection_name].find_one(
+            {"content_type": "studio"},
+            {"_id": 0, "content.version": 1}
+        )
+        if existing and "content" in existing:
+            content.version = existing["content"].get("version", 0) + 1
+        else:
+            content.version = 1
+        
+        content_dict = content.model_dump()
+        # Convert datetimes to ISO strings for safe storage
+        for key, val in content_dict.items():
+            if isinstance(val, datetime):
+                content_dict[key] = val.isoformat()
+        
+        await self.db[self.collection_name].update_one(
+            {"content_type": "studio"},
+            {"$set": {"content": content_dict, "content_type": "studio"}},
+            upsert=True
+        )
+        logger.debug(f"DbContentStore: Saved content v{content.version}")
+        return content
     
     async def reset_studio_content(self) -> StudioContent:
         """Reset Studio content to defaults in database."""
-        # TODO: Implement when wiring to MongoDB
-        # default = get_default_studio_content()
-        # await self.db[self.collection_name].replace_one(
-        #     {"content_type": "studio"},
-        #     {"content_type": "studio", "content": default.model_dump()},
-        #     upsert=True
-        # )
-        # return default
-        raise NotImplementedError("DbContentStore requires database connection")
+        default = get_default_studio_content()
+        content_dict = default.model_dump()
+        for key, val in content_dict.items():
+            if isinstance(val, datetime):
+                content_dict[key] = val.isoformat()
+        
+        await self.db[self.collection_name].update_one(
+            {"content_type": "studio"},
+            {"$set": {"content": content_dict, "content_type": "studio"}},
+            upsert=True
+        )
+        logger.info("DbContentStore: Reset content to defaults")
+        return default
 
 
 # ==============================================================================

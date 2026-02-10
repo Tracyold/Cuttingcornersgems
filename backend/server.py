@@ -966,7 +966,15 @@ async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
     gallery_count = await db.gallery.count_documents(nd)
     bookings_count = await db.bookings.count_documents(nd)
     users_count = await db.users.count_documents(nd)
-    orders_count = await db.orders.count_documents(nd)
+    
+    # Orders: PAID only (completed revenue events)
+    orders_count = await db.orders.count_documents({"paid_at": {"$ne": None}, **nd})
+    # Commits: UNPAID+PENDING orders (active commitments)
+    commits_count = await db.orders.count_documents({"status": "pending", "paid_at": None, **nd})
+    # Negotiations
+    negotiations_count = await db.negotiation_threads.count_documents(nd)
+    
+    # Legacy sold_items (deprecated — kept for backward compat)
     sold_count = await db.sold_items.count_documents(nd)
     
     # Get inquiry counts (NON-DELETED)
@@ -988,7 +996,9 @@ async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
         "bookings": bookings_count,
         "users": users_count,
         "orders": orders_count,
-        "sold": sold_count,
+        "commits": commits_count,
+        "negotiations": negotiations_count,
+        "sold": sold_count,  # deprecated: kept for backward compat
         "inquiries": product_inquiries_count + sell_inquiries_count + nyp_inquiries_count,
         "product_inquiries": product_inquiries_count,
         "sell_inquiries": sell_inquiries_count,

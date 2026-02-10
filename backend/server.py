@@ -1936,39 +1936,6 @@ async def admin_mark_order_paid(order_id: str, admin: dict = Depends(get_admin_u
     }
 
 
-@api_router.post("/admin/orders/{order_id}/delete")
-async def admin_delete_order(order_id: str, admin: dict = Depends(get_admin_user)):
-    """Soft-delete an unpaid pending order."""
-    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    if order.get("paid_at"):
-        raise HTTPException(status_code=400, detail="Cannot delete a paid order")
-    if order.get("status") != "pending":
-        raise HTTPException(status_code=400, detail="Can only delete pending orders")
-    if order.get("payment_provider") and order["payment_provider"] not in ("none", None):
-        raise HTTPException(status_code=400, detail="Cannot delete order with active payment provider")
-    
-    await db.orders.update_one(
-        {"id": order_id},
-        {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
-    )
-    return {"message": "Order deleted"}
-
-
-@api_router.post("/admin/orders/{order_id}/restore")
-async def admin_restore_order(order_id: str, admin: dict = Depends(get_admin_user)):
-    """Restore a soft-deleted order."""
-    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-    await db.orders.update_one(
-        {"id": order_id},
-        {"$unset": {"is_deleted": "", "deleted_at": ""}}
-    )
-    return {"message": "Order restored"}
-
-
 class CheckoutSessionRequest(BaseModel):
     order_id: Optional[str] = None
     purchase_token: Optional[str] = None

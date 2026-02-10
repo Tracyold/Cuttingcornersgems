@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, X, Upload, Video, ChevronLeft, ChevronRight, Check } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
 import { toast } from 'sonner';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi } from '../../api/adminApi';
 
 const CATEGORIES = ['sapphire', 'tourmaline', 'emerald', 'tanzanite', 'aquamarine', 'garnet', 'other'];
 
@@ -30,7 +27,7 @@ const emptyForm = {
 };
 
 // Bulk Add Modal Component
-const BulkAddModal = ({ onClose, onComplete, getAuthHeaders }) => {
+const BulkAddModal = ({ onClose, onComplete }) => {
   const [currentForm, setCurrentForm] = useState({ ...emptyForm });
   const [savedForms, setSavedForms] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);

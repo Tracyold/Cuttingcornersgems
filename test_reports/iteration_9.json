@@ -1,0 +1,60 @@
+{
+  "summary": "Sold lifecycle feature tested successfully. 8/8 backend API tests passed (100%) and all frontend UI tests passed. Feature allows admin to toggle product sold status, auto-marks products as sold on order creation, hides sold items from public shop, shows sold items via direct URL with SOLD badge and blocked purchase actions.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend Test 1: PATCH /api/admin/products/{id} with {is_sold:true} sets is_sold=true and sold_at timestamp",
+    "Backend Test 2: PATCH /api/admin/products/{id} with {is_sold:false} clears is_sold and sold_at",
+    "Backend Test 3: GET /api/products (public) excludes is_sold=true items",
+    "Backend Test 4: GET /api/products/{id} (direct) returns product with is_sold=true for sold items",
+    "Backend Test 5: POST /api/cart/add rejects sold items with 400 'This item has been sold'",
+    "Backend Test 6: POST /api/name-your-price rejects sold items with 400",
+    "Backend Test 7: POST /api/orders auto-marks purchased products as SOLD (is_sold=true, sold_at set, in_stock=false)",
+    "Frontend Admin Test 8: AdminProducts shows SOLD badge (data-testid='badge-sold') for sold items",
+    "Frontend Admin Test 9: AdminProducts has toggle sold button (data-testid='toggle-sold-btn') that toggles sold status with toast notification",
+    "Frontend Test 10: Product detail view shows SOLD badge (data-testid='product-sold-badge') and 'This item has been sold' notice (data-testid='sold-notice') for sold items, with Buy/Inquiry/NYP buttons hidden"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_sold_lifecycle.py",
+    "/app/test_reports/pytest/pytest_sold_lifecycle.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_sold_lifecycle.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "100% (all feature tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "test_user_email": "sold_lifecycle_test@example.com",
+    "test_user_password": "Test1234",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "Created test user sold_lifecycle_test@example.com and test product for order flow testing (auto-deleted after test)",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Sold lifecycle feature is fully functional. Key flows tested: 1) Admin at /admin/products can click tag icon (data-testid='toggle-sold-btn') to mark products as SOLD/UNSOLD. 2) SOLD products show 'SOLD' badge overlay on image and red 'SOLD' badge text (data-testid='badge-sold'). 3) Public /api/products excludes sold items. 4) Direct access /api/products/{id} returns sold items with is_sold=true. 5) Cart add and Name Your Price are blocked for sold items with 400 error. 6) Order creation auto-marks purchased products as SOLD with is_sold=true, sold_at timestamp, and in_stock=false. 7) Product detail page for sold items shows SOLD badge and 'This item has been sold' notice with all purchase/inquiry buttons hidden."
+}

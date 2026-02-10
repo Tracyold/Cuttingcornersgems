@@ -25,20 +25,45 @@ body,
   font-family: var(--font-body-stack) !important;
 }
 
-/* Display - Section titles, hero headings */
+/* ========================================
+   TITLE CLASSES - Explicit font control
+   ======================================== */
+
+/* Large primary headers: hero titles, page headers, major section headers */
+.title-xl {
+  font-family: var(--font-display-stack) !important;
+}
+
+/* Small titles: product names, gallery captions, card titles, small headers */
+.title-sm {
+  font-family: var(--font-subtitle-stack) !important;
+}
+
+/* ========================================
+   DEFAULT HEADING BEHAVIOR
+   Headings default to subtitle font (Montserrat)
+   Use .title-xl explicitly for Oranienbaum
+   ======================================== */
+
 h1,
 h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-subtitle-stack) !important;
+}
+
+/* Only apply Oranienbaum when explicitly marked */
+h1.title-xl,
+h2.title-xl,
 .hero-title,
-.section-title,
-.page-title,
-.font-display,
-.font-serif {
+.page-title.title-xl,
+.section-title.title-xl {
   font-family: var(--font-display-stack) !important;
 }
 
 /* Subtitle - Section highlights, subheadings */
-h3,
-h4,
 .subtitle,
 .section-subtitle,
 .font-subtitle {
@@ -55,8 +80,6 @@ nav *,
 .btn,
 button,
 .font-ui,
-h5,
-h6,
 .uppercase {
   font-family: var(--font-ui-stack) !important;
 }

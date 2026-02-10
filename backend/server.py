@@ -1691,6 +1691,13 @@ async def remove_from_cart(product_id: str, current_user: dict = Depends(get_cur
 
 @api_router.post("/orders", response_model=OrderResponse)
 async def create_order(order_data: OrderCreate, current_user: dict = Depends(get_current_user)):
+    # Check if user is blocked from purchases
+    if current_user.get("purchase_blocked", False) or current_user.get("is_deleted", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Purchases disabled for this account"
+        )
+    
     cart = await db.carts.find_one({"user_id": current_user["id"]}, {"_id": 0})
     if not cart or not cart.get("items"):
         raise HTTPException(status_code=400, detail="Cart is empty")

@@ -155,7 +155,7 @@ const AdminStudio = () => {
       return;
     }
     try {
-      await axios.post(`${API_URL}/dev/content/studio/reset`, {}, getAuthHeaders());
+      await devApi.post('/dev/content/studio/reset', {});
       toast.success('Content reset to defaults');
       fetchContent();
     } catch (error) {

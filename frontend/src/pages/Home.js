@@ -83,6 +83,7 @@ const Home = () => {
         <div className="absolute bottom-8 right-8 z-10 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center opacity-0 animate-fade-in delay-500">
           <p className="spec-text text-gray-500 mb-1">Industry for</p>
           <p className="title-sm text-3xl">13 Years</p>
+          <p className="text-gray-500 text-sm">Cutting for Seven</p>
         </div>
       </section>
 

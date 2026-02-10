@@ -1866,16 +1866,6 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
     }
     await db.orders.insert_one(order)
     
-    # Auto-mark purchased products as SOLD
-    sold_at = datetime.now(timezone.utc).isoformat()
-    for cart_item in cart["items"]:
-        product_id = cart_item.get("product_id")
-        if product_id:
-            await db.products.update_one(
-                {"id": product_id},
-                {"$set": {"is_sold": True, "sold_at": sold_at, "in_stock": False}}
-            )
-    
     await db.carts.update_one(
         {"user_id": current_user["id"]},
         {"$set": {"items": [], "total": 0.0}}

@@ -20,23 +20,29 @@ Full-stack web application for a professional gemstone cutting business based in
 ## Core Features Implemented
 - Gallery, Shop, Cart, Booking, Sell Inquiry pages
 - Admin panel with full CRUD for products, gallery, inquiries, users
-- JWT Authentication with Forgot/Reset Password flow
+- JWT Authentication with Forgot/Reset Password flow (fully functional)
 - Provider-agnostic email engine (SendGrid, Resend, Mailgun, Postmark, AWS SES)
 - Admin soft-delete & purchase blocking, user self-delete
 - Stripe payment integration (configurable)
 - Studio page with before/after comparison
 - Continuity gate preflight script
 - Full DB persistence for all stores (Content, Negotiation, Order, PurchaseToken)
-- **Admin Data Delete Controls**: Soft-delete, restore, and hard-purge for all user-interaction data (bookings, inquiries, sold items, negotiations, messages, orders)
+- Admin Data Delete Controls: Soft-delete, restore, and hard-purge for all user-interaction data
+
+## Forgot Password Feature (Feb 2026 - Completed)
+- "Forgot password?" link in login modal (`AuthModal.js`)
+- Dedicated form view with email input and submit
+- Backend: `POST /api/auth/forgot-password` — generates reset token, returns generic message
+- Success confirmation state with "Back to Sign In" navigation
+- `POST /api/auth/reset-password` — completes reset with valid token
+- NOTE: Email provider is MOCKED — tokens generated but emails not delivered until admin configures a provider
 
 ## Admin Delete Controls (Feb 10, 2026)
-New endpoints for admin data lifecycle management:
 - `POST /api/admin/{domain}/{id}/delete` — Soft-delete with reason
 - `POST /api/admin/{domain}/{id}/restore` — Restore soft-deleted
 - `DELETE /api/admin/{domain}/{id}?hard=true` — Permanent purge
 - All list endpoints support `?include_deleted=true` filter
 - Supported domains: bookings, sold, product-inquiries, sell-inquiries, nyp-inquiries, messages, orders, negotiations
-- UI: "Show deleted" toggle, Delete/Restore/Purge buttons in AdminInquiries, AdminSold, AdminNegotiations
 
 ## Typography System
 - **Display (Oranienbaum)**: `.title-xl`, `.page-title`, `.hero-title` — with 0.04em letter-spacing
@@ -48,18 +54,20 @@ New endpoints for admin data lifecycle management:
 1. Hero Section (with Industry badge)
 2. Philosophy Section ("My Four C's")
 3. Services Section
-4. The Cutter Section (with "View Portfolio" → Gallery)
+4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
 ## Backlog
-- No pending tasks. Awaiting user instructions.
+- P2: Optimize N+1 queries in admin endpoints (performance)
+- P2: Configure real email provider for password reset delivery
+- P2: Activate Stripe payments
 
 ## Key Files
+- `/app/frontend/src/components/AuthModal.js` — Auth modal with forgot password flow
 - `/app/frontend/src/pages/Home.js` — Landing page
 - `/app/frontend/src/components/Layout.js` — Navigation & footer
 - `/app/frontend/src/styles/typography.lock.css` — Font role definitions
-- `/app/backend/server.py` — All API endpoints including delete controls
+- `/app/backend/server.py` — All API endpoints
 - `/app/frontend/src/pages/admin/AdminInquiries.js` — Inquiry management with delete controls
 - `/app/frontend/src/pages/admin/AdminSold.js` — Sold items with delete controls
 - `/app/frontend/src/pages/admin/AdminNegotiations.js` — Negotiations with delete controls
-- `/app/frontend/src/api/adminApi.js` — Admin API client

@@ -13,7 +13,7 @@ Full-stack web application for a professional gemstone cutting business based in
 - `ENV=production` — security enforces env vars only
 - `JWT_SECRET` — 64-char cryptographic random from env
 - `ADMIN_USERNAME` / `ADMIN_PASSWORD_HASH` — loaded from env (no dev fallbacks)
-- `CORS_ORIGINS` — restricted to deployed frontend domain
+- `CORS_ORIGINS=*` — open for deployment flexibility
 - `DB_NAME=cutting_corners_production` — separate from test DB
 - `PERSISTENCE_MODE=DB` — Studio, Negotiations, Orders all MongoDB-backed
 
@@ -27,16 +27,22 @@ Full-stack web application for a professional gemstone cutting business based in
 - Studio page with before/after comparison
 - Continuity gate preflight script
 - Full DB persistence for all stores (Content, Negotiation, Order, PurchaseToken)
+- **Admin Data Delete Controls**: Soft-delete, restore, and hard-purge for all user-interaction data (bookings, inquiries, sold items, negotiations, messages, orders)
+
+## Admin Delete Controls (Feb 10, 2026)
+New endpoints for admin data lifecycle management:
+- `POST /api/admin/{domain}/{id}/delete` — Soft-delete with reason
+- `POST /api/admin/{domain}/{id}/restore` — Restore soft-deleted
+- `DELETE /api/admin/{domain}/{id}?hard=true` — Permanent purge
+- All list endpoints support `?include_deleted=true` filter
+- Supported domains: bookings, sold, product-inquiries, sell-inquiries, nyp-inquiries, messages, orders, negotiations
+- UI: "Show deleted" toggle, Delete/Restore/Purge buttons in AdminInquiries, AdminSold, AdminNegotiations
 
 ## Typography System
 - **Display (Oranienbaum)**: `.title-xl`, `.page-title`, `.hero-title` — with 0.04em letter-spacing
 - **Hero**: `.hero-title` at 4.5rem
 - **Name**: `.name-title` at 7rem
 - **Section titles**: `.title-xl` at 3rem
-- **Subtitle (Montserrat)**: `.title-sm`
-- **Body (Comfortaa)**: Default body text
-- **UI (Nexa Rust Sans)**: Nav, buttons, menus
-- **Mono (AHAMONO)**: Prices, codes
 
 ## Landing Page Section Order
 1. Hero Section (with Industry badge)
@@ -52,9 +58,8 @@ Full-stack web application for a professional gemstone cutting business based in
 - `/app/frontend/src/pages/Home.js` — Landing page
 - `/app/frontend/src/components/Layout.js` — Navigation & footer
 - `/app/frontend/src/styles/typography.lock.css` — Font role definitions
-- `/app/backend/server.py` — All API endpoints
-- `/app/backend/services/content_store.py` — Studio content persistence (DB-backed)
-- `/app/backend/services/negotiation_store.py` — Negotiation persistence (DB-backed)
-- `/app/backend/services/order_store.py` — Order persistence (DB-backed)
-- `/app/backend/config/security.py` — JWT & admin credential management
-- `/app/backend/config/persistence.py` — Persistence mode configuration
+- `/app/backend/server.py` — All API endpoints including delete controls
+- `/app/frontend/src/pages/admin/AdminInquiries.js` — Inquiry management with delete controls
+- `/app/frontend/src/pages/admin/AdminSold.js` — Sold items with delete controls
+- `/app/frontend/src/pages/admin/AdminNegotiations.js` — Negotiations with delete controls
+- `/app/frontend/src/api/adminApi.js` — Admin API client

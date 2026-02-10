@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
         <div className="container-custom">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-center h-20 gap-10">
             {/* Logo */}
             <Link to="/" className="font-display text-xl" style={{ letterSpacing: '0.04em' }} data-testid="logo-link">
               Cutting Corners Gems

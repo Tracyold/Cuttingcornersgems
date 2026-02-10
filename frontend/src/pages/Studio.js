@@ -101,7 +101,7 @@ const TimelineItem = ({ item, isLast }) => (
     {/* Content */}
     <div className="space-y-3">
       <span className="text-amber-400 text-sm font-semibold">{item.year}</span>
-      <h3 className="text-xl font-serif text-white">{item.heading}</h3>
+      <h3 className="text-xl title-sm text-white">{item.heading}</h3>
       <p className="text-gray-400 leading-relaxed">{item.body}</p>
       {item.image_url && (
         <img 
@@ -127,7 +127,7 @@ const EquipmentCard = ({ item }) => (
         className="w-full h-40 object-cover rounded mb-4"
       />
     )}
-    <h4 className="font-serif text-lg text-white mb-2">{item.name}</h4>
+    <h4 className="title-sm text-lg text-white mb-2">{item.name}</h4>
     <p className="text-gray-400 text-sm">{item.purpose}</p>
   </div>
 );
@@ -230,7 +230,7 @@ const Studio = () => {
     return (
       <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center">
         <div className="text-center" data-testid="studio-unavailable">
-          <h1 className="text-2xl font-serif text-white mb-4">Studio</h1>
+          <h1 className="text-2xl title-xl text-white mb-4">Studio</h1>
           <p className="text-gray-500">This page is currently unavailable.</p>
           <Link to="/" className="mt-6 inline-block text-amber-400 hover:text-amber-300">
             Return Home
@@ -260,7 +260,7 @@ const Studio = () => {
       <section className="pt-32 pb-16 text-center">
         <div className="container-custom">
           <p className="spec-text text-gray-500 mb-4">BEHIND THE SCENES</p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl title-xl mb-6">
             {content.hero.title}
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -274,7 +274,7 @@ const Studio = () => {
         <section className="py-16">
           <div className="container-custom">
             <div className="text-center mb-12">
-              <h2 className="text-2xl font-serif text-white mb-4">The Transformation</h2>
+              <h2 className="text-2xl title-xl text-white mb-4">The Transformation</h2>
               <p className="text-gray-500">Drag to reveal the before and after</p>
             </div>
             <BeforeAfterSlider 
@@ -292,7 +292,7 @@ const Studio = () => {
           <div className="container-custom">
             <div className="flex items-center gap-3 mb-12">
               <Clock className="w-5 h-5 text-amber-400" />
-              <h2 className="text-2xl font-serif text-white">The Journey</h2>
+              <h2 className="text-2xl title-xl text-white">The Journey</h2>
             </div>
             <div className="max-w-2xl">
               {sortedTimeline.map((item, index) => (
@@ -313,7 +313,7 @@ const Studio = () => {
           <div className="container-custom">
             <div className="flex items-center gap-3 mb-12">
               <Wrench className="w-5 h-5 text-amber-400" />
-              <h2 className="text-2xl font-serif text-white">Equipment</h2>
+              <h2 className="text-2xl title-xl text-white">Equipment</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {sortedEquipment.map(item => (
@@ -330,7 +330,7 @@ const Studio = () => {
           <div className="container-custom">
             <div className="flex items-center gap-3 mb-12">
               <Camera className="w-5 h-5 text-amber-400" />
-              <h2 className="text-2xl font-serif text-white">In Action</h2>
+              <h2 className="text-2xl title-xl text-white">In Action</h2>
             </div>
             <ActionPhotosGallery photos={sortedPhotos} />
           </div>

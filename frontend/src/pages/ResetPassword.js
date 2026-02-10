@@ -63,7 +63,7 @@ const ResetPassword = () => {
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
             <Check className="w-8 h-8 text-green-400" />
           </div>
-          <h1 className="font-serif text-2xl mb-4">Password Reset Complete</h1>
+          <h1 className="title-sm text-2xl mb-4">Password Reset Complete</h1>
           <p className="text-gray-400 mb-6">
             Your password has been successfully updated. You can now sign in with your new password.
           </p>
@@ -87,7 +87,7 @@ const ResetPassword = () => {
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-red-400" />
           </div>
-          <h1 className="font-serif text-2xl mb-4">Invalid Reset Link</h1>
+          <h1 className="title-sm text-2xl mb-4">Invalid Reset Link</h1>
           <p className="text-gray-400 mb-6">{error}</p>
           <Link 
             to="/dashboard?tab=auth" 
@@ -108,7 +108,7 @@ const ResetPassword = () => {
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#d4af37]/10 flex items-center justify-center">
             <Lock className="w-8 h-8 text-[#d4af37]" />
           </div>
-          <h1 className="font-serif text-2xl mb-2">Create New Password</h1>
+          <h1 className="title-sm text-2xl mb-2">Create New Password</h1>
           <p className="text-gray-500 text-sm">
             Enter your new password below.
           </p>

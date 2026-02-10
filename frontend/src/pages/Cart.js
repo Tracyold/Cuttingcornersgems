@@ -66,7 +66,7 @@ const Cart = () => {
       <div className="min-h-screen flex items-center justify-center" data-testid="empty-cart">
         <div className="text-center">
           <ShoppingBag className="w-16 h-16 mx-auto text-gray-600 mb-6" />
-          <h1 className="font-serif text-3xl mb-4">Your Cart is Empty</h1>
+          <h1 className="title-xl text-3xl mb-4">Your Cart is Empty</h1>
           <p className="text-gray-500 mb-8">Discover our collection of precision-cut gemstones.</p>
           <Link to="/shop" className="btn-primary" data-testid="shop-now-btn">
             Shop Now
@@ -84,7 +84,7 @@ const Cart = () => {
           <Link to="/shop" className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> Continue Shopping
           </Link>
-          <h1 className="section-title">Your Cart</h1>
+          <h1 className="title-xl">Your Cart</h1>
         </div>
       </section>
 
@@ -108,7 +108,7 @@ const Cart = () => {
                     />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-serif text-lg">{item.title}</h3>
+                    <h3 className="title-sm text-lg">{item.title}</h3>
                     <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
                     <p className="price-tag mt-2">{formatPrice(item.price * item.quantity)}</p>
                   </div>
@@ -126,7 +126,7 @@ const Cart = () => {
             {/* Summary */}
             <div className="lg:col-span-1">
               <div className="gem-card p-6 sticky top-28" data-testid="cart-summary">
-                <h2 className="font-serif text-xl mb-6">Order Summary</h2>
+                <h2 className="title-sm text-xl mb-6">Order Summary</h2>
                 
                 <div className="space-y-4 mb-6">
                   <div className="flex justify-between text-sm">

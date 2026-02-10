@@ -96,7 +96,7 @@ const SellInquiry = () => {
           <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-green-500/10 flex items-center justify-center">
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
-          <h1 className="font-serif text-4xl mb-4">Thank You!</h1>
+          <h1 className="title-xl text-4xl mb-4">Thank You!</h1>
           <p className="text-gray-400 mb-8">
             Your sell inquiry has been received. I'll review your submission and get back to you soon.
           </p>
@@ -125,7 +125,7 @@ const SellInquiry = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Sell Your Gems</p>
-          <h1 className="section-title">Sell Inquiry</h1>
+          <h1 className="title-xl">Sell Inquiry</h1>
         </div>
       </section>
 

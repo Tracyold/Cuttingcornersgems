@@ -35,7 +35,7 @@ const ForgotPasswordForm = ({ onBack }) => {
         <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
           <Check className="w-8 h-8 text-green-400" />
         </div>
-        <h2 className="font-serif text-2xl mb-4">Check Your Email</h2>
+        <h2 className="title-sm text-2xl mb-4">Check Your Email</h2>
         <p className="text-gray-400 mb-6">
           If an account exists with that email, you'll receive password reset instructions shortly.
         </p>
@@ -51,7 +51,7 @@ const ForgotPasswordForm = ({ onBack }) => {
 
   return (
     <div className="gem-card p-8 max-w-md mx-auto" data-testid="forgot-password-form">
-      <h2 className="font-serif text-2xl mb-2 text-center">Reset Password</h2>
+      <h2 className="title-sm text-2xl mb-2 text-center">Reset Password</h2>
       <p className="text-gray-500 text-sm text-center mb-6">
         Enter your email address and we'll send you a link to reset your password.
       </p>
@@ -126,7 +126,7 @@ const AuthSection = ({ onSuccess }) => {
 
   return (
     <div className="gem-card p-8 max-w-md mx-auto" data-testid="auth-section">
-      <h2 className="font-serif text-2xl mb-6 text-center">
+      <h2 className="title-sm text-2xl mb-6 text-center">
         {isLogin ? 'Sign In' : 'Create Account'}
       </h2>
       
@@ -328,10 +328,10 @@ const NameYourPriceTab = () => {
     const progressPercent = Math.min(100, ((entitlements?.total_spend || 0) / (entitlements?.threshold || 1000)) * 100);
     return (
       <div data-testid="nyp-locked-tab">
-        <h2 className="font-serif text-2xl mb-6">Name Your Price</h2>
+        <h2 className="title-sm text-2xl mb-6">Name Your Price</h2>
         <div className="gem-card p-8 text-center">
           <Lock className="w-12 h-12 mx-auto text-gray-600 mb-4" />
-          <h3 className="font-serif text-xl mb-2">Unlock Exclusive Pricing</h3>
+          <h3 className="title-sm text-xl mb-2">Unlock Exclusive Pricing</h3>
           <p className="text-gray-500 mb-6">
             Spend ${(entitlements?.threshold || 1000).toLocaleString()} to unlock Name Your Price negotiations.
           </p>
@@ -375,7 +375,7 @@ const NameYourPriceTab = () => {
         <div className="gem-card p-6 mb-6">
           <div className="flex justify-between items-start mb-4">
             <div>
-              <h3 className="font-serif text-xl">{selectedNeg.product_title}</h3>
+              <h3 className="title-sm text-xl">{selectedNeg.product_title}</h3>
               <p className="text-gray-500 text-sm">
                 Listed Price: <span className="text-white">${selectedNeg.product_price?.toLocaleString()}</span>
               </p>
@@ -475,7 +475,7 @@ const NameYourPriceTab = () => {
     <div data-testid="nyp-unlocked-tab">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="font-serif text-2xl">Name Your Price</h2>
+          <h2 className="title-sm text-2xl">Name Your Price</h2>
           <p className="text-green-400 text-sm flex items-center gap-1">
             <Unlock className="w-4 h-4" /> Unlocked
           </p>
@@ -684,7 +684,7 @@ const Dashboard = () => {
         <section className="section-spacing pb-16">
           <div className="container-custom">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Account</p>
-            <h1 className="section-title">Sign In or Register</h1>
+            <h1 className="title-xl">Sign In or Register</h1>
           </div>
         </section>
         <section className="pb-24">
@@ -715,7 +715,7 @@ const Dashboard = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Welcome back</p>
-          <h1 className="section-title">{user.name}</h1>
+          <h1 className="title-xl">{user.name}</h1>
         </div>
       </section>
 
@@ -768,7 +768,7 @@ const Dashboard = () => {
                   {/* Orders Tab */}
                   {activeTab === 'orders' && (
                     <div data-testid="orders-content">
-                      <h2 className="font-serif text-2xl mb-6">Your Orders</h2>
+                      <h2 className="title-sm text-2xl mb-6">Your Orders</h2>
                       {orders.length === 0 ? (
                         <div className="gem-card p-8 text-center">
                           <Package className="w-12 h-12 mx-auto text-gray-600 mb-4" />
@@ -828,7 +828,7 @@ const Dashboard = () => {
                   {/* Bookings Tab */}
                   {activeTab === 'bookings' && (
                     <div data-testid="bookings-content">
-                      <h2 className="font-serif text-2xl mb-6">Your Bookings</h2>
+                      <h2 className="title-sm text-2xl mb-6">Your Bookings</h2>
                       {bookings.length === 0 ? (
                         <div className="gem-card p-8 text-center">
                           <Calendar className="w-12 h-12 mx-auto text-gray-600 mb-4" />
@@ -843,7 +843,7 @@ const Dashboard = () => {
                             <div key={booking.id} className="gem-card p-6" data-testid={`booking-${index}`}>
                               <div className="flex justify-between items-start mb-4">
                                 <div>
-                                  <p className="font-serif text-lg capitalize">{booking.service.replace('-', ' ')}</p>
+                                  <p className="title-sm text-lg capitalize">{booking.service.replace('-', ' ')}</p>
                                   <p className="text-sm text-gray-500 capitalize">{booking.stone_type}</p>
                                 </div>
                                 <span className={`px-3 py-1 text-xs uppercase tracking-widest ${
@@ -875,7 +875,7 @@ const Dashboard = () => {
                   {/* Messages Tab */}
                   {activeTab === 'messages' && (
                     <div data-testid="messages-content">
-                      <h2 className="font-serif text-2xl mb-6">Contact Admin</h2>
+                      <h2 className="title-sm text-2xl mb-6">Contact Admin</h2>
                       
                       {/* Message Form */}
                       <div className="gem-card p-6 mb-6">
@@ -1000,7 +1000,7 @@ const AccountTab = ({ user, onLogout }) => {
 
   return (
     <div data-testid="account-content">
-      <h2 className="font-serif text-2xl mb-6">Account Details</h2>
+      <h2 className="title-sm text-2xl mb-6">Account Details</h2>
       <div className="gem-card p-6 space-y-4">
         <div>
           <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Name</p>
@@ -1045,7 +1045,7 @@ const AccountTab = ({ user, onLogout }) => {
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteModal(false)}>
           <div className="bg-[#0a0a0a] border border-white/10 p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
-            <h3 className="font-serif text-xl mb-4 text-red-400">Delete Account</h3>
+            <h3 className="title-sm text-xl mb-4 text-red-400">Delete Account</h3>
             <p className="text-gray-400 text-sm mb-4">
               This will permanently disable your account. You will be logged out and will not be able to access your account again.
             </p>

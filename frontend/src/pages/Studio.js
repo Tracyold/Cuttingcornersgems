@@ -117,18 +117,18 @@ const TimelineItem = ({ item, isLast }) => (
 // Equipment Card Component
 const EquipmentCard = ({ item }) => (
   <div 
-    className="bg-white/5 border border-white/10 p-6 rounded-lg hover:border-amber-500/30 transition-colors"
+    className="bg-white/5 border border-white/10 p-8 rounded-lg hover:border-amber-500/30 transition-colors"
     data-testid={`equipment-${item.id}`}
   >
     {item.image_url && (
       <img 
         src={item.image_url} 
         alt={item.image_alt || item.name}
-        className="w-full h-40 object-cover rounded mb-4"
+        className="w-full h-56 object-cover rounded mb-5"
       />
     )}
-    <h4 className="title-sm text-lg text-white mb-2">{item.name}</h4>
-    <p className="text-gray-400 text-sm">{item.purpose}</p>
+    <h4 className="title-sm text-xl text-white mb-3">{item.name}</h4>
+    <p className="text-gray-400 text-base">{item.purpose}</p>
   </div>
 );
 

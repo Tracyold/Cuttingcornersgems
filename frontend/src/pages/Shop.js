@@ -647,12 +647,12 @@ const Shop = () => {
                 <div
                   key={product.id}
                   onClick={() => handleProductClick(product)}
-                  className="gem-card flex gap-4 md:gap-6 p-4 cursor-pointer hover:border-white/30 transition-all opacity-0 animate-fade-in"
+                  className="gem-card flex gap-4 md:gap-6 p-5 md:p-6 cursor-pointer hover:border-white/30 transition-all opacity-0 animate-fade-in"
                   style={{ animationDelay: `${index * 50}ms` }}
                   data-testid={`product-${index}`}
                 >
                   {/* Image */}
-                  <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 overflow-hidden">
+                  <div className="w-28 h-28 md:w-40 md:h-40 flex-shrink-0 overflow-hidden">
                     <img
                       src={product.image_url}
                       alt={product.title}
@@ -663,10 +663,10 @@ const Shop = () => {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">{product.category}</p>
-                    <h3 className="title-sm text-lg md:text-xl mb-2 truncate">{product.title}</h3>
-                    <p className="text-gray-500 text-sm mb-2 line-clamp-2 hidden md:block">{product.description}</p>
+                    <h3 className="title-sm text-xl md:text-2xl mb-2 truncate">{product.title}</h3>
+                    <p className="text-gray-500 text-base mb-3 line-clamp-2 hidden md:block">{product.description}</p>
                     <div className="flex items-center gap-4">
-                      <span className="font-mono text-lg">{formatPrice(product.price)}</span>
+                      <span className="font-mono text-xl">{formatPrice(product.price)}</span>
                       {product.carat && (
                         <span className="text-xs text-gray-500 font-mono">{product.carat}</span>
                       )}

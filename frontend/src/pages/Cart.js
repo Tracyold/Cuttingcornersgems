@@ -177,6 +177,28 @@ const Cart = () => {
           </div>
         </div>
       </section>
+
+      {/* Order Confirmation Popup */}
+      {showOrderConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" data-testid="order-confirm-popup">
+          <div className="gem-card p-8 max-w-md text-center mx-4">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
+              <ShoppingBag className="w-8 h-8 text-green-400" />
+            </div>
+            <h2 className="title-sm text-2xl mb-4">Thank you!</h2>
+            <p className="text-gray-400 mb-6">
+              Please finish purchase in account page! Items are still available until you purchase from your account page!
+            </p>
+            <button
+              onClick={() => navigate('/dashboard?tab=orders')}
+              className="btn-primary w-full"
+              data-testid="go-to-account-btn"
+            >
+              Go to My Account
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

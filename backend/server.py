@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, Response
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Response
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -21,14 +21,11 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# JWT settings
-JWT_SECRET = os.environ.get('JWT_SECRET', 'cutting-corners-secret-key-2024')
-JWT_ALGORITHM = "HS256"
-JWT_EXPIRATION_HOURS = 24
-
-# Admin credentials (in production, store hashed in DB)
-ADMIN_USERNAME = "postvibe"
-ADMIN_PASSWORD_HASH = bcrypt.hashpw("adm1npa$$word".encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+# Import centralized security config (single source of truth)
+from config.security import (
+    JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
+    ADMIN_USERNAME, ADMIN_PASSWORD_HASH, validate_admin_config
+)
 
 app = FastAPI()
 

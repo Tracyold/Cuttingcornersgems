@@ -962,8 +962,8 @@ async def test_email_connection(data: EmailTestRequest, admin: dict = Depends(ge
 async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
     nd = {"is_deleted": {"$ne": True}}
     # Get counts (NON-DELETED only, matching list page defaults)
-    products_count = await db.products.count_documents({})
-    gallery_count = await db.gallery.count_documents({})
+    products_count = await db.products.count_documents(nd)
+    gallery_count = await db.gallery.count_documents(nd)
     bookings_count = await db.bookings.count_documents(nd)
     users_count = await db.users.count_documents(nd)
     orders_count = await db.orders.count_documents(nd)

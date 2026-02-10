@@ -1987,6 +1987,9 @@ async def admin_mark_order_paid(order_id: str, admin: dict = Depends(get_admin_u
     )
     await mark_products_sold(order.get("items", []))
     
+    # Insert sold_items record for lifecycle completion
+    await insert_sold_item_record(order, now)
+    
     return {
         "id": order_id,
         "paid_at": now,

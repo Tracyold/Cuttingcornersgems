@@ -57,6 +57,14 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Admin Per-User HB/NYP Override (Feb 2026 - Completed)
+- `PATCH /api/admin/users/{user_id}/entitlements` — toggle `override_enabled` with optional `note`
+- Persists `nyp_override_enabled`, `nyp_override_note`, `nyp_override_set_at` in MongoDB user record
+- When enabled: `unlocked_nyp=true`, `spend_to_unlock=0`, `override_enabled=true` in entitlements
+- Unlocks both Humble Beginnings (Gallery) and Name Your Price (Shop/Dashboard)
+- Admin UI: toggle + note input in expanded user card, "OVERRIDE ON" badge
+- Does NOT modify existing purchase/entitlements math — adds an override path only
+
 ## Admin Users Show Deleted Toggle (Feb 2026 - Completed)
 - Added `include_deleted` query parameter to `GET /api/admin/users`
 - "Show deleted" checkbox toggle on Admin Users page (`data-testid="show-deleted-toggle"`)

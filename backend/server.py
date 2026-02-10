@@ -1285,6 +1285,130 @@ async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admi
     
     return {"message": "Gallery item deleted and archived"}
 
+
+# ============ ADMIN DATA DELETE CONTROLS ============
+
+class AdminDeleteRequest(BaseModel):
+    reason: Optional[str] = None
+
+DELETABLE_COLLECTIONS = {
+    "sold": "sold_items",
+    "product-inquiries": "product_inquiries",
+    "sell-inquiries": "sell_inquiries",
+    "nyp-inquiries": "name_your_price_inquiries",
+    "bookings": "bookings",
+    "messages": "user_messages",
+    "orders": "orders",
+}
+
+@api_router.post("/admin/{domain}/{item_id}/delete")
+async def admin_soft_delete_record(
+    domain: str, item_id: str,
+    body: AdminDeleteRequest = AdminDeleteRequest(),
+    admin: dict = Depends(get_admin_user)
+):
+    """Soft-delete a user-interaction record."""
+    # Handle negotiations separately (store-backed)
+    if domain == "negotiations":
+        store = get_negotiation_store(db)
+        thread = await store.get_thread(item_id)
+        if not thread:
+            raise HTTPException(status_code=404, detail="Negotiation not found")
+        await db.negotiation_threads.update_one(
+            {"negotiation_id": item_id},
+            {"$set": {
+                "is_deleted": True,
+                "deleted_at": datetime.now(timezone.utc).isoformat(),
+                "deleted_by_admin": admin.get("username", "admin"),
+                "delete_reason": body.reason
+            }}
+        )
+        return {"message": "deleted", "id": item_id, "soft": True}
+
+    collection_name = DELETABLE_COLLECTIONS.get(domain)
+    if not collection_name:
+        raise HTTPException(status_code=400, detail=f"Unknown domain: {domain}")
+
+    item = await db[collection_name].find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Record not found")
+
+    await db[collection_name].update_one(
+        {"id": item_id},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": datetime.now(timezone.utc).isoformat(),
+            "deleted_by_admin": admin.get("username", "admin"),
+            "delete_reason": body.reason
+        }}
+    )
+    return {"message": "deleted", "id": item_id, "soft": True}
+
+
+@api_router.post("/admin/{domain}/{item_id}/restore")
+async def admin_restore_record(
+    domain: str, item_id: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """Restore a soft-deleted record."""
+    if domain == "negotiations":
+        result = await db.negotiation_threads.update_one(
+            {"negotiation_id": item_id, "is_deleted": True},
+            {"$set": {
+                "is_deleted": False,
+                "restored_at": datetime.now(timezone.utc).isoformat(),
+                "restored_by_admin": admin.get("username", "admin")
+            }, "$unset": {"deleted_at": "", "deleted_by_admin": "", "delete_reason": ""}}
+        )
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Deleted negotiation not found")
+        return {"message": "restored", "id": item_id}
+
+    collection_name = DELETABLE_COLLECTIONS.get(domain)
+    if not collection_name:
+        raise HTTPException(status_code=400, detail=f"Unknown domain: {domain}")
+
+    result = await db[collection_name].update_one(
+        {"id": item_id, "is_deleted": True},
+        {"$set": {
+            "is_deleted": False,
+            "restored_at": datetime.now(timezone.utc).isoformat(),
+            "restored_by_admin": admin.get("username", "admin")
+        }, "$unset": {"deleted_at": "", "deleted_by_admin": "", "delete_reason": ""}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Deleted record not found")
+    return {"message": "restored", "id": item_id}
+
+
+@api_router.delete("/admin/{domain}/{item_id}")
+async def admin_hard_delete_record(
+    domain: str, item_id: str,
+    hard: bool = False,
+    admin: dict = Depends(get_admin_user)
+):
+    """Hard-delete (purge) a record. Requires hard=true flag."""
+    if not hard:
+        raise HTTPException(status_code=400, detail="Set hard=true to permanently purge")
+
+    if domain == "negotiations":
+        result = await db.negotiation_threads.delete_one({"negotiation_id": item_id})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Negotiation not found")
+        # Also clean up agreements
+        await db.negotiation_agreements.delete_many({"negotiation_id": item_id})
+        return {"message": "purged", "id": item_id}
+
+    collection_name = DELETABLE_COLLECTIONS.get(domain)
+    if not collection_name:
+        raise HTTPException(status_code=400, detail=f"Unknown domain: {domain}")
+
+    result = await db[collection_name].delete_one({"id": item_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Record not found")
+    return {"message": "purged", "id": item_id}
+
+
 # ============ PUBLIC AUTH ROUTES ============
 
 @api_router.get("/auth/signup-status")

@@ -57,6 +57,13 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## User Accept Counter + DbPurchaseTokenStore (Feb 2026 - Completed)
+- `POST /api/negotiations/{id}/accept` — User accepts latest admin COUNTER, creates agreement + committed order + purchase token
+- `DbPurchaseTokenStore` fully implemented (was P1 stub) — create, verify, consume tokens in MongoDB `purchase_tokens` collection
+- `NegotiationCommitPanel` component: countdown, Pay Now, Download Invoice after acceptance
+- "Accept Offer ($X)" button shown when latest message is admin COUNTER
+- Product NOT marked sold until payment confirmed
+
 ## Dashboard Tile Semantics + Negotiations + Dev Hard-Delete (Feb 2026 - Completed)
 - `orders` tile = PAID orders only (completed revenue events)
 - `commits` tile = UNPAID pending orders (replaces old "Sold Items" label)

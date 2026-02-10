@@ -2514,6 +2514,75 @@ async def admin_set_user_entitlement_override(
     }
 
 
+# ============ ADMIN PASSWORD RESET TRIGGER ============
+
+@api_router.post("/admin/users/{user_id}/password-reset")
+async def admin_trigger_password_reset(
+    user_id: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Admin-triggered password reset for a user.
+    
+    Creates a reset token and sends email to the user.
+    The reset link is delivered ONLY via email (never returned in response).
+    """
+    from services.password_reset import (
+        create_reset_token, build_reset_email_html, build_reset_email_text
+    )
+    from services.email_provider import get_email_provider, NullEmailProvider, EmailMessage
+    
+    # Look up the user
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if email is enabled
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0}) or {}
+    email_provider = get_email_provider(settings)
+    
+    if isinstance(email_provider, NullEmailProvider):
+        raise HTTPException(
+            status_code=400, 
+            detail="Email service is not configured. Cannot send password reset email."
+        )
+    
+    # Create reset token
+    token_data = await create_reset_token(db, user["id"], user["email"])
+    
+    # Build reset URL
+    frontend_url = os.environ.get("FRONTEND_URL", os.environ.get("REACT_APP_BACKEND_URL", ""))
+    if frontend_url.endswith("/api"):
+        frontend_url = frontend_url[:-4]
+    reset_url = f"{frontend_url}/reset-password?token={token_data.token}"
+    
+    # Build email content
+    html_body = build_reset_email_html(reset_url, settings.get("email_from_name", "Support"))
+    text_body = build_reset_email_text(reset_url)
+    
+    # Send email
+    email_message = EmailMessage(
+        to=user["email"],
+        subject="Password Reset Request",
+        html_body=html_body,
+        text_body=text_body
+    )
+    
+    result = await email_provider.send(email_message)
+    
+    if result.sent:
+        logger.info(f"Admin triggered password reset for user {user_id}")
+        return {
+            "message": f"Password reset email sent to {user['email']}",
+            "user_id": user_id
+        }
+    else:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Failed to send password reset email: {result.message}"
+        )
+
+
 # ============ ADMIN DEV DATA EXPORT/IMPORT ============
 
 @api_router.get("/admin/dev/export")

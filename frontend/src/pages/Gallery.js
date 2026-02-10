@@ -413,7 +413,7 @@ const Gallery = () => {
             </div>
             <div className="w-full md:w-72 text-center md:text-left">
               <p className="spec-text text-gray-500 mb-2">{currentItem.category}</p>
-              <h2 className="font-serif text-2xl mb-4">{currentItem.title}</h2>
+              <h2 className="title-sm text-2xl mb-4">{currentItem.title}</h2>
               {currentItem.description && (
                 <p className="text-gray-400 text-sm mb-4">{currentItem.description}</p>
               )}

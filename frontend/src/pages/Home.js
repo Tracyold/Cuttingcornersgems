@@ -150,7 +150,7 @@ const Home = () => {
             {[
               { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
-              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
+              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver quick turn arounds and shorter lead times.' },
               { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },
               { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
               { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale purchasing from jewelers and dealers.' },
@@ -173,7 +173,7 @@ const Home = () => {
             {[
               { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing stones with expert re-finishing services.' },
-              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver exceptional results.' },
+              { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver quick turn arounds and shorter lead times.' },
               { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },
               { icon: Gem, title: 'Buy Rough', desc: 'Source quality rough gemstones for your cutting projects.' },
               { icon: Gem, title: 'Buy Gems In Bulk', desc: 'Wholesale purchasing from jewelers and dealers.' },

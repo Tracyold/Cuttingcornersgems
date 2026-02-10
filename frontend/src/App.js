@@ -26,6 +26,7 @@ import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSold from './pages/admin/AdminSold';
 import AdminData from './pages/admin/AdminData';
+import AdminNegotiations from './pages/admin/AdminNegotiations';
 import StripeSettings from './pages/admin/StripeSettings';
 import StorageSettings from './pages/admin/StorageSettings';
 import SecuritySettings from './pages/admin/SecuritySettings';

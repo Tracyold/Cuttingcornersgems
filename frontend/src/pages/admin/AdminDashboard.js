@@ -194,16 +194,24 @@ const AdminDashboard = () => {
             {recentActivity.map((item, i) => (
               <div 
                 key={i} 
-                className="flex items-center justify-between py-3 border-b border-white/5 last:border-0"
+                className={`flex items-center justify-between py-3 border-b border-white/5 last:border-0 ${item.activity_is_deleted ? 'opacity-60' : ''}`}
                 data-testid={`activity-item-${i}`}
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm truncate">{getActivityDescription(item)}</p>
                   <p className="text-xs text-gray-500">{formatDate(item.created_at)}</p>
                 </div>
-                <span className={`text-xs px-2 py-1 ml-3 flex-shrink-0 ${getActivityBadgeColor(item.type)}`}>
-                  {item.typeLabel}
-                </span>
+                <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                  {item.activity_is_pending && (
+                    <span className="text-xs px-2 py-0.5 bg-yellow-500/20 text-yellow-400" data-testid="badge-pending">PENDING</span>
+                  )}
+                  {item.activity_is_deleted && (
+                    <span className="text-xs px-2 py-0.5 bg-red-500/20 text-red-400" data-testid="badge-deleted">DELETED</span>
+                  )}
+                  <span className={`text-xs px-2 py-1 ${getActivityBadgeColor(item.type)}`}>
+                    {item.typeLabel}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

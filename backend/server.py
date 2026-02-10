@@ -1767,11 +1767,590 @@ async def get_my_entitlements(user: dict = Depends(get_current_user)):
     from services.order_store import get_order_store
     
     store = get_order_store(db)
-    entitlements = await get_user_entitlements(user["id"], store)
+    # Get full user record to check for NYP override
+    user_record = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    entitlements = await get_user_entitlements(user["id"], store, user_record)
     return entitlements
 
 
-# ============ DEVELOPMENT-ONLY ENDPOINTS ============
+# ============ USER PREFERENCES ENDPOINTS ============
+
+class UserPreferencesUpdate(BaseModel):
+    """Request to update user negotiation preferences."""
+    sms_negotiations_enabled: Optional[bool] = None
+    phone_e164: Optional[str] = None
+
+
+@api_router.patch("/users/me/preferences")
+async def update_user_preferences(
+    prefs: UserPreferencesUpdate,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Update user preferences for negotiation SMS notifications.
+    
+    Body:
+        - sms_negotiations_enabled: bool (optional)
+        - phone_e164: str (optional, E.164 format phone number)
+    """
+    update_fields = {}
+    
+    if prefs.sms_negotiations_enabled is not None:
+        update_fields["sms_negotiations_enabled"] = prefs.sms_negotiations_enabled
+    
+    if prefs.phone_e164 is not None:
+        update_fields["phone_e164"] = prefs.phone_e164
+    
+    if not update_fields:
+        return {"message": "No updates provided"}
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": update_fields}
+    )
+    
+    return {"message": "Preferences updated", "updated": list(update_fields.keys())}
+
+
+@api_router.get("/users/me/preferences")
+async def get_user_preferences(user: dict = Depends(get_current_user)):
+    """Get user preferences for negotiations."""
+    user_record = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    return {
+        "sms_negotiations_enabled": user_record.get("sms_negotiations_enabled", False),
+        "phone_e164": user_record.get("phone_e164")
+    }
+
+
+# ============ NEGOTIATION ENDPOINTS (USER) ============
+
+from models.negotiation import (
+    CreateNegotiationRequest,
+    AddMessageRequest,
+    AgreementResponse,
+    PurchaseQuoteResponse,
+    PurchaseCheckoutResponse,
+)
+from services.negotiation_store import get_negotiation_store
+from services.purchase_token_store import get_purchase_token_store
+from services.entitlements import check_nyp_eligibility
+
+
+@api_router.post("/negotiations")
+async def create_negotiation(
+    request: CreateNegotiationRequest,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Create a new negotiation thread with initial offer.
+    Requires NYP eligibility (spend threshold or admin override).
+    """
+    # Check eligibility server-side
+    user_record = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    eligible = await check_nyp_eligibility(user["id"], user_record)
+    
+    if not eligible:
+        raise HTTPException(
+            status_code=403,
+            detail="Spend $1,000 to unlock Name Your Price."
+        )
+    
+    # Get product info
+    product = await db.products.find_one({"id": request.product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    # Check if product allows NYP
+    if not product.get("name_your_price", False):
+        raise HTTPException(
+            status_code=400,
+            detail="This product does not accept Name Your Price offers"
+        )
+    
+    # Create thread
+    store = get_negotiation_store()
+    thread = await store.create_thread(
+        user_id=user["id"],
+        user_email=user["email"],
+        user_name=user["name"],
+        product_id=request.product_id,
+        product_title=product["title"],
+        product_price=product.get("price", 0),
+        initial_offer_amount=request.offer_amount,
+        text=request.text
+    )
+    
+    # Try to send notification (non-blocking)
+    try:
+        from services.negotiation_notifications import notify_user_offer_sent
+        settings = await db.site_settings.find_one({}, {"_id": 0})
+        await notify_user_offer_sent(thread, user_record, settings)
+    except Exception as e:
+        logging.warning(f"Failed to send offer notification: {e}")
+    
+    return {
+        "negotiation_id": thread.negotiation_id,
+        "status": thread.status,
+        "created_at": thread.created_at.isoformat()
+    }
+
+
+@api_router.get("/negotiations")
+async def list_user_negotiations(user: dict = Depends(get_current_user)):
+    """List all negotiations for the current user."""
+    store = get_negotiation_store()
+    summaries = await store.list_threads_for_user(user["id"])
+    return [
+        {
+            "negotiation_id": s.negotiation_id,
+            "product_id": s.product_id,
+            "product_title": s.product_title,
+            "product_price": s.product_price,
+            "status": s.status,
+            "last_activity_at": s.last_activity_at.isoformat(),
+            "last_message_preview": s.last_message_preview,
+            "last_amount": s.last_amount,
+            "message_count": s.message_count
+        }
+        for s in summaries
+    ]
+
+
+@api_router.get("/negotiations/{negotiation_id}")
+async def get_user_negotiation(
+    negotiation_id: str,
+    user: dict = Depends(get_current_user)
+):
+    """Get full negotiation thread (user must own it)."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.user_id != user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    return {
+        "negotiation_id": thread.negotiation_id,
+        "product_id": thread.product_id,
+        "product_title": thread.product_title,
+        "product_price": thread.product_price,
+        "status": thread.status,
+        "created_at": thread.created_at.isoformat(),
+        "updated_at": thread.updated_at.isoformat(),
+        "messages": [
+            {
+                "message_id": m.message_id,
+                "sender_role": m.sender_role,
+                "kind": m.kind,
+                "amount": m.amount,
+                "text": m.text,
+                "created_at": m.created_at.isoformat()
+            }
+            for m in thread.messages
+        ],
+        "accepted_agreement_id": thread.accepted_agreement_id
+    }
+
+
+@api_router.post("/negotiations/{negotiation_id}/message")
+async def add_user_message(
+    negotiation_id: str,
+    request: AddMessageRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Add a message to a negotiation (user side: OFFER or NOTE only)."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.user_id != user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    if thread.status != "OPEN":
+        raise HTTPException(status_code=400, detail="Negotiation is not open")
+    
+    if request.kind not in ["OFFER", "NOTE"]:
+        raise HTTPException(status_code=400, detail="Invalid message kind for user")
+    
+    if request.kind == "OFFER" and request.amount is None:
+        raise HTTPException(status_code=400, detail="Amount required for OFFER")
+    
+    thread = await store.add_message(
+        negotiation_id=negotiation_id,
+        sender_role="USER",
+        kind=request.kind,
+        amount=request.amount,
+        text=request.text
+    )
+    
+    return {"message": "Message added", "message_count": len(thread.messages)}
+
+
+@api_router.get("/negotiations/{negotiation_id}/agreement")
+async def get_negotiation_agreement(
+    negotiation_id: str,
+    user: dict = Depends(get_current_user)
+):
+    """Check if an active agreement exists for this negotiation."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.user_id != user["id"]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    
+    agreement = await store.get_agreement_for_negotiation(negotiation_id)
+    
+    if not agreement or agreement.status != "ACTIVE":
+        return AgreementResponse(available=False)
+    
+    from datetime import datetime, timezone
+    if datetime.now(timezone.utc) > agreement.purchase_token_expires_at:
+        return AgreementResponse(available=False)
+    
+    return AgreementResponse(
+        available=True,
+        product_id=agreement.product_id,
+        accepted_amount=agreement.accepted_amount,
+        purchase_token=agreement.purchase_token,
+        expires_at=agreement.purchase_token_expires_at,
+        agreement_id=agreement.agreement_id
+    )
+
+
+# ============ PURCHASE ENDPOINTS (USER) ============
+
+class PurchaseQuoteRequest(BaseModel):
+    purchase_token: str
+
+
+class PurchaseCheckoutRequest(BaseModel):
+    purchase_token: str
+
+
+@api_router.post("/purchase/quote")
+async def get_purchase_quote(
+    request: PurchaseQuoteRequest,
+    user: dict = Depends(get_current_user)
+):
+    """Verify purchase token and get quote."""
+    token_store = get_purchase_token_store()
+    result = await token_store.verify_token(user["id"], request.purchase_token)
+    
+    if not result.get("valid"):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get("reason", "Invalid token")
+        )
+    
+    return PurchaseQuoteResponse(
+        product_id=result["product_id"],
+        amount=result["amount"],
+        token_valid_until=result["expires_at"],
+        agreement_id=result["agreement_id"]
+    )
+
+
+@api_router.post("/purchase/checkout")
+async def checkout_with_token(
+    request: PurchaseCheckoutRequest,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Checkout with a negotiated price token.
+    
+    DEV MODE: Returns payment required info but does not process.
+    PRODUCTION: TODO - Create Stripe session with negotiated amount.
+    """
+    token_store = get_purchase_token_store()
+    result = await token_store.verify_token(user["id"], request.purchase_token)
+    
+    if not result.get("valid"):
+        raise HTTPException(
+            status_code=400,
+            detail=result.get("reason", "Invalid token")
+        )
+    
+    # DEV MODE: Return checkout info without actual payment
+    # TODO: In production, create Stripe session with amount
+    # On payment success webhook: mark agreement USED and consume token
+    
+    return PurchaseCheckoutResponse(
+        requires_payment=True,
+        provider="NOT_CONFIGURED",
+        amount=result["amount"],
+        product_id=result["product_id"],
+        agreement_id=result["agreement_id"]
+    )
+
+
+# ============ ADMIN NEGOTIATION ENDPOINTS ============
+
+from models.negotiation import AdminCounterRequest, AdminAcceptRequest, AdminCloseRequest
+
+
+@api_router.get("/admin/negotiations")
+async def admin_list_negotiations(
+    status: Optional[str] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """List negotiations (admin view)."""
+    store = get_negotiation_store()
+    
+    filter_status = None
+    if status and status.upper() in ["OPEN", "ACCEPTED", "CLOSED"]:
+        filter_status = status.upper()
+    
+    summaries = await store.list_threads_for_admin(filter_status)
+    return [
+        {
+            "negotiation_id": s.negotiation_id,
+            "user_id": s.user_id,
+            "user_email": s.user_email,
+            "user_name": s.user_name,
+            "product_id": s.product_id,
+            "product_title": s.product_title,
+            "product_price": s.product_price,
+            "status": s.status,
+            "created_at": s.created_at.isoformat(),
+            "last_activity_at": s.last_activity_at.isoformat(),
+            "last_amount": s.last_amount,
+            "message_count": s.message_count
+        }
+        for s in summaries
+    ]
+
+
+@api_router.get("/admin/negotiations/{negotiation_id}")
+async def admin_get_negotiation(
+    negotiation_id: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """Get full negotiation thread (admin view)."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    # Get agreement if exists
+    agreement = await store.get_agreement_for_negotiation(negotiation_id)
+    agreement_info = None
+    if agreement:
+        agreement_info = {
+            "agreement_id": agreement.agreement_id,
+            "accepted_amount": agreement.accepted_amount,
+            "status": agreement.status,
+            "expires_at": agreement.purchase_token_expires_at.isoformat(),
+            "created_at": agreement.created_at.isoformat()
+        }
+    
+    return {
+        "negotiation_id": thread.negotiation_id,
+        "user_id": thread.user_id,
+        "user_email": thread.user_email,
+        "user_name": thread.user_name,
+        "product_id": thread.product_id,
+        "product_title": thread.product_title,
+        "product_price": thread.product_price,
+        "status": thread.status,
+        "created_at": thread.created_at.isoformat(),
+        "updated_at": thread.updated_at.isoformat(),
+        "messages": [
+            {
+                "message_id": m.message_id,
+                "sender_role": m.sender_role,
+                "kind": m.kind,
+                "amount": m.amount,
+                "text": m.text,
+                "created_at": m.created_at.isoformat()
+            }
+            for m in thread.messages
+        ],
+        "agreement": agreement_info
+    }
+
+
+@api_router.post("/admin/negotiations/{negotiation_id}/counter")
+async def admin_counter_offer(
+    negotiation_id: str,
+    request: AdminCounterRequest,
+    admin: dict = Depends(get_admin_user)
+):
+    """Admin sends counter-offer."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.status != "OPEN":
+        raise HTTPException(status_code=400, detail="Negotiation is not open")
+    
+    thread = await store.add_message(
+        negotiation_id=negotiation_id,
+        sender_role="ADMIN",
+        kind="COUNTER",
+        amount=request.amount,
+        text=request.text
+    )
+    
+    # Try to notify user
+    try:
+        from services.negotiation_notifications import notify_user_counter_received
+        user_record = await db.users.find_one({"id": thread.user_id}, {"_id": 0})
+        settings = await db.site_settings.find_one({}, {"_id": 0})
+        await notify_user_counter_received(thread, user_record, settings)
+    except Exception as e:
+        logging.warning(f"Failed to send counter notification: {e}")
+    
+    return {"message": "Counter-offer sent", "message_count": len(thread.messages)}
+
+
+@api_router.post("/admin/negotiations/{negotiation_id}/accept")
+async def admin_accept_offer(
+    negotiation_id: str,
+    request: AdminAcceptRequest,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Admin accepts offer and creates purchase agreement.
+    IMPORTANT: This NEVER changes the product's public price.
+    """
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.status != "OPEN":
+        raise HTTPException(status_code=400, detail="Negotiation is not open")
+    
+    # Add ACCEPT message
+    thread = await store.add_message(
+        negotiation_id=negotiation_id,
+        sender_role="ADMIN",
+        kind="ACCEPT",
+        amount=request.amount,
+        text=request.text
+    )
+    
+    # Create agreement with purchase token
+    agreement = await store.create_agreement_on_accept(
+        negotiation_id=negotiation_id,
+        accepted_amount=request.amount,
+        ttl_minutes=request.ttl_minutes
+    )
+    
+    # Update thread status
+    await store.set_status(negotiation_id, "ACCEPTED")
+    
+    # Create purchase token
+    token_store = get_purchase_token_store()
+    token_result = await token_store.create_token(
+        user_id=thread.user_id,
+        product_id=thread.product_id,
+        amount=request.amount,
+        agreement_id=agreement.agreement_id,
+        ttl_minutes=request.ttl_minutes
+    )
+    
+    # Try to notify user
+    try:
+        from services.negotiation_notifications import notify_user_accepted
+        user_record = await db.users.find_one({"id": thread.user_id}, {"_id": 0})
+        settings = await db.site_settings.find_one({}, {"_id": 0})
+        await notify_user_accepted(thread, user_record, settings)
+    except Exception as e:
+        logging.warning(f"Failed to send accept notification: {e}")
+    
+    return {
+        "message": "Offer accepted",
+        "agreement_id": agreement.agreement_id,
+        "accepted_amount": request.amount,
+        "expires_at": agreement.purchase_token_expires_at.isoformat()
+    }
+
+
+@api_router.post("/admin/negotiations/{negotiation_id}/close")
+async def admin_close_negotiation(
+    negotiation_id: str,
+    request: AdminCloseRequest,
+    admin: dict = Depends(get_admin_user)
+):
+    """Admin closes negotiation."""
+    store = get_negotiation_store()
+    thread = await store.get_thread(negotiation_id)
+    
+    if not thread:
+        raise HTTPException(status_code=404, detail="Negotiation not found")
+    
+    if thread.status == "CLOSED":
+        raise HTTPException(status_code=400, detail="Negotiation already closed")
+    
+    # Add CLOSE message
+    thread = await store.add_message(
+        negotiation_id=negotiation_id,
+        sender_role="ADMIN",
+        kind="CLOSE",
+        text=request.text
+    )
+    
+    # Update status
+    await store.set_status(negotiation_id, "CLOSED")
+    
+    # Try to notify user
+    try:
+        from services.negotiation_notifications import notify_user_closed
+        user_record = await db.users.find_one({"id": thread.user_id}, {"_id": 0})
+        settings = await db.site_settings.find_one({}, {"_id": 0})
+        await notify_user_closed(thread, user_record, settings)
+    except Exception as e:
+        logging.warning(f"Failed to send close notification: {e}")
+    
+    return {"message": "Negotiation closed"}
+
+
+# ============ ADMIN USER ENTITLEMENTS OVERRIDE ============
+
+class EntitlementOverrideRequest(BaseModel):
+    nyp_override_enabled: bool
+
+
+@api_router.patch("/admin/users/{user_id}/entitlements")
+async def admin_set_user_entitlement_override(
+    user_id: str,
+    request: EntitlementOverrideRequest,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Admin toggle for NYP override.
+    When enabled, user is eligible for NYP regardless of spend.
+    """
+    # Check user exists
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"nyp_override_enabled": request.nyp_override_enabled}}
+    )
+    
+    return {
+        "message": "User entitlement override updated",
+        "user_id": user_id,
+        "nyp_override_enabled": request.nyp_override_enabled
+    }
+
+
+
 # These endpoints are automatically disabled in production
 # dev_router is defined at top of file with api_router
 

@@ -86,7 +86,6 @@ const ArchiveCard = ({ item, type, onDownload, onPurge, expanded, onToggle }) =>
 };
 
 const AdminData = () => {
-  const { getAuthHeaders } = useAdmin();
   const [activeTab, setActiveTab] = useState('sold');
   const [data, setData] = useState({
     sold: [],
@@ -106,22 +105,22 @@ const AdminData = () => {
 
   const fetchData = async () => {
     try {
-      const [sold, inquiries, bookings, deletedGallery, deletedProducts, allDeleted] = await Promise.all([
-        axios.get(`${API_URL}/admin/data/archived/sold`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/data/archived/inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/data/archived/bookings`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/data/archived/gallery`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/data/archived/products`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/data/archived/all`, getAuthHeaders()),
+      const [soldData, inquiriesData, bookingsData, deletedGalleryData, deletedProductsData, allDeletedData] = await Promise.all([
+        adminApi.get('/admin/data/archived/sold'),
+        adminApi.get('/admin/data/archived/inquiries'),
+        adminApi.get('/admin/data/archived/bookings'),
+        adminApi.get('/admin/data/archived/gallery'),
+        adminApi.get('/admin/data/archived/products'),
+        adminApi.get('/admin/data/archived/all'),
       ]);
       
       setData({
-        sold: sold.data,
-        inquiries: inquiries.data,
-        bookings: bookings.data,
-        deletedGallery: deletedGallery.data,
-        deletedProducts: deletedProducts.data,
-        allDeleted: allDeleted.data
+        sold: soldData,
+        inquiries: inquiriesData,
+        bookings: bookingsData,
+        deletedGallery: deletedGalleryData,
+        deletedProducts: deletedProductsData,
+        allDeleted: allDeletedData
       });
     } catch (error) {
       console.error('Failed to fetch archived data:', error);
@@ -133,7 +132,7 @@ const AdminData = () => {
   const handleRunArchive = async () => {
     setArchiving(true);
     try {
-      await axios.post(`${API_URL}/admin/data/archive/run`, {}, getAuthHeaders());
+      await adminApi.post('/admin/data/archive/run', {});
       toast.success('Archive process completed');
       fetchData();
     } catch (error) {

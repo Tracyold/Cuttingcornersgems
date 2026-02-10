@@ -178,7 +178,7 @@ const Home = () => {
                 
                 {/* "Studio" text overlay */}
                 <div className="absolute inset-0 flex items-center justify-center opacity-100 group-hover:opacity-0 transition-opacity duration-500">
-                  <p className="text-white font-serif text-4xl">Studio</p>
+                  <p className="text-white title-sm text-4xl">Studio</p>
                 </div>
               </div>
             </div>

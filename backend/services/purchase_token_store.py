@@ -309,23 +309,80 @@ class FilePurchaseTokenStore(PurchaseTokenStoreInterface):
 # ==============================================================================
 
 class DbPurchaseTokenStore(PurchaseTokenStoreInterface):
-    """Database-backed store (STUB for future implementation)."""
+    """Database-backed purchase token store."""
 
     def __init__(self, db):
         self._db = db
-        logger.info("DbPurchaseTokenStore initialized (STUB)")
+        logger.info("DbPurchaseTokenStore initialized")
 
-    async def create_token(self, *args, **kwargs) -> dict:
-        raise NotImplementedError("DbPurchaseTokenStore not implemented yet")
+    async def create_token(self, user_id: str, product_id: str, amount: float,
+                           agreement_id: str, ttl_minutes: int = 1440) -> dict:
+        token = str(uuid.uuid4())
+        from datetime import datetime, timezone, timedelta
+        now = datetime.now(timezone.utc)
+        expires_at = now + timedelta(minutes=ttl_minutes)
+        doc = {
+            "token": token,
+            "user_id": user_id,
+            "product_id": product_id,
+            "amount": amount,
+            "agreement_id": agreement_id,
+            "created_at": now.isoformat(),
+            "expires_at": expires_at.isoformat(),
+            "consumed": False,
+            "consumed_at": None,
+        }
+        await self._db.purchase_tokens.insert_one(doc)
+        logger.info(f"DbPurchaseTokenStore: Created token for agreement {agreement_id}")
+        return doc
 
     async def verify_token(self, user_id: str, token: str) -> dict:
-        raise NotImplementedError("DbPurchaseTokenStore not implemented yet")
+        from datetime import datetime, timezone
+        doc = await self._db.purchase_tokens.find_one({"token": token}, {"_id": 0})
+        if not doc:
+            return {"valid": False, "reason": "Token not found"}
+        if doc["user_id"] != user_id:
+            return {"valid": False, "reason": "Token not for this user"}
+        if doc.get("consumed"):
+            return {"valid": False, "reason": "Token already used"}
+        if datetime.fromisoformat(doc["expires_at"]) < datetime.now(timezone.utc):
+            return {"valid": False, "reason": "Token expired"}
+        return {
+            "valid": True,
+            "amount": doc["amount"],
+            "product_id": doc["product_id"],
+            "agreement_id": doc["agreement_id"],
+            "expires_at": doc["expires_at"],
+        }
 
     async def consume_token(self, user_id: str, token: str) -> dict:
-        raise NotImplementedError("DbPurchaseTokenStore not implemented yet")
+        from datetime import datetime, timezone
+        result = await self.verify_token(user_id, token)
+        if not result.get("valid"):
+            return result
+        await self._db.purchase_tokens.update_one(
+            {"token": token},
+            {"$set": {"consumed": True, "consumed_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        logger.info(f"DbPurchaseTokenStore: Consumed token {token[:8]}")
+        return {"consumed": True, **result}
 
     async def get_token_by_agreement(self, agreement_id: str) -> Optional[TokenData]:
-        raise NotImplementedError("DbPurchaseTokenStore not implemented yet")
+        doc = await self._db.purchase_tokens.find_one({"agreement_id": agreement_id}, {"_id": 0})
+        if not doc:
+            return None
+        from datetime import datetime, timezone
+        return TokenData(
+            token=doc["token"],
+            user_id=doc["user_id"],
+            product_id=doc["product_id"],
+            amount=doc["amount"],
+            agreement_id=doc["agreement_id"],
+            created_at=datetime.fromisoformat(doc["created_at"]),
+            expires_at=datetime.fromisoformat(doc["expires_at"]),
+            consumed=doc.get("consumed", False),
+            consumed_at=datetime.fromisoformat(doc["consumed_at"]) if doc.get("consumed_at") else None,
+        )
 
 
 # ==============================================================================

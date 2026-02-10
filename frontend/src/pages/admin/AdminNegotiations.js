@@ -550,13 +550,28 @@ const AdminNegotiations = () => {
 
               {/* Expanded preview */}
               {expandedId === neg.negotiation_id && (
-                <div className="px-4 pb-4 border-t border-white/10 pt-4">
+                <div className="px-4 pb-4 border-t border-white/10 pt-4 space-y-2">
                   <button
                     onClick={() => setSelectedId(neg.negotiation_id)}
                     className="btn-primary w-full"
                   >
                     Open Full Thread
                   </button>
+                  <div className="flex items-center gap-2 pt-2">
+                    {neg.is_deleted ? (
+                      <>
+                        <span className="text-xs text-red-400">Deleted</span>
+                        <button onClick={() => handleRestoreNeg(neg.negotiation_id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-neg-${neg.negotiation_id}`}>
+                          <RotateCcw className="w-3 h-3 inline mr-1" />Restore
+                        </button>
+                        <button onClick={() => handlePurgeNeg(neg.negotiation_id)} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30" data-testid={`purge-neg-${neg.negotiation_id}`}>Purge</button>
+                      </>
+                    ) : (
+                      <button onClick={() => handleDeleteNeg(neg.negotiation_id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-neg-${neg.negotiation_id}`}>
+                        <Trash2 className="w-3 h-3 inline mr-1" />Delete
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

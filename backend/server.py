@@ -1926,6 +1926,11 @@ async def create_sell_inquiry(inquiry_data: SellInquiryCreate):
 
 @api_router.post("/name-your-price")
 async def create_name_your_price_inquiry(inquiry: NameYourPriceInquiry):
+    # Block NYP on sold products
+    if inquiry.product_id:
+        product = await db.products.find_one({"id": inquiry.product_id}, {"_id": 0})
+        if product and product.get("is_sold"):
+            raise HTTPException(status_code=400, detail="This item has been sold")
     inquiry_id = str(uuid.uuid4())
     inquiry_data = {
         "id": inquiry_id,

@@ -160,7 +160,7 @@ const NegotiationPopup = ({ product, onClose }) => {
         
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-5 h-5 text-amber-400" />
-          <h3 className="font-serif text-xl">Name Your Price</h3>
+          <h3 className="title-sm text-xl">Name Your Price</h3>
         </div>
         
         <div className="mb-6">

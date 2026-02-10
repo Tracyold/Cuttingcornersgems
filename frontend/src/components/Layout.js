@@ -61,13 +61,13 @@ const Layout = ({ children }) => {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
         <div className="container-custom">
-          <div className="flex items-center justify-center h-20 gap-10">
-            {/* Logo */}
-            <Link to="/" className="font-display text-xl" style={{ letterSpacing: '0.04em' }} data-testid="logo-link">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20">
+            {/* Logo - left */}
+            <Link to="/" className="font-display text-xl justify-self-start" style={{ letterSpacing: '0.04em' }} data-testid="logo-link">
               Cutting Corners Gems
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Navigation - center */}
             <div className="hidden md:flex items-center gap-10">
               {navLinks.map(link => (
                 <Link
@@ -82,7 +82,7 @@ const Layout = ({ children }) => {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 justify-self-end">
               {/* Cart */}
               <Link to="/cart" className="relative" data-testid="cart-link">
                 <ShoppingBag className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />

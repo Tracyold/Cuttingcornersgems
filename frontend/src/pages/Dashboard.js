@@ -768,6 +768,29 @@ const Dashboard = () => {
                   {/* Orders Tab */}
                   {activeTab === 'orders' && (
                     <div data-testid="orders-content">
+                      {/* Pending Invoices Section */}
+                      {(() => {
+                        const now = new Date();
+                        const pendingOrders = orders.filter(o => 
+                          o.status === 'pending' && !o.paid_at && 
+                          o.commit_expires_at && new Date(o.commit_expires_at) > now
+                        );
+                        if (pendingOrders.length === 0) return null;
+                        return (
+                          <div className="mb-8" data-testid="pending-invoices">
+                            <h2 className="title-sm text-2xl mb-6 flex items-center gap-3">
+                              <CreditCard className="w-6 h-6 text-yellow-400" />
+                              Pending Invoices
+                            </h2>
+                            <div className="space-y-4">
+                              {pendingOrders.map((order, index) => (
+                                <PendingInvoiceCard key={order.id} order={order} index={index} onRefresh={fetchData} />
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
                       <h2 className="title-sm text-2xl mb-6">Your Orders</h2>
                       {orders.length === 0 ? (
                         <div className="gem-card p-8 text-center">

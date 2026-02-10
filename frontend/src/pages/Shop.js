@@ -23,7 +23,7 @@ const NameYourPriceSection = ({ product, entitlements, isAuthenticated, onNamePr
   const { unlocked_nyp, total_spend, threshold, spend_to_unlock } = entitlements;
   
   // Only show NYP section if product has NYP enabled
-  if (!product.nyp_enabled) {
+  if (!product.name_your_price) {
     return null;
   }
   

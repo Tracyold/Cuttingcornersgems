@@ -48,7 +48,7 @@ const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemC
         ) : (
           <>
             <Lock className="w-5 h-5 text-gray-500" />
-            <h2 className="text-xl font-serif text-gray-500">Humble Beginnings</h2>
+            <h2 className="text-xl title-sm text-gray-500">Humble Beginnings</h2>
           </>
         )}
       </div>

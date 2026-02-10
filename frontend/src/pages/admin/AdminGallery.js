@@ -509,7 +509,7 @@ const AdminGallery = () => {
                   data-testid="humble-beginnings-checkbox"
                 />
                 <span className="text-sm">
-                  Humble Beginnings <span className="text-gray-500">(Gated content - requires $1000 spend)</span>
+                  Humble Beginnings <span className="text-gray-500">(Exclusive collection for eligible members)</span>
                 </span>
               </label>
               

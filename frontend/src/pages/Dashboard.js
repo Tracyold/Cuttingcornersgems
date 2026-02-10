@@ -215,7 +215,7 @@ const AuthSection = ({ onSuccess }) => {
 
 // ================== NAME YOUR PRICE TAB ==================
 
-const NameYourPriceTab = () => {
+const NameYourPriceTab = ({ onDataRefresh, onSwitchToOrders }) => {
   const { entitlements, entitlementsLoading } = useAuth();
   const [negotiations, setNegotiations] = useState([]);
   const [preferences, setPreferences] = useState({ sms_negotiations_enabled: false, phone_e164: '' });
@@ -309,13 +309,14 @@ const NameYourPriceTab = () => {
 
   const handleAcceptCounter = async (negotiationId) => {
     try {
-      const res = await axios.post(`${API_URL}/negotiations/${negotiationId}/accept`, {}, { headers });
-      toast.success('Committed. Finish purchase in Account.');
-      // Refresh thread + orders
-      const updatedThread = await axios.get(`${API_URL}/negotiations/${negotiationId}`, { headers });
-      setSelectedNeg(updatedThread.data);
+      await axios.post(`${API_URL}/negotiations/${negotiationId}/accept`, {}, { headers });
+      toast.success('Committed. View your pending invoice in Orders.');
+      // Clear detail view to prevent re-render of accepted negotiation
+      setSelectedNeg(null);
+      // Refresh negotiations list and parent data, then switch to Orders tab
       loadNegotiations();
-      fetchData();
+      if (onDataRefresh) onDataRefresh();
+      if (onSwitchToOrders) onSwitchToOrders();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Failed to accept');
     }
@@ -403,7 +404,7 @@ const NameYourPriceTab = () => {
           </div>
           
           {selectedNeg.status === 'ACCEPTED' && (
-            <NegotiationCommitPanel negotiationId={selectedNeg.negotiation_id} onRefresh={fetchData} />
+            <NegotiationCommitPanel negotiationId={selectedNeg.negotiation_id} onRefresh={onDataRefresh} />
           )}
 
           {/* Accept Offer button: shown when OPEN and latest admin message is COUNTER */}
@@ -562,7 +563,7 @@ const NameYourPriceTab = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {negotiations.map((neg) => (
+          {negotiations.filter((neg) => neg.status !== 'ACCEPTED').map((neg) => (
             <div 
               key={neg.negotiation_id}
               className="gem-card p-4 cursor-pointer hover:bg-white/5 transition-colors"
@@ -1162,7 +1163,10 @@ const Dashboard = () => {
 
                   {/* Name Your Price Tab */}
                   {activeTab === 'nyp' && (
-                    <NameYourPriceTab />
+                    <NameYourPriceTab 
+                      onDataRefresh={fetchData} 
+                      onSwitchToOrders={() => setActiveTab('orders')} 
+                    />
                   )}
 
                   {/* Messages Tab */}

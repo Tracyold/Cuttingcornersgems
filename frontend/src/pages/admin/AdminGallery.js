@@ -261,7 +261,6 @@ const BulkAddModal = ({ onClose, onComplete }) => {
 };
 
 const AdminGallery = () => {
-  const { getAuthHeaders } = useAdmin();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -275,8 +274,8 @@ const AdminGallery = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/gallery`, getAuthHeaders());
-      setItems(response.data);
+      const data = await adminApi.get('/admin/gallery');
+      setItems(data);
     } catch (error) {
       toast.error('Failed to fetch gallery');
     } finally {

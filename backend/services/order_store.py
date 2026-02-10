@@ -110,6 +110,88 @@ class InMemoryOrderStore(OrderStoreInterface):
 
 
 # ==============================================================================
+# FILE-BACKED ADAPTER (Design/Dev with Persistence)
+# ==============================================================================
+
+class FileOrderStore(OrderStoreInterface):
+    """
+    File-backed order storage for design-stage persistence.
+    
+    Loads from JSON file at initialization, saves after every mutation.
+    """
+    
+    def __init__(self, base_dir: str = None):
+        from config.persistence import PERSISTENCE_DIR, ORDERS_FILE
+        from services.persistence.json_store import JsonStore
+        
+        self._base_dir = base_dir or PERSISTENCE_DIR
+        self._store = JsonStore(self._base_dir)
+        self._filename = ORDERS_FILE
+        self._orders: dict = {}  # order_id -> Order dict
+        self._user_index: dict = {}  # user_id -> set[order_id]
+        self._load_from_file()
+        logger.info(f"FileOrderStore: Initialized with {len(self._orders)} orders")
+    
+    def _load_from_file(self) -> None:
+        """Load orders from JSON file."""
+        data = self._store.load(self._filename, default={"orders": [], "version": 1})
+        self._orders.clear()
+        self._user_index.clear()
+        
+        for order_dict in data.get("orders", []):
+            try:
+                order = Order(**order_dict)
+                self._orders[order.order_id] = order
+                if order.user_id not in self._user_index:
+                    self._user_index[order.user_id] = set()
+                self._user_index[order.user_id].add(order.order_id)
+            except Exception as e:
+                logger.warning(f"FileOrderStore: Failed to parse order: {e}")
+    
+    def _save_to_file(self) -> None:
+        """Save all orders to JSON file."""
+        orders_list = [o.model_dump() for o in self._orders.values()]
+        self._store.save(self._filename, {"orders": orders_list, "version": 1})
+    
+    async def list_orders_for_user(self, user_id: str) -> List[Order]:
+        order_ids = self._user_index.get(user_id, set())
+        orders = [self._orders[oid] for oid in order_ids if oid in self._orders]
+        return sorted(orders, key=lambda o: o.created_at, reverse=True)
+    
+    async def record_order(self, order: Order) -> None:
+        self._orders[order.order_id] = order
+        if order.user_id not in self._user_index:
+            self._user_index[order.user_id] = set()
+        self._user_index[order.user_id].add(order.order_id)
+        self._save_to_file()
+        logger.debug(f"FileOrderStore: Recorded order {order.order_id}")
+    
+    async def get_order(self, order_id: str) -> Optional[Order]:
+        return self._orders.get(order_id)
+    
+    async def update_order_status(self, order_id: str, status: OrderStatus) -> bool:
+        if order_id in self._orders:
+            order = self._orders[order_id]
+            updated = Order(
+                order_id=order.order_id,
+                user_id=order.user_id,
+                order_total=order.order_total,
+                status=status,
+                created_at=order.created_at
+            )
+            self._orders[order_id] = updated
+            self._save_to_file()
+            return True
+        return False
+    
+    async def clear_all(self) -> None:
+        self._orders.clear()
+        self._user_index.clear()
+        self._save_to_file()
+        logger.info("FileOrderStore: Cleared all orders")
+
+
+# ==============================================================================
 # DATABASE ADAPTER (Production - STUB)
 # ==============================================================================
 

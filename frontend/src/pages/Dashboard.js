@@ -684,7 +684,7 @@ const Dashboard = () => {
         <section className="section-spacing pb-16">
           <div className="container-custom">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Account</p>
-            <h1 className="title-xl">Sign In or Register</h1>
+            <h1 className="page-title title-xl">Sign In or Register</h1>
           </div>
         </section>
         <section className="pb-24">
@@ -715,7 +715,7 @@ const Dashboard = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Welcome back</p>
-          <h1 className="title-xl">{user.name}</h1>
+          <h1 className="page-title title-xl">{user.name}</h1>
         </div>
       </section>
 

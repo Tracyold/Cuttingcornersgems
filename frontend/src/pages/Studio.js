@@ -260,7 +260,7 @@ const Studio = () => {
       <section className="pt-32 pb-16 text-center">
         <div className="container-custom">
           <p className="spec-text text-gray-500 mb-4">BEHIND THE SCENES</p>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl title-xl mb-6">
+          <h1 className="page-title title-xl text-4xl md:text-5xl lg:text-6xl mb-6">
             {content.hero.title}
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">

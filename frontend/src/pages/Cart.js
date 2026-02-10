@@ -66,7 +66,7 @@ const Cart = () => {
       <div className="min-h-screen flex items-center justify-center" data-testid="empty-cart">
         <div className="text-center">
           <ShoppingBag className="w-16 h-16 mx-auto text-gray-600 mb-6" />
-          <h1 className="title-xl text-3xl mb-4">Your Cart is Empty</h1>
+          <h1 className="page-title title-xl text-3xl mb-4">Your Cart is Empty/h1>
           <p className="text-gray-500 mb-8">Discover our collection of precision-cut gemstones.</p>
           <Link to="/shop" className="btn-primary" data-testid="shop-now-btn">
             Shop Now
@@ -84,7 +84,7 @@ const Cart = () => {
           <Link to="/shop" className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-8">
             <ArrowLeft className="w-4 h-4" /> Continue Shopping
           </Link>
-          <h1 className="title-xl">Your Cart</h1>
+          <h1 className="page-title title-xl">Your Cart</h1>
         </div>
       </section>
 

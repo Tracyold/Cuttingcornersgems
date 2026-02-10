@@ -91,7 +91,7 @@ const Booking = () => {
           <div className="w-20 h-20 mx-auto mb-8 rounded-full bg-green-500/10 flex items-center justify-center">
             <CheckCircle className="w-10 h-10 text-green-500" />
           </div>
-          <h1 className="title-xl text-4xl mb-4">Thank You!</h1>
+          <h1 className="page-title title-xl text-4xl mb-4">Thank You!</h1>
           <p className="text-gray-400 mb-8">
             Your booking request has been received. I'll get back to you as soon as possible.
           </p>
@@ -127,7 +127,7 @@ const Booking = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Get Started</p>
-          <h1 className="title-xl">Book a Service</h1>
+          <h1 className="page-title title-xl">Book a Service</h1>
         </div>
       </section>
 

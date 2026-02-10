@@ -218,7 +218,7 @@ const Gallery = () => {
       <section className="section-spacing pb-16">
         <div className="container-custom">
           <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Portfolio</p>
-          <h1 className="title-xl">Gallery</h1>
+          <h1 className="page-title title-xl">Gallery</h1>
         </div>
       </section>
 

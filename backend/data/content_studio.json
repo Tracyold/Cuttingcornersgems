@@ -21,11 +21,11 @@
   ],
   "before_after": {
     "after": {
-      "alt": "Polished gemstone after cutting",
+      "alt": "Studio After",
       "image_url": "https://images.unsplash.com/photo-1600721391776-b5cd0e0048f9?w=800"
     },
     "before": {
-      "alt": "Rough gemstone before cutting",
+      "alt": "Studio Before",
       "image_url": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800"
     },
     "labels": {
@@ -68,38 +68,38 @@
     }
   ],
   "hero": {
-    "subtitle": "Where rough stones are transformed into brilliant gems through precision craftsmanship",
+    "subtitle": "Where the Magic Happens",
     "title": "The Studio"
   },
   "story_timeline": [
     {
-      "body": "Started with a single faceting machine and a passion for precision. What began as a hobby quickly evolved into a dedication to the craft.",
+      "body": "Humble Beginnings ",
       "heading": "The Beginning",
       "id": "5dfe0748-8b91-4ae7-9f87-8ac752ad9d62",
       "image_alt": "Early workshop setup",
       "image_url": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600",
       "order": 0,
-      "year": "2018"
+      "year": "2013"
     },
     {
-      "body": "Expanded the workshop with professional-grade equipment. Began taking on custom cutting projects for collectors and jewelers worldwide.",
-      "heading": "Growing the Craft",
+      "body": "",
+      "heading": "Building my life around the profession.",
       "id": "c14438e7-0cf5-47a2-bdda-51f05bd02135",
       "image_alt": "Expanded workshop",
       "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=600",
       "order": 1,
-      "year": "2020"
+      "year": "2021"
     },
     {
       "body": "A fully equipped studio dedicated to precision gem cutting, restoration, and custom designs. Every stone tells a story, and we help bring that story to light.",
-      "heading": "Today",
+      "heading": "Designing and cutting everyday to keep growing",
       "id": "c3ccab6f-dccd-4ab5-87cf-4d9715866ba0",
       "image_alt": "Modern studio",
       "image_url": "https://images.unsplash.com/photo-1583937443566-6b5e69827c9d?w=600",
       "order": 2,
-      "year": "2024"
+      "year": "2026"
     }
   ],
-  "updated_at": "2026-02-10T05:32:27.304636+00:00",
-  "version": 9
+  "updated_at": "2026-02-10T13:49:23.020577+00:00",
+  "version": 13
 }

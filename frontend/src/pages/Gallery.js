@@ -129,11 +129,6 @@ const Gallery = () => {
 
   // Mobile item toggle
   const toggleMobileItem = (itemId) => {
-    const item = items.find(i => i.id === itemId);
-    // Don't allow expanding locked humble beginnings items
-    if (item?.humble_beginnings && !(isAuthenticated && entitlements.unlocked_nyp)) {
-      return;
-    }
     setExpandedMobileItem(prev => prev === itemId ? null : itemId);
   };
 

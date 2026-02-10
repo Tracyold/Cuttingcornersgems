@@ -37,7 +37,7 @@ async def ensure_schema_version(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "migrations": []
         }
-        await db.system_metadata.insert_one(schema_doc)
+        await db[SCHEMA_COLLECTION].insert_one(schema_doc)
         logger.info(f"System metadata initialized: schema_version={CURRENT_SCHEMA_VERSION}")
         return {"status": "initialized", "schema_version": CURRENT_SCHEMA_VERSION}
     

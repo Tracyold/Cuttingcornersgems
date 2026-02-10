@@ -295,7 +295,6 @@ const NameYourPriceTab = () => {
     try {
       const res = await axios.get(`${API_URL}/negotiations/${negotiationId}/agreement`, { headers });
       if (res.data.available) {
-        // Try to checkout
         const quoteRes = await axios.post(`${API_URL}/purchase/quote`, {
           purchase_token: res.data.purchase_token
         }, { headers });
@@ -305,6 +304,20 @@ const NameYourPriceTab = () => {
       }
     } catch (error) {
       toast.error('Failed to check agreement');
+    }
+  };
+
+  const handleAcceptCounter = async (negotiationId) => {
+    try {
+      const res = await axios.post(`${API_URL}/negotiations/${negotiationId}/accept`, {}, { headers });
+      toast.success('Committed. Finish purchase in Account.');
+      // Refresh thread + orders
+      const updatedThread = await axios.get(`${API_URL}/negotiations/${negotiationId}`, { headers });
+      setSelectedNeg(updatedThread.data);
+      loadNegotiations();
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to accept');
     }
   };
 

@@ -423,14 +423,16 @@ const AdminProducts = () => {
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({ ...emptyForm });
+  const [showDeleted, setShowDeleted] = useState(false);
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [showDeleted]);
 
   const fetchProducts = async () => {
     try {
-      const data = await adminApi.get('/admin/products');
+      const qs = showDeleted ? '?include_deleted=true' : '';
+      const data = await adminApi.get(`/admin/products${qs}`);
       setProducts(data);
     } catch (error) {
       toast.error('Failed to fetch products');

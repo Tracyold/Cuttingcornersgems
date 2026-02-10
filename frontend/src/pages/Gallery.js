@@ -22,102 +22,52 @@ const ERAS = [
   { id: 'FUTURE', name: 'Future' },
 ];
 
-// Humble Beginnings Gated Section Component
+// Humble Beginnings Section - ONLY renders for eligible users
 const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemClick }) => {
-  const { unlocked_nyp, total_spend, threshold, spend_to_unlock } = entitlements;
   const humbleItems = items.filter(item => item.humble_beginnings);
   
-  if (humbleItems.length === 0) {
+  // G1: Do NOT render at all for ineligible users
+  const isUnlocked = isAuthenticated && entitlements.unlocked_nyp;
+  if (!isUnlocked || humbleItems.length === 0) {
     return null;
   }
   
-  const isUnlocked = isAuthenticated && unlocked_nyp;
-  const progressPercent = Math.min((total_spend / threshold) * 100, 100);
-  
   return (
     <div className="mb-12" data-testid="humble-beginnings-section">
-      {/* Section Header */}
       <div className="flex items-center gap-3 mb-6">
-        {isUnlocked ? (
-          <>
-            <Sparkles className="w-5 h-5 text-amber-400" />
-            <h2 className="text-xl title-sm text-amber-400">Humble Beginnings</h2>
-            <Unlock className="w-4 h-4 text-amber-400" />
-          </>
-        ) : (
-          <>
-            <Lock className="w-5 h-5 text-gray-500" />
-            <h2 className="text-xl title-sm text-gray-500">Humble Beginnings</h2>
-          </>
-        )}
+        <Sparkles className="w-5 h-5 text-amber-400" />
+        <h2 className="text-xl title-sm text-amber-400">Humble Beginnings</h2>
       </div>
       
-      {/* Unlock Status Message */}
-      {isUnlocked ? (
-        <p className="text-amber-400/80 text-sm mb-6" data-testid="humble-unlocked-msg">
-          You've unlocked Humble Beginnings — a curated look at where it all started.
-        </p>
-      ) : (
-        <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6" data-testid="humble-locked-msg">
-          {!isAuthenticated ? (
-            <p className="text-gray-500 text-sm">
-              Sign in and spend ${threshold.toLocaleString()} to unlock Humble Beginnings.
-            </p>
-          ) : (
-            <>
-              <p className="text-gray-500 text-sm mb-3">
-                Humble Beginnings unlocks after ${threshold.toLocaleString()} in purchases.
-              </p>
-              <div className="space-y-2">
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>Your progress</span>
-                  <span>${total_spend.toLocaleString()} / ${threshold.toLocaleString()}</span>
-                </div>
-                <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                  <div 
-                    className="h-full bg-gradient-to-r from-gray-600 to-gray-500 transition-all duration-500"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </div>
-                <p className="text-xs text-gray-600">
-                  ${spend_to_unlock.toLocaleString()} more to unlock
-                </p>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+      <p className="text-amber-400/80 text-sm mb-6" data-testid="humble-unlocked-msg">
+        A curated look at where it all started.
+      </p>
       
-      {/* Items Grid */}
       <div className="gallery-grid">
         {humbleItems.map((item, index) => (
           <div
             key={item.id}
-            onClick={() => isUnlocked && onItemClick(index)}
-            className={`group relative aspect-square overflow-hidden gem-card ${
-              isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed'
-            } opacity-0 animate-fade-in`}
+            onClick={() => onItemClick(index)}
+            className="group relative aspect-square overflow-hidden gem-card cursor-pointer opacity-0 animate-fade-in"
             style={{ animationDelay: `${index * 50}ms` }}
             data-testid={`humble-item-${index}`}
           >
             <img
               src={item.image_url}
               alt={item.title}
-              className={`w-full h-full object-cover transition-all duration-700 ${
-                isUnlocked 
-                  ? 'group-hover:scale-110' 
-                  : 'blur-md grayscale'
-              }`}
+              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
             />
-            {isUnlocked ? (
-              <>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <p className="spec-text text-amber-400/80 mb-1">Humble Beginnings</p>
-                  <h3 className="title-sm text-base">{item.title}</h3>
-                </div>
-              </>
-            ) : (
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+              <p className="spec-text text-amber-400/80 mb-1">Humble Beginnings</p>
+              <h3 className="title-sm text-base">{item.title}</h3>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
               <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                 <Lock className="w-8 h-8 text-gray-500" />
               </div>

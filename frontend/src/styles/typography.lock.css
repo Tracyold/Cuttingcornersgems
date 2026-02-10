@@ -32,8 +32,8 @@ body,
 /* Large primary headers: hero titles, page headers, major section headers */
 .title-xl {
   font-family: var(--font-display-stack) !important;
-  font-size: 1.5rem !important;
-  line-height: 2rem !important;
+  font-size: 3rem !important;
+  line-height: 1.2 !important;
 }
 
 /* Page title - canonical class for top-of-page headers */

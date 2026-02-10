@@ -2414,13 +2414,67 @@ async def admin_export_single_file(
 @api_router.get("/admin/dev/persistence-status")
 async def admin_persistence_status(admin: dict = Depends(get_admin_user)):
     """
-    Get current persistence configuration status.
+    Get current persistence configuration status with file details.
     
     Returns:
-        Current mode, directory, and store implementations in use.
+        Current mode, directory, store implementations, and file metadata.
     """
+    from config.persistence import PERSISTENCE_MODE, PERSISTENCE_DIR
     from services.store_factory import get_persistence_status
-    return get_persistence_status()
+    from pathlib import Path
+    import os
+    
+    base_status = get_persistence_status()
+    
+    # Get file details
+    persistence_dir = Path(PERSISTENCE_DIR)
+    files_info = []
+    
+    if persistence_dir.exists():
+        for filepath in persistence_dir.glob("*.json"):
+            try:
+                stat = filepath.stat()
+                files_info.append({
+                    "path": str(filepath),
+                    "filename": filepath.name,
+                    "exists": True,
+                    "size_bytes": stat.st_size,
+                    "modified_iso": datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat()
+                })
+            except Exception as e:
+                files_info.append({
+                    "path": str(filepath),
+                    "filename": filepath.name,
+                    "exists": True,
+                    "error": str(e)
+                })
+    
+    # Add expected files that might not exist yet
+    expected_files = [
+        "content_studio.json",
+        "orders.json", 
+        "negotiations.json",
+        "negotiation_agreements.json",
+        "purchase_tokens.json"
+    ]
+    
+    existing_filenames = {f["filename"] for f in files_info}
+    for expected in expected_files:
+        if expected not in existing_filenames:
+            files_info.append({
+                "path": str(persistence_dir / expected),
+                "filename": expected,
+                "exists": False,
+                "size_bytes": 0,
+                "modified_iso": None
+            })
+    
+    return {
+        "mode": PERSISTENCE_MODE,
+        "persistence_dir": str(persistence_dir.absolute()),
+        "stores": base_status.get("stores", {}),
+        "files": sorted(files_info, key=lambda x: x["filename"])
+    }
 
 
 

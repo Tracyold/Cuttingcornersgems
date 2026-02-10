@@ -1,0 +1,34 @@
+/* Typography Lock - CSS variables and font assignments */
+/* NO-DRIFT GUARD: These assignments override all other font-family rules */
+
+:root {
+  --cc-font-display: "CCVidaloka";
+  --cc-font-body: "CCArnoPro";
+  --cc-font-mono: "CCAHAMONO";
+}
+
+html,
+body,
+#root {
+  font-family: var(--cc-font-body), Georgia, serif !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.hero-title,
+.product-title,
+.section-title,
+.font-serif {
+  font-family: var(--cc-font-display), Georgia, serif !important;
+}
+
+code,
+pre,
+.cc-mono,
+.font-mono {
+  font-family: var(--cc-font-mono), monospace !important;
+}

@@ -1,0 +1,25 @@
+/* Typography Roles - @font-face declarations for custom OTF fonts */
+
+@font-face {
+  font-family: "CCVidaloka";
+  src: url("../assets/fonts/Vidaloka.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "CCArnoPro";
+  src: url("../assets/fonts/ArnoPro.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: "CCAHAMONO";
+  src: url("../assets/fonts/AHAMONO.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}

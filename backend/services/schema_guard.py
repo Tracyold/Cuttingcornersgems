@@ -184,7 +184,7 @@ async def get_schema_status(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     Get current schema version and status
     Report-only, no enforcement (D4 requirement)
     """
-    schema_doc = await db.system_metadata.find_one({"id": "main"})
+    schema_doc = await db[SCHEMA_COLLECTION].find_one({"id": "main"})
     
     if not schema_doc:
         return {

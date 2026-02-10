@@ -113,6 +113,105 @@ const NameYourPriceSection = ({ product, entitlements, isAuthenticated, onNamePr
   );
 };
 
+// Negotiation Popup - For creating new negotiations
+const NegotiationPopup = ({ product, onClose }) => {
+  const [loading, setLoading] = useState(false);
+  const [offerAmount, setOfferAmount] = useState('');
+  const [offerText, setOfferText] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!offerAmount) {
+      toast.error('Please enter an offer amount');
+      return;
+    }
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_URL}/negotiations`, {
+        product_id: product.id,
+        offer_amount: parseFloat(offerAmount),
+        text: offerText || null
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Offer sent! View in your account.');
+      onClose();
+      // Navigate to dashboard NYP tab
+      navigate('/dashboard?tab=nyp');
+    } catch (error) {
+      if (error.response?.status === 403) {
+        toast.error(error.response.data.detail || 'You must spend $1,000 to unlock Name Your Price');
+      } else {
+        toast.error('Failed to send offer');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-[#0A0A0A] border border-white/10 w-full max-w-md p-6 relative" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-white">
+          <X className="w-5 h-5" />
+        </button>
+        
+        <div className="flex items-center gap-2 mb-4">
+          <Sparkles className="w-5 h-5 text-amber-400" />
+          <h3 className="font-serif text-xl">Name Your Price</h3>
+        </div>
+        
+        <div className="mb-6">
+          <p className="text-gray-400 text-sm mb-2">{product.title}</p>
+          <p className="text-gray-500 text-xs">
+            Listed Price: <span className="text-white">${product.price?.toLocaleString()}</span>
+          </p>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Your Offer *</label>
+            <input
+              type="number"
+              value={offerAmount}
+              onChange={(e) => setOfferAmount(e.target.value)}
+              placeholder="Enter your price"
+              required
+              className="input-dark h-10 text-sm"
+              data-testid="negotiation-amount"
+            />
+          </div>
+          <div>
+            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Message (optional)</label>
+            <textarea
+              value={offerText}
+              onChange={(e) => setOfferText(e.target.value)}
+              placeholder="Add a note about your offer..."
+              className="input-dark h-24 text-sm resize-none"
+              data-testid="negotiation-text"
+            />
+          </div>
+          
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full py-3 bg-amber-500/20 border border-amber-500/50 text-amber-400 uppercase tracking-widest text-sm hover:bg-amber-500/30 transition-colors"
+            data-testid="negotiation-submit"
+          >
+            {loading ? 'Sending...' : 'Send Offer'}
+          </button>
+        </form>
+        
+        <p className="text-xs text-gray-600 text-center mt-4">
+          Your offer will start a negotiation thread. View and track in your account.
+        </p>
+      </div>
+    </div>
+  );
+};
+
 // Inquiry Popup Component
 const InquiryPopup = ({ product, onClose, isOffer = false }) => {
   const [loading, setLoading] = useState(false);

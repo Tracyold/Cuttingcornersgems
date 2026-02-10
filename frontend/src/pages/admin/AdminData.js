@@ -144,13 +144,10 @@ const AdminData = () => {
 
   const handleDownload = async (item, type) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/admin/data/download/${type}/${item.id}`, 
-        { ...getAuthHeaders(), responseType: 'blob' }
-      );
+      const blob = await adminApi.downloadBlob(`/admin/data/download/${type}/${item.id}`);
       
-      const blob = new Blob([response.data], { type: 'text/plain' });
-      const url = window.URL.createObjectURL(blob);
+      const blobObj = new Blob([blob], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blobObj);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${type}_${item.id}_archive.txt`;
@@ -167,13 +164,10 @@ const AdminData = () => {
 
   const handleDownloadBatch = async (type) => {
     try {
-      const response = await axios.get(
-        `${API_URL}/admin/data/download-batch/${type}`, 
-        { ...getAuthHeaders(), responseType: 'blob' }
-      );
+      const blob = await adminApi.downloadBlob(`/admin/data/download-batch/${type}`);
       
-      const blob = new Blob([response.data], { type: 'text/markdown' });
-      const url = window.URL.createObjectURL(blob);
+      const blobObj = new Blob([blob], { type: 'text/markdown' });
+      const url = window.URL.createObjectURL(blobObj);
       const a = document.createElement('a');
       a.href = url;
       a.download = `${type}_batch_archive_${new Date().toISOString().split('T')[0]}.md`;
@@ -192,7 +186,7 @@ const AdminData = () => {
     if (!window.confirm('Permanently delete this archived item? This cannot be undone.')) return;
     
     try {
-      await axios.delete(`${API_URL}/admin/data/purge/${type}/${item.id}`, getAuthHeaders());
+      await adminApi.delete(`/admin/data/purge/${type}/${item.id}`);
       toast.success('Item purged');
       fetchData();
     } catch (error) {
@@ -204,7 +198,7 @@ const AdminData = () => {
     if (!window.confirm(`Permanently delete ALL archived ${type}? This cannot be undone.`)) return;
     
     try {
-      await axios.delete(`${API_URL}/admin/data/purge-all/${type}`, getAuthHeaders());
+      await adminApi.delete(`/admin/data/purge-all/${type}`);
       toast.success(`All ${type} purged`);
       fetchData();
     } catch (error) {

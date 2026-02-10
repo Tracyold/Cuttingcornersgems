@@ -1,13 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Image, MessageSquare, Users, DollarSign, ShoppingCart, Receipt, TrendingUp, Clock, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAdmin } from '../../context/AdminContext';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi } from '../../api/adminApi';
 
 const AdminDashboard = () => {
-  const { getAuthHeaders } = useAdmin();
   const [stats, setStats] = useState({
     products: 0,
     gallery: 0,

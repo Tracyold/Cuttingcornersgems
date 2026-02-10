@@ -155,7 +155,7 @@ const Home = () => {
                 data-scroll-reveal
               >
                 <service.icon className="w-8 h-8 mb-6 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
-                <h3 className="title-sm text-base mb-3">{service.title}</h3>
+                <h3 className="title-sm text-lg mb-3">{service.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
               </div>
             ))}
@@ -178,7 +178,7 @@ const Home = () => {
                 data-scroll-reveal
               >
                 <service.icon className="w-6 h-6 mb-3 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
-                <h3 className="title-sm text-sm mb-2">{service.title}</h3>
+                <h3 className="title-sm text-base mb-2">{service.title}</h3>
                 <p className="text-gray-500 text-xs leading-relaxed">{service.desc}</p>
               </div>
             ))}

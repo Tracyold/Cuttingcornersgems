@@ -2251,9 +2251,9 @@ async def admin_accept_offer(
     # Update thread status
     await store.set_status(negotiation_id, "ACCEPTED")
     
-    # Create purchase token
+    # Create purchase token (already created by agreement, but we ensure it exists)
     token_store = get_purchase_token_store()
-    token_result = await token_store.create_token(
+    await token_store.create_token(
         user_id=thread.user_id,
         product_id=thread.product_id,
         amount=request.amount,

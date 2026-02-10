@@ -940,31 +940,7 @@ const Dashboard = () => {
 
                   {/* Account Tab */}
                   {activeTab === 'account' && (
-                    <div data-testid="account-content">
-                      <h2 className="font-serif text-2xl mb-6">Account Details</h2>
-                      <div className="gem-card p-6 space-y-4">
-                        <div>
-                          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Name</p>
-                          <p>{user.name}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Email</p>
-                          <p>{user.email}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Member Since</p>
-                          <p>{formatDate(user.created_at)}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="gem-card p-6 mt-6 space-y-2">
-                        <p className="text-sm uppercase tracking-widest text-gray-500 mb-3">Security Note</p>
-                        <p className="text-sm text-gray-400">
-                          Your payment information is never stored on your account. 
-                          Credit card details are processed securely at checkout and are not retained.
-                        </p>
-                      </div>
-                    </div>
+                    <AccountTab user={user} onLogout={logout} />
                   )}
                 </>
               )}
@@ -972,6 +948,144 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+    </div>
+  );
+};
+
+// Account Tab Component with Delete Account functionality
+const AccountTab = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'long', day: 'numeric', year: 'numeric'
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== 'DELETE') {
+      setError('Please type DELETE to confirm');
+      return;
+    }
+
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(`${API_URL}/users/me/delete`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Clear auth state
+      localStorage.removeItem('token');
+      toast.success('Account deleted');
+      
+      // Logout and redirect
+      if (onLogout) onLogout();
+      navigate('/');
+    } catch (err) {
+      const message = err.response?.data?.detail || 'Failed to delete account';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  return (
+    <div data-testid="account-content">
+      <h2 className="font-serif text-2xl mb-6">Account Details</h2>
+      <div className="gem-card p-6 space-y-4">
+        <div>
+          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Name</p>
+          <p>{user.name}</p>
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Email</p>
+          <p>{user.email}</p>
+        </div>
+        <div>
+          <p className="text-sm uppercase tracking-widest text-gray-500 mb-1">Member Since</p>
+          <p>{formatDate(user.created_at)}</p>
+        </div>
+      </div>
+      
+      <div className="gem-card p-6 mt-6 space-y-2">
+        <p className="text-sm uppercase tracking-widest text-gray-500 mb-3">Security Note</p>
+        <p className="text-sm text-gray-400">
+          Your payment information is never stored on your account. 
+          Credit card details are processed securely at checkout and are not retained.
+        </p>
+      </div>
+
+      {/* Delete Account Section */}
+      <div className="gem-card p-6 mt-6 border border-red-500/20">
+        <p className="text-sm uppercase tracking-widest text-red-400 mb-3">Danger Zone</p>
+        <p className="text-sm text-gray-400 mb-4">
+          Permanently delete your account. This action cannot be undone.
+          Your order history will be preserved for records.
+        </p>
+        <button
+          onClick={() => setShowDeleteModal(true)}
+          className="text-sm flex items-center gap-2 px-4 py-2 border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors"
+          data-testid="delete-account-btn"
+        >
+          <AlertCircle className="w-4 h-4" />
+          Delete My Account
+        </button>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowDeleteModal(false)}>
+          <div className="bg-[#0a0a0a] border border-white/10 p-6 max-w-md w-full" onClick={e => e.stopPropagation()}>
+            <h3 className="font-serif text-xl mb-4 text-red-400">Delete Account</h3>
+            <p className="text-gray-400 text-sm mb-4">
+              This will permanently disable your account. You will be logged out and will not be able to access your account again.
+            </p>
+            <p className="text-sm mb-4">
+              Type <span className="text-white font-mono bg-white/10 px-2 py-0.5">DELETE</span> to confirm:
+            </p>
+            <input
+              type="text"
+              value={deleteConfirmText}
+              onChange={(e) => setDeleteConfirmText(e.target.value)}
+              className="input-dark h-10 text-sm mb-4"
+              placeholder="Type DELETE"
+              data-testid="delete-confirm-input"
+            />
+            {error && (
+              <p className="text-red-400 text-sm mb-4">{error}</p>
+            )}
+            <div className="flex gap-3 justify-end">
+              <button 
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setDeleteConfirmText('');
+                  setError(null);
+                }}
+                className="btn-secondary text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleting || deleteConfirmText !== 'DELETE'}
+                className="text-sm px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-red-600/50 disabled:cursor-not-allowed text-white transition-colors"
+                data-testid="confirm-delete-account-btn"
+              >
+                {deleting ? 'Deleting...' : 'Delete Account'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

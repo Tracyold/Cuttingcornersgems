@@ -57,6 +57,12 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Admin Users Show Deleted Toggle (Feb 2026 - Completed)
+- Added `include_deleted` query parameter to `GET /api/admin/users`
+- "Show deleted" checkbox toggle on Admin Users page (`data-testid="show-deleted-toggle"`)
+- Matches existing pattern from AdminInquiries, AdminSold, AdminNegotiations
+- No changes to existing delete/block logic
+
 ## Backlog
 - P2: Optimize N+1 queries in admin endpoints (performance)
 - P2: Configure real email provider for password reset delivery

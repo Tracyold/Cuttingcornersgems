@@ -1702,6 +1702,11 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Note: services/logging.py provides structured JSON logging (setup_logging).
+# Currently using basicConfig for simplicity. To enable structured logging:
+# from services.logging import setup_logging
+# setup_logging()
+
 @app.on_event("startup")
 async def startup_db_indexes():
     """Ensure all indexes are created on startup"""

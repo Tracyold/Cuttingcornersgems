@@ -10,6 +10,8 @@ const AdminDashboard = () => {
     bookings: 0,
     users: 0,
     orders: 0,
+    commits: 0,
+    negotiations: 0,
     sold: 0,
     inquiries: 0,
     product_inquiries: 0,

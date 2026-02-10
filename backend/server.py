@@ -1753,8 +1753,7 @@ async def get_my_entitlements(user: dict = Depends(get_current_user)):
 
 # ============ DEVELOPMENT-ONLY ENDPOINTS ============
 # These endpoints are automatically disabled in production
-
-dev_router = APIRouter(prefix="/dev", tags=["development"])
+# dev_router is defined at top of file with api_router
 
 @dev_router.post("/orders/seed")
 async def seed_orders_dev(orders: list):

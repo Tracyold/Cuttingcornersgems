@@ -115,7 +115,7 @@ const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemC
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                   <p className="spec-text text-amber-400/80 mb-1">Humble Beginnings</p>
-                  <h3 className="font-serif text-base">{item.title}</h3>
+                  <h3 className="title-sm text-base">{item.title}</h3>
                 </div>
               </>
             ) : (
@@ -360,7 +360,7 @@ const Gallery = () => {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                               <p className="spec-text text-gray-400 mb-1">{item.era || item.category}</p>
-                              <h3 className="font-serif text-base">{item.title}</h3>
+                              <h3 className="title-sm text-base">{item.title}</h3>
                             </div>
                           </div>
                         ))}

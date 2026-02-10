@@ -197,7 +197,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
-            <h2 className="title-xl tracking-tight">About the Cutter</h2>
+            <h2 className="title-xl tracking-tight">The Cutter</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>

@@ -1971,6 +1971,20 @@ async def mark_products_sold(order_items: list):
             )
 
 
+async def insert_sold_item_record(order: dict, sold_at: str):
+    """Internal: insert sold_items record for lifecycle tracking."""
+    product_ids = [item.get("product_id") for item in order.get("items", []) if item.get("product_id")]
+    sold_item = {
+        "id": str(uuid.uuid4()),
+        "order_id": order.get("id"),
+        "product_ids": product_ids,
+        "total_paid": order.get("total", 0),
+        "sold_at": sold_at,
+        "is_deleted": False,
+    }
+    await db.sold_items.insert_one(sold_item)
+
+
 @api_router.post("/admin/orders/{order_id}/mark-paid")
 async def admin_mark_order_paid(order_id: str, admin: dict = Depends(get_admin_user)):
     """Admin manual payment completion — marks order paid and products sold."""

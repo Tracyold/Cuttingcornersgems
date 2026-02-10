@@ -1,34 +1,81 @@
-/* Typography Lock - CSS variables and font assignments */
-/* NO-DRIFT GUARD: These assignments override all other font-family rules */
+/* Typography Lock - Role-based typography system */
+/* AUTHORITATIVE: These are the ONLY fonts used site-wide */
+/* To change fonts, update the Typography Admin panel */
 
 :root {
-  --cc-font-display: "CCVidaloka";
-  --cc-font-body: "CCArnoPro";
-  --cc-font-mono: "CCAHAMONO";
+  /* Typography Role Variables - Single Source of Truth */
+  --font-display: "Oranienbaum";
+  --font-subtitle: "Montserrat Regular Pro";
+  --font-body: "Comfortaa Regular";
+  --font-ui: "Nexa Rust Sans";
+  --font-mono: "AHAMONO-Regular";
+  
+  /* Fallback stacks */
+  --font-display-stack: var(--font-display), Georgia, serif;
+  --font-subtitle-stack: var(--font-subtitle), system-ui, sans-serif;
+  --font-body-stack: var(--font-body), system-ui, sans-serif;
+  --font-ui-stack: var(--font-ui), system-ui, sans-serif;
+  --font-mono-stack: var(--font-mono), monospace;
 }
 
+/* Base typography - Body text default */
 html,
 body,
 #root {
-  font-family: var(--cc-font-body), Georgia, serif !important;
+  font-family: var(--font-body-stack) !important;
 }
 
+/* Display - Section titles, hero headings */
 h1,
 h2,
-h3,
-h4,
-h5,
-h6,
 .hero-title,
-.product-title,
 .section-title,
+.page-title,
+.font-display,
 .font-serif {
-  font-family: var(--cc-font-display), Georgia, serif !important;
+  font-family: var(--font-display-stack) !important;
 }
 
+/* Subtitle - Section highlights, subheadings */
+h3,
+h4,
+.subtitle,
+.section-subtitle,
+.font-subtitle {
+  font-family: var(--font-subtitle-stack) !important;
+}
+
+/* UI - Navigation, menus, small titles, tag labels */
+nav,
+nav *,
+.nav-link,
+.menu-item,
+.tag,
+.label,
+.btn,
+button,
+.font-ui,
+h5,
+h6,
+.uppercase {
+  font-family: var(--font-ui-stack) !important;
+}
+
+/* Mono - Numeric, pricing, measurements, codes */
 code,
 pre,
-.cc-mono,
-.font-mono {
-  font-family: var(--cc-font-mono), monospace !important;
+.price,
+.measurement,
+.numeric,
+.font-mono,
+[data-price],
+[data-numeric] {
+  font-family: var(--font-mono-stack) !important;
 }
+
+/* Semantic role classes */
+.font-display { font-family: var(--font-display-stack) !important; }
+.font-subtitle { font-family: var(--font-subtitle-stack) !important; }
+.font-body { font-family: var(--font-body-stack) !important; }
+.font-ui { font-family: var(--font-ui-stack) !important; }
+.font-mono { font-family: var(--font-mono-stack) !important; }

@@ -57,6 +57,15 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Sold Product Lifecycle (Feb 2026 - Completed)
+- `is_sold: bool` and `sold_at: str` fields added to Product model
+- **AUTO:** `POST /api/orders` auto-marks purchased products as SOLD (`is_sold=true`, `sold_at`, `in_stock=false`)
+- **MANUAL:** Admin toggles sold/unsold via `PATCH /api/admin/products/{id}` with `{is_sold: bool}`
+- **PUBLIC:** Sold items hidden from `GET /api/products` shop grid; direct `GET /api/products/{id}` returns product with SOLD badge
+- `POST /api/cart/add` and `POST /api/name-your-price` reject sold items (400)
+- Admin UI: SOLD badge + tag toggle icon in AdminProducts list
+- Shop UI: SOLD badge + "This item has been sold" notice, purchase/inquiry/NYP buttons hidden
+
 ## Admin Per-User HB/NYP Override (Feb 2026 - Completed)
 - `PATCH /api/admin/users/{user_id}/entitlements` — toggle `override_enabled` with optional `note`
 - Persists `nyp_override_enabled`, `nyp_override_note`, `nyp_override_set_at` in MongoDB user record

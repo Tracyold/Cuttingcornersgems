@@ -256,7 +256,7 @@ const InquiryPopup = ({ product, onClose, isOffer = false }) => {
           <X className="w-5 h-5" />
         </button>
         
-        <h3 className="font-serif text-xl mb-4">Inquire About {product.title}</h3>
+        <h3 className="title-sm text-xl mb-4">Inquire About {product.title}</h3>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

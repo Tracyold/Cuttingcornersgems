@@ -16,6 +16,9 @@ SCHEMA_DRIFT_GUARD_ENABLED = os.environ.get('SCHEMA_DRIFT_GUARD_ENABLED', 'false
 # Current schema version
 CURRENT_SCHEMA_VERSION = "1.0.0"
 
+# Single canonical collection for all schema metadata
+SCHEMA_COLLECTION = "system_metadata"
+
 
 async def ensure_schema_version(db: AsyncIOMotorDatabase) -> Dict[str, Any]:
     """

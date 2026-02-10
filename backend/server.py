@@ -1709,6 +1709,10 @@ async def startup_db_indexes():
     from services.ttl import setup_ttl_indexes
     from services.maintenance import get_maintenance_service
     from services.schema_guard import ensure_schema_version
+    from config.security import validate_admin_config
+    
+    # Validate admin configuration
+    validate_admin_config()
     
     # Create standard indexes
     results = await ensure_indexes(db)

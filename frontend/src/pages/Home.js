@@ -209,7 +209,7 @@ const Home = () => {
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
               <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
-              <h2 className="section-title mb-6">Michael Wall</h2>
+              <h2 className="title-xl mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
                   Based in Tempe, Arizona, I've been part of the gemstone industry since 2013, 

@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Receipt, Package, Calendar, Truck, Mail, User, CreditCard, ChevronDown, ChevronUp, Send, ExternalLink } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
 import { toast } from 'sonner';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi } from '../../api/adminApi';
 
 // Expandable Invoice Card
-const InvoiceCard = ({ item, onUpdate, getAuthHeaders }) => {
+const InvoiceCard = ({ item, onUpdate }) => {
   const [expanded, setExpanded] = useState(false);
   const [trackingData, setTrackingData] = useState({
     tracking_number: item.tracking_number || '',
@@ -32,12 +29,12 @@ const InvoiceCard = ({ item, onUpdate, getAuthHeaders }) => {
   const handleSaveTracking = async () => {
     setSaving(true);
     try {
-      await axios.patch(`${API_URL}/admin/sold/${item.id}`, {
+      await adminApi.patch(`/admin/sold/${item.id}`, {
         tracking_number: trackingData.tracking_number,
         tracking_carrier: trackingData.tracking_carrier,
         tracking_entered_at: new Date().toISOString(),
         user_notes: trackingData.user_notes
-      }, getAuthHeaders());
+      });
       toast.success('Tracking info saved');
       onUpdate();
     } catch (error) {

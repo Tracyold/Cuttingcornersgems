@@ -61,7 +61,7 @@ const Cart = () => {
     }
   };
 
-  if (cart.items.length === 0) {
+  if (cart.items.length === 0 && !showOrderConfirm) {
     return (
       <div className="min-h-screen flex items-center justify-center" data-testid="empty-cart">
         <div className="text-center">

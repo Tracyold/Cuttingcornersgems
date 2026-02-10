@@ -4,7 +4,7 @@ Controls storage backend selection for design-stage vs production.
 
 Environment Variables:
 - PERSISTENCE_MODE: FILE | MEMORY | DB (default: FILE for dev convenience)
-- PERSISTENCE_DIR: Directory for JSON files (default: backend/data)
+- PERSISTENCE_DIR: Directory for JSON files (default: /app/backend/data)
 
 Usage:
     from config.persistence import PERSISTENCE_MODE, PERSISTENCE_DIR
@@ -18,6 +18,7 @@ Usage:
 """
 import os
 import logging
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,9 @@ logger = logging.getLogger(__name__)
 # Storage mode: FILE (default for dev), MEMORY (testing), DB (production)
 PERSISTENCE_MODE = os.environ.get("PERSISTENCE_MODE", "FILE").upper()
 
-# Base directory for JSON file storage
-PERSISTENCE_DIR = os.environ.get("PERSISTENCE_DIR", "backend/data")
+# Base directory for JSON file storage (absolute path)
+_default_dir = Path(__file__).parent.parent / "data"
+PERSISTENCE_DIR = os.environ.get("PERSISTENCE_DIR", str(_default_dir.absolute()))
 
 # Validate mode
 VALID_MODES = {"FILE", "MEMORY", "DB"}

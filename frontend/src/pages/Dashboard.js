@@ -608,6 +608,123 @@ const NameYourPriceTab = () => {
   );
 };
 
+// Negotiation Commit Panel: shows countdown, invoice, pay-now after user accepts counter
+const NegotiationCommitPanel = ({ negotiationId, onRefresh }) => {
+  const [agreement, setAgreement] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [timeLeft, setTimeLeft] = useState('');
+  const [payLoading, setPayLoading] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      const token = localStorage.getItem('token');
+      const h = { Authorization: `Bearer ${token}` };
+      try {
+        const agRes = await axios.get(`${API_URL}/negotiations/${negotiationId}/agreement`, { headers: h });
+        setAgreement(agRes.data);
+        // Find the order for this negotiation
+        const ordersRes = await axios.get(`${API_URL}/orders`, { headers: h });
+        const negOrder = ordersRes.data.find(o => o.negotiation_id === negotiationId || o.source === 'negotiation');
+        setOrder(negOrder || null);
+      } catch { /* ignore */ }
+    };
+    load();
+  }, [negotiationId]);
+
+  useEffect(() => {
+    if (!order?.commit_expires_at) return;
+    const update = () => {
+      const diff = new Date(order.commit_expires_at) - new Date();
+      if (diff <= 0) { setTimeLeft('Expired'); return; }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setTimeLeft(`${h}h ${m}m ${s}s`);
+    };
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, [order?.commit_expires_at]);
+
+  const handlePayNow = async () => {
+    setPayLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.post(`${API_URL}/payments/checkout-session`,
+        { order_id: order?.id },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.data.checkout_url) {
+        window.location = res.data.checkout_url;
+      } else {
+        toast.error('Payment provider not configured.');
+      }
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Payment failed');
+    } finally {
+      setPayLoading(false);
+    }
+  };
+
+  const handleDownloadInvoice = async () => {
+    if (!order) return;
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/orders/${order.id}/invoice.pdf`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Failed');
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice-${order.id.slice(0, 8)}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch { toast.error('Failed to download invoice'); }
+  };
+
+  if (!agreement?.available && !order) return null;
+
+  return (
+    <div className="gem-card p-5 mb-4 border border-green-500/20" data-testid="negotiation-commit-panel">
+      <div className="flex justify-between items-start mb-3">
+        <div>
+          <p className="text-xs uppercase tracking-widest text-green-400 mb-1">Committed</p>
+          <p className="font-mono text-lg">${agreement?.accepted_amount?.toLocaleString() || order?.total?.toLocaleString()}</p>
+        </div>
+        {order?.commit_expires_at && (
+          <div className="text-right">
+            <p className="text-xs text-gray-500 uppercase tracking-widest">Expires in</p>
+            <p className={`font-mono text-sm ${timeLeft === 'Expired' ? 'text-red-400' : 'text-yellow-400'}`} data-testid="commit-countdown">{timeLeft}</p>
+          </div>
+        )}
+      </div>
+      <div className="flex gap-2">
+        {order && (
+          <>
+            <button
+              onClick={handlePayNow}
+              disabled={payLoading || timeLeft === 'Expired'}
+              className="btn-primary flex-1 disabled:opacity-50"
+              data-testid="negotiation-pay-now"
+            >
+              {payLoading ? 'Processing...' : 'Pay Now'}
+            </button>
+            <button
+              onClick={handleDownloadInvoice}
+              className="px-4 py-2 border border-white/10 text-sm text-gray-400 hover:text-white hover:border-white/30 flex items-center gap-2"
+              data-testid="negotiation-download-invoice"
+            >
+              <FileText className="w-4 h-4" /> Invoice
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Pending Invoice Card with countdown timer
 const PendingInvoiceCard = ({ order, index, onRefresh }) => {
   const [timeLeft, setTimeLeft] = useState('');

@@ -724,6 +724,87 @@ async def admin_get_user_details(user_id: str, admin: dict = Depends(get_admin_u
         "analytics": analytics
     }
 
+# ============ ADMIN USER STATUS CONTROLS ============
+
+@api_router.patch("/admin/users/{user_id}/status")
+async def admin_update_user_status(
+    user_id: str,
+    status_update: UserStatusUpdate,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Update user purchase status (block/unblock).
+    Does not affect existing orders or inquiries.
+    """
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_fields = {}
+    
+    if status_update.purchase_blocked is not None:
+        update_fields["purchase_blocked"] = status_update.purchase_blocked
+        if status_update.purchase_blocked:
+            update_fields["purchase_blocked_at"] = datetime.now(timezone.utc).isoformat()
+            update_fields["purchase_block_reason"] = status_update.purchase_block_reason or "admin_blocked"
+        else:
+            # Unblocking - clear the block fields
+            update_fields["purchase_blocked_at"] = None
+            update_fields["purchase_block_reason"] = None
+    
+    if update_fields:
+        await db.users.update_one({"id": user_id}, {"$set": update_fields})
+    
+    # Return updated user summary
+    updated_user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+    return {
+        "message": "User status updated",
+        "user_id": user_id,
+        "purchase_blocked": updated_user.get("purchase_blocked", False),
+        "purchase_block_reason": updated_user.get("purchase_block_reason"),
+        "purchase_blocked_at": updated_user.get("purchase_blocked_at"),
+        "is_deleted": updated_user.get("is_deleted", False)
+    }
+
+
+@api_router.post("/admin/users/{user_id}/delete")
+async def admin_delete_user(
+    user_id: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Soft-delete a user account.
+    Sets is_deleted=true and blocks purchases.
+    Does NOT delete related records (orders, inquiries, bookings).
+    """
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.get("is_deleted", False):
+        raise HTTPException(status_code=400, detail="User already deleted")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": now,
+            "purchase_blocked": True,
+            "purchase_block_reason": "deleted",
+            "purchase_blocked_at": now
+        }}
+    )
+    
+    logger.info(f"Admin soft-deleted user {user_id}")
+    
+    return UserDeleteResponse(
+        message="User account deleted",
+        user_id=user_id,
+        is_deleted=True
+    )
+
 # ============ ADMIN SOLD ITEMS ROUTES ============
 
 @api_router.get("/admin/sold", response_model=List[SoldItemResponse])

@@ -1273,12 +1273,26 @@ async def get_user_bookings(current_user: dict = Depends(get_current_user)):
 # ============ GALLERY ROUTES ============
 
 @api_router.get("/gallery", response_model=List[GalleryItem])
-async def get_gallery(category: Optional[str] = None):
+async def get_gallery(category: Optional[str] = None, era: Optional[str] = None):
     query = {}
     if category and category != "all":
         query["category"] = category
+    if era and era != "all":
+        query["era"] = era.upper()
     items = await db.gallery.find(query, {"_id": 0}).to_list(100)
     return items
+
+@api_router.get("/gallery/eras")
+async def get_gallery_eras():
+    """Get distinct era values from gallery items"""
+    eras = await db.gallery.distinct("era")
+    # Filter out None values and return in order
+    valid_eras = [e for e in eras if e]
+    ordered = []
+    for era in ["PAST", "PRESENT", "FUTURE"]:
+        if era in valid_eras:
+            ordered.append(era)
+    return {"eras": ordered}
 
 @api_router.get("/gallery/categories")
 async def get_gallery_categories():

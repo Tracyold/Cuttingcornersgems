@@ -7,16 +7,19 @@ import App from "@/App";
 import "@/styles/typography.roles.css";
 import "@/styles/typography.lock.css";
 
-// DEV Typography Guard - warn if OTF fonts not detected (may false-positive in isolated contexts)
+// DEV Typography Guard - warn if role fonts not detected
 if (process.env.NODE_ENV === "development") {
   document.fonts.ready.then(() => {
-    const fontsLoaded = 
-      document.fonts.check('16px "CCArnoPro"') &&
-      document.fonts.check('16px "CCVidaloka"') &&
-      document.fonts.check('16px "CCAHAMONO"');
-    
-    if (!fontsLoaded) {
-      console.warn("TypographyGuard: document.fonts.check() returned false. Fonts may still be loading or check failed in isolated context.");
+    const fontsToCheck = [
+      '"Oranienbaum"',
+      '"Comfortaa Regular"',
+      '"Montserrat Regular Pro"',
+      '"Nexa Rust Sans"',
+      '"AHAMONO-Regular"'
+    ];
+    const missing = fontsToCheck.filter(f => !document.fonts.check(`16px ${f}`));
+    if (missing.length > 0) {
+      console.warn("TypographyGuard: Some fonts may not be loaded:", missing.join(", "));
     }
   });
 }

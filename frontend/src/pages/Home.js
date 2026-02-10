@@ -66,7 +66,7 @@ const Home = () => {
           <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-6 opacity-0 animate-fade-in transition-all duration-700" data-scroll-reveal>
             Tempe, Arizona
           </p>
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
+          <h1 className="title-xl text-4xl sm:text-5xl lg:text-6xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
             <span className="text-[#d4af37]">Cutting</span> Corners — Not the <span className="text-[#d4af37]">Quality</span>
           </h1>
           <p className="text-gray-400 text-sm md:text-base max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Image, MessageSquare, Users, DollarSign, ShoppingCart, Receipt, TrendingUp, Clock, Calendar } from 'lucide-react';
+import { Package, Image, MessageSquare, Users, DollarSign, ShoppingCart, Receipt, TrendingUp, Clock, Calendar, Handshake } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { adminApi } from '../../api/adminApi';
 

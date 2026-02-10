@@ -418,9 +418,15 @@ const AdminUsers = () => {
           <h1 className="page-title title-xl text-3xl mb-2">Users</h1>
           <p className="text-gray-500 text-sm">{users.length} registered user(s)</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <Users className="w-4 h-4" />
-          <span>Click to expand details</span>
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-toggle">
+            <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
+            Show deleted
+          </label>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <Users className="w-4 h-4" />
+            <span>Click to expand details</span>
+          </div>
         </div>
       </div>
 

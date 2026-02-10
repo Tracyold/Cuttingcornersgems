@@ -103,34 +103,68 @@ async def has_unlocked_nyp(user_id: str, store: Optional[OrderStoreInterface] = 
     return await has_unlocked_threshold(user_id, NYP_UNLOCK_THRESHOLD, store)
 
 
-async def get_user_entitlements(user_id: str, store: Optional[OrderStoreInterface] = None) -> dict:
+async def get_user_entitlements(
+    user_id: str, 
+    store: Optional[OrderStoreInterface] = None,
+    user_record: Optional[dict] = None
+) -> dict:
     """
     Get complete entitlements summary for a user.
     
-    Returns a dict suitable for API response.
+    Supports admin override: if user_record.nyp_override_enabled is True,
+    unlocked_nyp will be True regardless of spend.
     
     Args:
         user_id: User identifier
-        store: Optional OrderStoreInterface
+        store: Optional OrderStoreInterface (uses default if not provided)
+        user_record: Optional user document with nyp_override_enabled field
     
     Returns:
         {
             "total_spend": float,
             "unlocked_nyp": bool,
             "threshold": float,
-            "spend_to_unlock": float  # Amount needed to reach threshold (0 if unlocked)
+            "spend_to_unlock": float,
+            "override_enabled": bool
         }
     """
     if store is None:
         store = get_order_store()
     
     total_spend = await get_user_total_spend(user_id, store)
-    unlocked_nyp = total_spend >= NYP_UNLOCK_THRESHOLD
-    spend_to_unlock = max(0, NYP_UNLOCK_THRESHOLD - total_spend)
+    
+    # Check for admin override
+    override_enabled = False
+    if user_record and user_record.get("nyp_override_enabled", False):
+        override_enabled = True
+        unlocked_nyp = True
+        # Show progress as complete when override is enabled
+        spend_to_unlock = 0
+        logger.debug(f"User {user_id} has NYP override enabled")
+    else:
+        unlocked_nyp = total_spend >= NYP_UNLOCK_THRESHOLD
+        spend_to_unlock = max(0, NYP_UNLOCK_THRESHOLD - total_spend)
     
     return {
         "total_spend": round(total_spend, 2),
         "unlocked_nyp": unlocked_nyp,
         "threshold": NYP_UNLOCK_THRESHOLD,
-        "spend_to_unlock": round(spend_to_unlock, 2)
+        "spend_to_unlock": round(spend_to_unlock, 2),
+        "override_enabled": override_enabled
     }
+
+
+async def check_nyp_eligibility(user_id: str, user_record: Optional[dict] = None) -> bool:
+    """
+    Check if user is eligible for NYP (either by spend or admin override).
+    
+    Args:
+        user_id: User identifier
+        user_record: Optional user document with nyp_override_enabled field
+    
+    Returns:
+        True if user can use NYP features
+    """
+    if user_record and user_record.get("nyp_override_enabled", False):
+        return True
+    return await has_unlocked_nyp(user_id)

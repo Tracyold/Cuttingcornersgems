@@ -69,7 +69,7 @@
   ],
   "hero": {
     "subtitle": "Where rough stones are transformed into brilliant gems through precision craftsmanship",
-    "title": "PERSIST_TEST_1770700915"
+    "title": "DEPLOY_SAFE_TEST_1770701490"
   },
   "story_timeline": [
     {
@@ -100,6 +100,6 @@
       "year": "2024"
     }
   ],
-  "updated_at": "2026-02-10T05:24:10.266338+00:00",
-  "version": 7
+  "updated_at": "2026-02-10T05:31:30.745191+00:00",
+  "version": 8
 }

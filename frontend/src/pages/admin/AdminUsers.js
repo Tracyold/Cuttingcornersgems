@@ -119,6 +119,12 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {isDeleted && (
+              <span className="text-xs bg-red-500/30 text-red-400 px-2 py-0.5 font-semibold" data-testid="badge-deleted">DELETED</span>
+            )}
+            {isBlocked && !isDeleted && (
+              <span className="text-xs bg-orange-500/30 text-orange-400 px-2 py-0.5 font-semibold" data-testid="badge-blocked">BLOCKED</span>
+            )}
             {user.total_orders > 0 && (
               <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5">{user.total_orders} orders</span>
             )}

@@ -148,7 +148,7 @@ const Home = () => {
           {/* Desktop: 3 column grid */}
           <div className="hidden md:grid grid-cols-3 gap-8">
             {[
-              { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance and color.' },
+              { icon: Cog, title: 'Custom Cutting', desc: 'Receive a tailored cutting experience designed to reveal each gemstone\'s highest potential.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing gemstones through restoration focused on above-industry-standard weight retention.' },
               { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver quick turn arounds and shorter lead times.' },
               { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },
@@ -171,7 +171,7 @@ const Home = () => {
           {/* Mobile: 2 column grid */}
           <div className="grid grid-cols-2 gap-3 md:hidden">
             {[
-              { icon: Cog, title: 'Custom Cutting', desc: 'Tailored cuts optimized for med-high weight retention while maximizing brilliance and color.' },
+              { icon: Cog, title: 'Custom Cutting', desc: 'Receive a tailored cutting experience designed to reveal each gemstone\'s highest potential.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing gemstones through restoration focused on above-industry-standard weight retention.' },
               { icon: Gem, title: 'Jeweler Services', desc: 'Working directly with jewelers in the industry to deliver quick turn arounds and shorter lead times.' },
               { icon: Gem, title: 'Sell Gemstones', desc: 'Working closely with wholesalers and other industry professionals to give you the best price.' },

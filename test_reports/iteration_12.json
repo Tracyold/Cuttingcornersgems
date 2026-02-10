@@ -1,0 +1,92 @@
+{
+  "summary": "Product and Order soft-delete/restore features tested. Backend: 9/9 pytest tests passed. Frontend: All UI elements verified including Show deleted toggle, DELETED badge, Restore/Hard delete buttons, and AdminSold section tabs.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend Test 1: Soft-delete unreferenced product sets is_deleted=true",
+    "Backend Test 2: Soft-delete referenced product returns 'Product hidden (historical orders preserved)'",
+    "Backend Test 3: Hard-delete on referenced product returns 409 Conflict",
+    "Backend Test 4: POST /admin/products/{id}/restore removes is_deleted flag",
+    "Backend Test 5: GET /admin/products?include_deleted=true returns deleted products",
+    "Backend Test 6: GET /products (public) excludes is_deleted=true products",
+    "Backend Test 7: POST /admin/orders/{id}/delete works for unpaid pending orders",
+    "Backend Test 8: POST /admin/orders/{id}/delete returns 400 for paid orders",
+    "Backend Test 9: POST /admin/orders/{id}/restore restores soft-deleted orders",
+    "Frontend Test 10: AdminProducts has 'Show deleted' toggle (data-testid=show-deleted-products-toggle)",
+    "Frontend Test 11: Deleted products show DELETED badge (data-testid=badge-deleted)",
+    "Frontend Test 12: Restore button visible on deleted products (data-testid=restore-product-btn)",
+    "Frontend Test 13: Hard delete button visible on deleted products (data-testid=hard-delete-product-btn)",
+    "Frontend Test 14: AdminSold has section tabs (data-testid=sold-section-tabs)",
+    "Frontend Test 15: Pending tab (data-testid=tab-pending) shows unpaid orders with Mark Paid and Delete buttons",
+    "Frontend Test 16: Completed tab (data-testid=tab-completed) shows paid orders with PAID badge and NO Delete button",
+    "Frontend Test 17: Delete button on unpaid order triggers order deletion successfully"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_product_order_soft_delete.py",
+    "/app/test_reports/pytest/pytest_soft_delete.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_product_order_soft_delete.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (8/8 UI tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "test_user_email": "smoke2@example.com",
+    "test_user_password": "Test1234",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "Created TEST_DELETE_PRODUCT_* prefixed products during pytest run. These are cleaned up after tests.",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Product and Order soft-delete functionality complete. Key behaviors verified: 1) Products referenced by orders can only be soft-deleted (is_deleted=true), not hard-deleted (409). 2) Unreferenced products can be soft-deleted or hard-deleted. 3) Soft-deleted products restored via POST /admin/products/{id}/restore. 4) Only unpaid pending orders can be deleted. 5) AdminProducts page has 'Show deleted' toggle that reveals deleted products with DELETED badge and Restore/Hard delete buttons. 6) AdminSold page has 4 section tabs: Pending (unpaid with Mark Paid/Delete), Completed (30d paid), Sold (365d), Legacy Sold. 7) Paid orders do NOT have Delete button.",
+
+  "verified_data_testids": {
+    "AdminProducts": [
+      "show-deleted-products-toggle",
+      "badge-deleted",
+      "restore-product-btn",
+      "hard-delete-product-btn",
+      "toggle-sold-btn",
+      "product-card-{id}"
+    ],
+    "AdminSold": [
+      "sold-section-tabs",
+      "tab-pending",
+      "tab-completed",
+      "tab-sold",
+      "tab-legacy",
+      "mark-paid-{orderId}",
+      "delete-order-{orderId}",
+      "restore-order-{orderId}",
+      "badge-paid",
+      "badge-pending",
+      "badge-deleted",
+      "order-card-{id}"
+    ]
+  }
+}

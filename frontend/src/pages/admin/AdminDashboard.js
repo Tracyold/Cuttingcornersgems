@@ -29,24 +29,24 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       // Fetch stats from dedicated endpoint
-      const [statsRes, bookings, productInquiries, sellInquiries, nypInquiries, orders] = await Promise.all([
-        axios.get(`${API_URL}/admin/dashboard/stats`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/bookings`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/product-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/sell-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/name-your-price-inquiries`, getAuthHeaders()),
-        axios.get(`${API_URL}/admin/orders`, getAuthHeaders()),
+      const [statsData, bookingsData, productInquiriesData, sellInquiriesData, nypInquiriesData, ordersData] = await Promise.all([
+        adminApi.get('/admin/dashboard/stats'),
+        adminApi.get('/admin/bookings'),
+        adminApi.get('/admin/product-inquiries'),
+        adminApi.get('/admin/sell-inquiries'),
+        adminApi.get('/admin/name-your-price-inquiries'),
+        adminApi.get('/admin/orders'),
       ]);
 
-      setStats(statsRes.data);
+      setStats(statsData);
 
       // Combine and sort recent activity
       const allActivity = [
-        ...bookings.data.map(b => ({ ...b, type: 'booking', typeLabel: 'Booking' })),
-        ...orders.data.map(o => ({ ...o, type: 'order', typeLabel: 'Order' })),
-        ...productInquiries.data.map(i => ({ ...i, type: 'inquiry', typeLabel: 'Inquiry' })),
-        ...sellInquiries.data.map(i => ({ ...i, type: 'sell', typeLabel: 'Sell Inquiry' })),
-        ...nypInquiries.data.map(i => ({ ...i, type: 'nyp', typeLabel: 'Name Your Price' })),
+        ...bookingsData.map(b => ({ ...b, type: 'booking', typeLabel: 'Booking' })),
+        ...ordersData.map(o => ({ ...o, type: 'order', typeLabel: 'Order' })),
+        ...productInquiriesData.map(i => ({ ...i, type: 'inquiry', typeLabel: 'Inquiry' })),
+        ...sellInquiriesData.map(i => ({ ...i, type: 'sell', typeLabel: 'Sell Inquiry' })),
+        ...nypInquiriesData.map(i => ({ ...i, type: 'nyp', typeLabel: 'Name Your Price' })),
       ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 8);
 
       setRecentActivity(allActivity);

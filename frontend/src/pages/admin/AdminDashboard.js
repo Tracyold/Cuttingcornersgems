@@ -68,7 +68,8 @@ const AdminDashboard = () => {
     { label: 'Bookings', value: stats.bookings, icon: MessageSquare, color: 'text-green-400', path: '/admin/inquiries' },
     { label: 'Users', value: stats.users, icon: Users, color: 'text-yellow-400', path: '/admin/users' },
     { label: 'Orders', value: stats.orders, icon: ShoppingCart, color: 'text-pink-400', path: '/admin/sold' },
-    { label: 'Sold Items', value: stats.sold, icon: Receipt, color: 'text-emerald-400', path: '/admin/sold' },
+    { label: 'Commits', value: stats.commits, icon: Clock, color: 'text-orange-400', path: '/admin/sold' },
+    { label: 'Negotiations', value: stats.negotiations, icon: Handshake, color: 'text-cyan-400', path: '/admin/negotiations' },
   ];
 
   const formatDate = (dateString) => {

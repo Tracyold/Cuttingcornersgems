@@ -461,6 +461,9 @@ class OrderResponse(BaseModel):
     status: str
     shipping_address: str
     created_at: str
+    commit_expires_at: Optional[str] = None
+    paid_at: Optional[str] = None
+    payment_provider: Optional[str] = None
 
 # ============ AUTH HELPERS ============
 

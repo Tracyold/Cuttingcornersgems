@@ -1869,8 +1869,8 @@ async def get_user_orders_dev(user_id: str):
     }
 
 
-# Register dev router (endpoints self-guard against production)
-app.include_router(dev_router)
+# Register dev router under /api prefix (endpoints self-guard against production)
+api_router.include_router(dev_router)
 
 @api_router.get("/")
 async def root():

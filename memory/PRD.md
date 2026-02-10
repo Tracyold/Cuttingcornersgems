@@ -57,6 +57,13 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Dashboard Tile Semantics + Negotiations + Dev Hard-Delete (Feb 2026 - Completed)
+- `orders` tile = PAID orders only (completed revenue events)
+- `commits` tile = UNPAID pending orders (replaces old "Sold Items" label)
+- `negotiations` tile + negotiation events in Recent Activity
+- `POST /admin/orders/{id}/hard-delete` — dev-only, 403 in production
+- Recent Activity includes negotiations (with OPEN/DELETED badges)
+
 ## Product Soft-Delete + Order Delete + Sold Sections (Feb 2026 - Completed)
 - **Product deletion**: Referenced by orders → soft-delete only (preserves history). Unreferenced → soft or hard delete. `POST /admin/products/{id}/restore` to restore.
 - **Public queries**: `GET /api/products` excludes `is_deleted=true` products

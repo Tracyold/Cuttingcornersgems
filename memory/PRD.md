@@ -57,6 +57,14 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Product Soft-Delete + Order Delete + Sold Sections (Feb 2026 - Completed)
+- **Product deletion**: Referenced by orders → soft-delete only (preserves history). Unreferenced → soft or hard delete. `POST /admin/products/{id}/restore` to restore.
+- **Public queries**: `GET /api/products` excludes `is_deleted=true` products
+- **Admin Products UI**: "Show deleted" toggle, DELETED badge, Restore + Hard delete buttons
+- **Order soft-delete**: `POST /admin/orders/{id}/delete` — only unpaid pending orders. Paid orders blocked (400).
+- **Order restore**: `POST /admin/orders/{id}/restore`
+- **AdminSold page**: 4 tabs — Pending (unpaid), Completed (last 30d), Sold (last 365d), Legacy Sold. Mark Paid + Delete per pending order.
+
 ## Payment Infrastructure & Sold Lifecycle Fix (Feb 2026 - Completed)
 - **Semantic fix**: POST /api/orders no longer auto-marks products SOLD; creates order with `status:"pending"`, `commit_expires_at` (24h), `paid_at: null`
 - **Admin mark-paid**: POST /api/admin/orders/{order_id}/mark-paid → sets `paid_at`, `status:"paid"`, triggers `mark_products_sold()`

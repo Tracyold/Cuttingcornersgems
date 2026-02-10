@@ -663,7 +663,7 @@ const Shop = () => {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">{product.category}</p>
-                    <h3 className="font-serif text-lg md:text-xl mb-2 truncate">{product.title}</h3>
+                    <h3 className="title-sm text-lg md:text-xl mb-2 truncate">{product.title}</h3>
                     <p className="text-gray-500 text-sm mb-2 line-clamp-2 hidden md:block">{product.description}</p>
                     <div className="flex items-center gap-4">
                       <span className="font-mono text-lg">{formatPrice(product.price)}</span>

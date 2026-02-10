@@ -79,9 +79,11 @@ const Home = () => {
           <div className="w-px h-16 bg-gradient-to-b from-white/0 via-white/30 to-white/0" />
         </div>
 
-        {/* Industry badge */}
-        <div className="absolute bottom-6 right-6 z-10 text-right opacity-0 animate-fade-in delay-500">
-          <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Industry for 13 Years</p>
+        {/* Industry badge - black box */}
+        <div className="absolute bottom-8 right-8 z-10 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center opacity-0 animate-fade-in delay-500">
+          <p className="spec-text text-gray-500 mb-1">Industry for</p>
+          <p className="title-sm text-3xl">13 Years</p>
+          <p className="text-gray-500 text-sm">Pro Since 2021</p>
         </div>
       </section>
 
@@ -208,9 +210,6 @@ const Home = () => {
                   className="w-full h-full object-cover"
                   style={{ transform: 'scale(1.1)', objectPosition: 'center top' }}
                 />
-              </div>
-              <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center">
-                <p className="text-gray-500 text-sm">Pro Since 2021</p>
               </div>
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>

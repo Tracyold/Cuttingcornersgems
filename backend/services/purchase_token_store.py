@@ -402,7 +402,8 @@ def get_purchase_token_store() -> PurchaseTokenStoreInterface:
             _token_store = FilePurchaseTokenStore()
             logger.info("PurchaseTokenStore: Using FilePurchaseTokenStore (FILE mode)")
         elif PERSISTENCE_MODE == "DB":
-            _token_store = DbPurchaseTokenStore(None)
+            from server import db
+            _token_store = DbPurchaseTokenStore(db)
             logger.info("PurchaseTokenStore: Using DbPurchaseTokenStore (DB mode)")
         else:
             _token_store = InMemoryPurchaseTokenStore()

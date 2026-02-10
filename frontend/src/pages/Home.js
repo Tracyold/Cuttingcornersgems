@@ -85,7 +85,7 @@ const Home = () => {
         <div className="container-custom">
           <div className="text-center mb-16">
             <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">What I Do</p>
-            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl tracking-tight">Services</h2>
+            <h2 className="title-xl text-3xl md:text-4xl lg:text-5xl tracking-tight">Services</h2>
           </div>
 
           {/* Desktop: 3 column grid */}

@@ -2175,7 +2175,7 @@ async def create_negotiation(
         )
     
     # Create thread
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.create_thread(
         user_id=user["id"],
         user_email=user["email"],
@@ -2205,7 +2205,7 @@ async def create_negotiation(
 @api_router.get("/negotiations")
 async def list_user_negotiations(user: dict = Depends(get_current_user)):
     """List all negotiations for the current user."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     summaries = await store.list_threads_for_user(user["id"])
     return [
         {
@@ -2229,7 +2229,7 @@ async def get_user_negotiation(
     user: dict = Depends(get_current_user)
 ):
     """Get full negotiation thread (user must own it)."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2268,7 +2268,7 @@ async def add_user_message(
     user: dict = Depends(get_current_user)
 ):
     """Add a message to a negotiation (user side: OFFER or NOTE only)."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2303,7 +2303,7 @@ async def get_negotiation_agreement(
     user: dict = Depends(get_current_user)
 ):
     """Check if an active agreement exists for this negotiation."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2422,7 +2422,7 @@ async def admin_list_negotiations(
     admin: dict = Depends(get_admin_user)
 ):
     """List negotiations (admin view)."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     
     filter_status = None
     if status and status.upper() in ["OPEN", "ACCEPTED", "CLOSED"]:
@@ -2454,7 +2454,7 @@ async def admin_get_negotiation(
     admin: dict = Depends(get_admin_user)
 ):
     """Get full negotiation thread (admin view)."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2505,7 +2505,7 @@ async def admin_counter_offer(
     admin: dict = Depends(get_admin_user)
 ):
     """Admin sends counter-offer."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2544,7 +2544,7 @@ async def admin_accept_offer(
     Admin accepts offer and creates purchase agreement.
     IMPORTANT: This NEVER changes the product's public price.
     """
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:
@@ -2606,7 +2606,7 @@ async def admin_close_negotiation(
     admin: dict = Depends(get_admin_user)
 ):
     """Admin closes negotiation."""
-    store = get_negotiation_store()
+    store = get_negotiation_store(db)
     thread = await store.get_thread(negotiation_id)
     
     if not thread:

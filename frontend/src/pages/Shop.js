@@ -420,7 +420,7 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
 
       {/* Info Section */}
       <div className="p-6 space-y-4">
-        <h2 className="font-serif text-2xl">{product.title}</h2>
+        <h2 className="title-sm text-2xl">{product.title}</h2>
         
         <div className="space-y-3 text-sm">
           <div className="flex justify-between border-b border-white/10 pb-2">

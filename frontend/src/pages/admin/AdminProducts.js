@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, X, Upload, Video, ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Upload, Video, ChevronLeft, ChevronRight, Check, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 import { adminApi } from '../../api/adminApi';
 

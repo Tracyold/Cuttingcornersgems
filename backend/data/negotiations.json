@@ -1,0 +1,28 @@
+{
+  "threads": [
+    {
+      "accepted_agreement_id": null,
+      "created_at": "2026-02-10T05:16:33.235396+00:00",
+      "last_activity_at": "2026-02-10T05:16:33.235396+00:00",
+      "messages": [
+        {
+          "amount": 2000.0,
+          "created_at": "2026-02-10T05:16:33.235396+00:00",
+          "kind": "OFFER",
+          "message_id": "33309dbb-55e8-4a69-ba8b-44fb683f3e23",
+          "sender_role": "USER",
+          "text": "Persistence test offer"
+        }
+      ],
+      "negotiation_id": "b582701d-fd47-4c2d-bced-9e822441bef3",
+      "product_id": "0b3d1378-8085-427b-b8ed-bd2f3add4ac1",
+      "product_price": 2850.0,
+      "product_title": "Blue Sapphire - Cushion Cut",
+      "status": "OPEN",
+      "updated_at": "2026-02-10T05:16:33.235396+00:00",
+      "user_email": "persist1770700592@test.com",
+      "user_id": "d9a8df1c-01f7-4320-9e81-7362db80370b",
+      "user_name": "Persist Test User"
+    }
+  ]
+}

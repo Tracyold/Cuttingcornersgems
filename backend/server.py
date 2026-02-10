@@ -1747,7 +1747,7 @@ async def get_my_entitlements(user: dict = Depends(get_current_user)):
     from services.order_store import get_order_store
     
     store = get_order_store(db)
-    entitlements = await get_user_entitlements(user["user_id"], store)
+    entitlements = await get_user_entitlements(user["id"], store)
     return entitlements
 
 

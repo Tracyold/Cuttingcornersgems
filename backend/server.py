@@ -2138,6 +2138,13 @@ async def create_negotiation(
     Create a new negotiation thread with initial offer.
     Requires NYP eligibility (spend threshold or admin override).
     """
+    # Check if user is blocked from purchases
+    if user.get("purchase_blocked", False) or user.get("is_deleted", False):
+        raise HTTPException(
+            status_code=403,
+            detail="Purchases disabled for this account"
+        )
+    
     # Check eligibility server-side
     user_record = await db.users.find_one({"id": user["id"]}, {"_id": 0})
     eligible = await check_nyp_eligibility(user["id"], user_record)

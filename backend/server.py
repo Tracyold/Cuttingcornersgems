@@ -1490,6 +1490,41 @@ async def get_user_messages(current_user: dict = Depends(get_current_user)):
     messages = await db.user_messages.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(50)
     return messages
 
+# ============ USER SELF-DELETE ============
+
+@api_router.post("/users/me/delete")
+async def user_self_delete(current_user: dict = Depends(get_current_user)):
+    """
+    User self-delete endpoint.
+    Applies soft-delete: sets is_deleted=true and blocks purchases.
+    Does NOT delete related records (orders, inquiries, bookings).
+    """
+    user_id = current_user["id"]
+    
+    # Check if already deleted (shouldn't happen due to get_current_user check, but be safe)
+    if current_user.get("is_deleted", False):
+        raise HTTPException(status_code=400, detail="Account already deleted")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "is_deleted": True,
+            "deleted_at": now,
+            "purchase_blocked": True,
+            "purchase_block_reason": "self_deleted",
+            "purchase_blocked_at": now
+        }}
+    )
+    
+    logger.info(f"User {user_id} self-deleted their account")
+    
+    return {
+        "message": "Account deleted",
+        "is_deleted": True
+    }
+
 @api_router.get("/admin/messages")
 async def admin_get_messages(admin: dict = Depends(get_admin_user)):
     """Admin: Get all user messages"""

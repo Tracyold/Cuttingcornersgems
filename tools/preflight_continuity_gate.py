@@ -31,7 +31,7 @@ BOLD = "\033[1m"
 BACKEND_DIR = Path(__file__).parent.parent / "backend"
 
 # Directories/files to exclude
-EXCLUDE_DIRS = {"tests", "services/_draft", "_draft", "__pycache__", ".git"}
+EXCLUDE_DIRS = {"tests", "services/_draft", "_draft", "__pycache__", ".git", "tools"}
 EXCLUDE_FILES = {"__pycache__"}
 
 

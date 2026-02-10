@@ -281,49 +281,106 @@ const InvoiceCard = ({ item, onUpdate }) => {
 
 const AdminSold = () => {
   const [soldItems, setSoldItems] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [activeSection, setActiveSection] = useState('pending');
 
   useEffect(() => {
-    fetchSoldItems();
+    fetchData();
   }, [showDeleted]);
 
-  const fetchSoldItems = async () => {
+  const fetchData = async () => {
     try {
       const qs = showDeleted ? '?include_deleted=true' : '';
-      const data = await adminApi.get(`/admin/sold${qs}`);
-      setSoldItems(data);
+      const [soldData, ordersData] = await Promise.all([
+        adminApi.get(`/admin/sold${qs}`),
+        adminApi.get(`/admin/orders?include_deleted=true`),
+      ]);
+      setSoldItems(soldData);
+      setOrders(ordersData);
     } catch (error) {
-      console.error('Failed to fetch sold items:', error);
+      console.error('Failed to fetch data:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDeleteSold = async (id) => {
     if (!window.confirm('Are you sure you want to delete this sold record?')) return;
     try {
       await adminApi.post(`/admin/sold/${id}/delete`, {});
-      fetchSoldItems();
+      fetchData();
       toast.success('Record deleted');
     } catch (e) { toast.error('Delete failed'); }
   };
 
-  const handleRestore = async (id) => {
+  const handleRestoreSold = async (id) => {
     try {
       await adminApi.post(`/admin/sold/${id}/restore`);
-      fetchSoldItems();
+      fetchData();
       toast.success('Record restored');
     } catch (e) { toast.error('Restore failed'); }
   };
 
-  const handlePurge = async (id) => {
+  const handlePurgeSold = async (id) => {
     try {
       await adminApi.delete(`/admin/sold/${id}?hard=true`);
-      fetchSoldItems();
+      fetchData();
       toast.success('Record permanently deleted');
     } catch (e) { toast.error('Purge failed'); }
   };
+
+  const handleMarkPaid = async (orderId) => {
+    try {
+      await adminApi.post(`/admin/orders/${orderId}/mark-paid`);
+      fetchData();
+      toast.success('Order marked as paid');
+    } catch (e) { toast.error(e.response?.data?.detail || 'Failed'); }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm('Delete this unpaid order?')) return;
+    try {
+      await adminApi.post(`/admin/orders/${orderId}/delete`);
+      fetchData();
+      toast.success('Order deleted');
+    } catch (e) { toast.error(e.response?.data?.detail || 'Delete failed'); }
+  };
+
+  const handleRestoreOrder = async (orderId) => {
+    try {
+      await adminApi.post(`/admin/orders/${orderId}/restore`);
+      fetchData();
+      toast.success('Order restored');
+    } catch (e) { toast.error('Restore failed'); }
+  };
+
+  const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
+  const formatPrice = (p) => p ? `$${Number(p).toLocaleString()}` : '$0';
+
+  // Filter orders into sections
+  const now = new Date();
+  const d30 = new Date(now - 30 * 86400000);
+  const d365 = new Date(now - 365 * 86400000);
+
+  const pendingOrders = orders.filter(o => o.status === 'pending' && !o.paid_at);
+  const completedOrders = orders.filter(o => o.paid_at && new Date(o.paid_at) >= d30);
+  const soldOrders = orders.filter(o => o.paid_at && new Date(o.paid_at) >= d365);
+
+  const sections = [
+    { key: 'pending', label: 'Pending (Unpaid)', count: pendingOrders.filter(o => !o.is_deleted).length, icon: Clock },
+    { key: 'completed', label: 'Completed (30d)', count: completedOrders.filter(o => !o.is_deleted).length, icon: Check },
+    { key: 'sold', label: 'Sold (365d)', count: soldOrders.filter(o => !o.is_deleted).length, icon: DollarSign },
+    { key: 'legacy', label: 'Legacy Sold', count: soldItems.filter(s => !s.is_deleted).length, icon: Receipt },
+  ];
+
+  const activeOrders = activeSection === 'pending' ? pendingOrders
+    : activeSection === 'completed' ? completedOrders
+    : activeSection === 'sold' ? soldOrders
+    : [];
+
+  const filteredOrders = showDeleted ? activeOrders : activeOrders.filter(o => !o.is_deleted);
 
   if (loading) {
     return (
@@ -337,45 +394,120 @@ const AdminSold = () => {
     <div data-testid="admin-sold-page">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="page-title title-xl text-3xl mb-2">Sold Items</h1>
-          <p className="text-gray-500 text-sm">{soldItems.length} item(s) sold</p>
+          <h1 className="page-title title-xl text-3xl mb-2">Orders & Sold Items</h1>
+          <p className="text-gray-500 text-sm">{orders.filter(o => !o.is_deleted).length} order(s) total</p>
         </div>
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-toggle-sold">
-            <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
-            Show deleted
-          </label>
-        </div>
+        <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-toggle-sold">
+          <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
+          Show deleted
+        </label>
       </div>
 
-      {soldItems.length === 0 ? (
-        <div className="gem-card p-12 text-center">
-          <Receipt className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-          <p className="text-gray-500">No items sold yet</p>
-          <p className="text-xs text-gray-600 mt-2">Sold items will appear here with full invoice details</p>
-        </div>
-      ) : (
+      {/* Section Tabs */}
+      <div className="flex gap-2 mb-6 flex-wrap" data-testid="sold-section-tabs">
+        {sections.map(s => (
+          <button
+            key={s.key}
+            onClick={() => setActiveSection(s.key)}
+            className={`flex items-center gap-2 px-4 py-2 text-sm border transition-colors ${activeSection === s.key ? 'border-white/30 text-white bg-white/5' : 'border-white/10 text-gray-500 hover:text-gray-300'}`}
+            data-testid={`tab-${s.key}`}
+          >
+            <s.icon className="w-4 h-4" />
+            {s.label}
+            <span className="text-xs opacity-60">({s.count})</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Order-based sections */}
+      {activeSection !== 'legacy' && (
         <div className="space-y-4">
-          {soldItems.map(item => (
-            <div key={item.id} className={item.is_deleted ? 'opacity-60' : ''}>
-              <InvoiceCard 
-                item={item} 
-                onUpdate={fetchSoldItems}
-              />
-              <div className="flex items-center gap-2 px-4 pb-2">
-                {item.is_deleted ? (
-                  <>
-                    <span className="text-xs text-red-400">Deleted</span>
-                    <button onClick={() => handleRestore(item.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-sold-${item.id}`}>Restore</button>
-                    <button onClick={() => { if(window.prompt('Type PURGE to confirm') === 'PURGE') handlePurge(item.id); }} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30" data-testid={`purge-sold-${item.id}`}>Purge</button>
-                  </>
-                ) : (
-                  <button onClick={() => handleDelete(item.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-sold-${item.id}`}>Delete</button>
-                )}
-              </div>
+          {filteredOrders.length === 0 ? (
+            <div className="gem-card p-8 text-center">
+              <p className="text-gray-500">No orders in this section</p>
             </div>
-          ))}
+          ) : (
+            filteredOrders.map(order => (
+              <div key={order.id} className={`gem-card p-5 ${order.is_deleted ? 'opacity-50 border border-red-500/20' : ''}`} data-testid={`order-card-${order.id}`}>
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase tracking-widest">Order #{order.id.slice(0, 8)}</p>
+                    <p className="font-mono text-lg">{formatPrice(order.total)}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {order.is_deleted && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5" data-testid="badge-deleted">DELETED</span>}
+                    {order.paid_at ? (
+                      <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5" data-testid="badge-paid">PAID</span>
+                    ) : (
+                      <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5" data-testid="badge-pending">PENDING</span>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-1 text-sm text-gray-400 mb-3">
+                  {order.items?.map((item, i) => (
+                    <div key={i} className="flex justify-between">
+                      <span>{item.title || item.product_id?.slice(0, 8)} x{item.quantity}</span>
+                      <span>{formatPrice(item.price * item.quantity)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between text-xs text-gray-500 mb-3">
+                  <span>Created: {formatDate(order.created_at)}</span>
+                  {order.paid_at && <span>Paid: {formatDate(order.paid_at)} ({order.payment_provider})</span>}
+                  {order.commit_expires_at && !order.paid_at && <span>Expires: {formatDate(order.commit_expires_at)}</span>}
+                </div>
+                <div className="flex gap-2">
+                  {order.is_deleted ? (
+                    <button onClick={() => handleRestoreOrder(order.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-order-${order.id}`}>Restore</button>
+                  ) : (
+                    <>
+                      {!order.paid_at && (
+                        <>
+                          <button onClick={() => handleMarkPaid(order.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`mark-paid-${order.id}`}>Mark Paid</button>
+                          <button onClick={() => handleDeleteOrder(order.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-order-${order.id}`}>Delete</button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
+      )}
+
+      {/* Legacy Sold Items */}
+      {activeSection === 'legacy' && (
+        <>
+          {soldItems.length === 0 ? (
+            <div className="gem-card p-12 text-center">
+              <Receipt className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <p className="text-gray-500">No legacy sold items</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {soldItems.map(item => (
+                <div key={item.id} className={item.is_deleted ? 'opacity-60' : ''}>
+                  <InvoiceCard 
+                    item={item} 
+                    onUpdate={fetchData}
+                  />
+                  <div className="flex items-center gap-2 px-4 pb-2">
+                    {item.is_deleted ? (
+                      <>
+                        <span className="text-xs text-red-400">Deleted</span>
+                        <button onClick={() => handleRestoreSold(item.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-sold-${item.id}`}>Restore</button>
+                        <button onClick={() => { if(window.prompt('Type PURGE to confirm') === 'PURGE') handlePurgeSold(item.id); }} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30" data-testid={`purge-sold-${item.id}`}>Purge</button>
+                      </>
+                    ) : (
+                      <button onClick={() => handleDeleteSold(item.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-sold-${item.id}`}>Delete</button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -59,6 +59,46 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
     }
   };
 
+  const handleToggleBlock = async () => {
+    const newBlockedState = !user.purchase_blocked;
+    const action = newBlockedState ? 'block' : 'unblock';
+    
+    if (!confirm(`Are you sure you want to ${action} purchases for ${user.email}?`)) return;
+    
+    setTogglingBlock(true);
+    try {
+      await adminApi.patch(`/admin/users/${user.id}/status`, {
+        purchase_blocked: newBlockedState,
+        purchase_block_reason: newBlockedState ? 'admin_blocked' : null
+      });
+      toast.success(`User ${action}ed successfully`);
+      if (onUserUpdate) onUserUpdate();
+    } catch (error) {
+      const message = error.response?.data?.detail || `Failed to ${action} user`;
+      toast.error(message);
+    } finally {
+      setTogglingBlock(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setDeleting(true);
+    try {
+      await adminApi.post(`/admin/users/${user.id}/delete`);
+      toast.success('User account deleted');
+      setShowDeleteConfirm(false);
+      if (onUserUpdate) onUserUpdate();
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Failed to delete user';
+      toast.error(message);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const isDeleted = user.is_deleted;
+  const isBlocked = user.purchase_blocked;
+
   return (
     <div className="gem-card overflow-hidden" data-testid={`user-card-${user.id}`}>
       {/* Header */}

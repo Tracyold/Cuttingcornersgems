@@ -112,8 +112,375 @@ const AuthSection = ({ onSuccess }) => {
   );
 };
 
+// ================== NAME YOUR PRICE TAB ==================
+
+const NameYourPriceTab = () => {
+  const { entitlements, entitlementsLoading } = useAuth();
+  const [negotiations, setNegotiations] = useState([]);
+  const [preferences, setPreferences] = useState({ sms_negotiations_enabled: false, phone_e164: '' });
+  const [loading, setLoading] = useState(true);
+  const [selectedNeg, setSelectedNeg] = useState(null);
+  const [newOfferAmount, setNewOfferAmount] = useState('');
+  const [newOfferText, setNewOfferText] = useState('');
+  const [sending, setSending] = useState(false);
+  const [savingPrefs, setSavingPrefs] = useState(false);
+
+  const token = localStorage.getItem('token');
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const loadNegotiations = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [negsRes, prefsRes] = await Promise.all([
+        axios.get(`${API_URL}/negotiations`, { headers }),
+        axios.get(`${API_URL}/users/me/preferences`, { headers })
+      ]);
+      setNegotiations(negsRes.data);
+      setPreferences(prefsRes.data);
+    } catch (error) {
+      console.error('Failed to load negotiations:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (entitlements?.unlocked_nyp) {
+      loadNegotiations();
+    } else {
+      setLoading(false);
+    }
+  }, [entitlements?.unlocked_nyp, loadNegotiations]);
+
+  const handleSavePreferences = async () => {
+    setSavingPrefs(true);
+    try {
+      await axios.patch(`${API_URL}/users/me/preferences`, preferences, { headers });
+      toast.success('Preferences saved');
+    } catch (error) {
+      toast.error('Failed to save preferences');
+    } finally {
+      setSavingPrefs(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!selectedNeg || !newOfferAmount) {
+      toast.error('Please enter an amount');
+      return;
+    }
+    setSending(true);
+    try {
+      await axios.post(`${API_URL}/negotiations/${selectedNeg.negotiation_id}/message`, {
+        kind: 'OFFER',
+        amount: parseFloat(newOfferAmount),
+        text: newOfferText || null
+      }, { headers });
+      toast.success('Offer sent');
+      setNewOfferAmount('');
+      setNewOfferText('');
+      // Refresh thread
+      const updatedThread = await axios.get(`${API_URL}/negotiations/${selectedNeg.negotiation_id}`, { headers });
+      setSelectedNeg(updatedThread.data);
+      loadNegotiations();
+    } catch (error) {
+      toast.error('Failed to send offer');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleCheckAgreement = async (negotiationId) => {
+    try {
+      const res = await axios.get(`${API_URL}/negotiations/${negotiationId}/agreement`, { headers });
+      if (res.data.available) {
+        // Try to checkout
+        const quoteRes = await axios.post(`${API_URL}/purchase/quote`, {
+          purchase_token: res.data.purchase_token
+        }, { headers });
+        toast.info(`Ready to purchase at $${quoteRes.data.amount}. Payment integration pending.`);
+      } else {
+        toast.info('No active agreement. The offer may have expired.');
+      }
+    } catch (error) {
+      toast.error('Failed to check agreement');
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleString('en-US', {
+      month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  };
+
+  // Loading state
+  if (entitlementsLoading || loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  // Not eligible - show progress
+  if (!entitlements?.unlocked_nyp) {
+    const progressPercent = Math.min(100, ((entitlements?.total_spend || 0) / (entitlements?.threshold || 1000)) * 100);
+    return (
+      <div data-testid="nyp-locked-tab">
+        <h2 className="font-serif text-2xl mb-6">Name Your Price</h2>
+        <div className="gem-card p-8 text-center">
+          <Lock className="w-12 h-12 mx-auto text-gray-600 mb-4" />
+          <h3 className="font-serif text-xl mb-2">Unlock Exclusive Pricing</h3>
+          <p className="text-gray-500 mb-6">
+            Spend ${(entitlements?.threshold || 1000).toLocaleString()} to unlock Name Your Price negotiations.
+          </p>
+          
+          {/* Progress Bar */}
+          <div className="max-w-md mx-auto">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-500">Your spend</span>
+              <span className="text-white">${(entitlements?.total_spend || 0).toLocaleString()}</span>
+            </div>
+            <div className="h-2 bg-white/10 overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-amber-500 to-yellow-500 transition-all duration-500"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-600 mt-2">
+              ${(entitlements?.spend_to_unlock || 1000).toLocaleString()} more to unlock
+            </p>
+          </div>
+          
+          <Link to="/shop" className="btn-secondary inline-block mt-6">
+            Browse Shop
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Thread detail view
+  if (selectedNeg) {
+    return (
+      <div data-testid="nyp-thread-detail">
+        <button 
+          onClick={() => setSelectedNeg(null)}
+          className="text-gray-400 hover:text-white text-sm mb-4"
+        >
+          ← Back to negotiations
+        </button>
+        
+        <div className="gem-card p-6 mb-6">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h3 className="font-serif text-xl">{selectedNeg.product_title}</h3>
+              <p className="text-gray-500 text-sm">
+                Listed Price: <span className="text-white">${selectedNeg.product_price?.toLocaleString()}</span>
+              </p>
+            </div>
+            <span className={`px-3 py-1 text-xs uppercase tracking-wider ${
+              selectedNeg.status === 'OPEN' ? 'bg-blue-500/20 text-blue-400' :
+              selectedNeg.status === 'ACCEPTED' ? 'bg-green-500/20 text-green-400' :
+              'bg-gray-500/20 text-gray-400'
+            }`}>
+              {selectedNeg.status}
+            </span>
+          </div>
+          
+          {selectedNeg.status === 'ACCEPTED' && (
+            <button
+              onClick={() => handleCheckAgreement(selectedNeg.negotiation_id)}
+              className="btn-primary w-full mb-4"
+            >
+              <Check className="w-4 h-4 inline mr-2" />
+              Purchase at Accepted Price
+            </button>
+          )}
+        </div>
+
+        {/* Messages */}
+        <div className="space-y-3 mb-6">
+          {selectedNeg.messages?.map((msg, idx) => (
+            <div 
+              key={msg.message_id || idx}
+              className={`gem-card p-4 ${msg.sender_role === 'ADMIN' ? 'border-l-2 border-purple-500' : 'border-l-2 border-amber-500'}`}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className={`text-xs uppercase ${msg.sender_role === 'ADMIN' ? 'text-purple-400' : 'text-amber-400'}`}>
+                    {msg.sender_role === 'ADMIN' ? 'Seller' : 'You'}
+                  </span>
+                  <span className={`text-xs px-2 py-0.5 uppercase ${
+                    msg.kind === 'OFFER' ? 'bg-amber-500/20 text-amber-400' :
+                    msg.kind === 'COUNTER' ? 'bg-purple-500/20 text-purple-400' :
+                    msg.kind === 'ACCEPT' ? 'bg-green-500/20 text-green-400' :
+                    msg.kind === 'CLOSE' ? 'bg-red-500/20 text-red-400' :
+                    'bg-gray-500/20 text-gray-400'
+                  }`}>
+                    {msg.kind}
+                  </span>
+                </div>
+                <span className="text-xs text-gray-600">{formatDate(msg.created_at)}</span>
+              </div>
+              {msg.amount !== null && (
+                <p className="text-lg font-mono">${msg.amount.toLocaleString()}</p>
+              )}
+              {msg.text && <p className="text-gray-400 text-sm">{msg.text}</p>}
+            </div>
+          ))}
+        </div>
+
+        {/* Reply form (only if OPEN) */}
+        {selectedNeg.status === 'OPEN' && (
+          <div className="gem-card p-6">
+            <h4 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Send Counter Offer</h4>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-gray-500">Your Offer Amount *</label>
+                <input
+                  type="number"
+                  value={newOfferAmount}
+                  onChange={(e) => setNewOfferAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="input-dark w-full"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-gray-500">Message (optional)</label>
+                <textarea
+                  value={newOfferText}
+                  onChange={(e) => setNewOfferText(e.target.value)}
+                  placeholder="Add a note..."
+                  className="input-dark w-full h-20 resize-none"
+                />
+              </div>
+              <button
+                onClick={handleSendMessage}
+                disabled={sending}
+                className="btn-primary w-full"
+              >
+                {sending ? 'Sending...' : 'Send Offer'}
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Eligible - show negotiations list
+  return (
+    <div data-testid="nyp-unlocked-tab">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="font-serif text-2xl">Name Your Price</h2>
+          <p className="text-green-400 text-sm flex items-center gap-1">
+            <Unlock className="w-4 h-4" /> Unlocked
+          </p>
+        </div>
+      </div>
+
+      {/* SMS Preferences */}
+      <div className="gem-card p-6 mb-6">
+        <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4 flex items-center gap-2">
+          <Bell className="w-4 h-4" /> Notification Preferences
+        </h3>
+        <div className="space-y-4">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={preferences.sms_negotiations_enabled}
+              onChange={(e) => setPreferences(p => ({ ...p, sms_negotiations_enabled: e.target.checked }))}
+              className="w-4 h-4 accent-amber-500"
+            />
+            <span className="text-sm">Text me updates about negotiations</span>
+          </label>
+          {preferences.sms_negotiations_enabled && (
+            <div>
+              <label className="text-xs text-gray-500">Phone Number (E.164 format)</label>
+              <input
+                type="tel"
+                value={preferences.phone_e164 || ''}
+                onChange={(e) => setPreferences(p => ({ ...p, phone_e164: e.target.value }))}
+                placeholder="+1234567890"
+                className="input-dark w-full"
+              />
+            </div>
+          )}
+          <button
+            onClick={handleSavePreferences}
+            disabled={savingPrefs}
+            className="btn-secondary text-sm"
+          >
+            {savingPrefs ? 'Saving...' : 'Save Preferences'}
+          </button>
+        </div>
+      </div>
+
+      {/* Negotiations List */}
+      <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Your Negotiations</h3>
+      {negotiations.length === 0 ? (
+        <div className="gem-card p-8 text-center">
+          <DollarSign className="w-12 h-12 mx-auto text-gray-600 mb-4" />
+          <p className="text-gray-500 mb-4">No negotiations yet</p>
+          <p className="text-gray-600 text-sm mb-4">
+            Start a negotiation by clicking "Name Your Price" on any eligible product in the shop.
+          </p>
+          <Link to="/shop" className="btn-secondary inline-block">
+            Browse Shop
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {negotiations.map((neg) => (
+            <div 
+              key={neg.negotiation_id}
+              className="gem-card p-4 cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={async () => {
+                try {
+                  const res = await axios.get(`${API_URL}/negotiations/${neg.negotiation_id}`, { headers });
+                  setSelectedNeg(res.data);
+                } catch (error) {
+                  toast.error('Failed to load negotiation');
+                }
+              }}
+              data-testid={`negotiation-item-${neg.negotiation_id}`}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <h4 className="font-semibold">{neg.product_title}</h4>
+                  <p className="text-sm text-gray-500">
+                    Listed: ${neg.product_price?.toLocaleString()}
+                    {neg.last_amount && (
+                      <span className="text-amber-400 ml-2">
+                        • Last offer: ${neg.last_amount.toLocaleString()}
+                      </span>
+                    )}
+                  </p>
+                </div>
+                <span className={`px-2 py-1 text-xs uppercase ${
+                  neg.status === 'OPEN' ? 'bg-blue-500/20 text-blue-400' :
+                  neg.status === 'ACCEPTED' ? 'bg-green-500/20 text-green-400' :
+                  'bg-gray-500/20 text-gray-400'
+                }`}>
+                  {neg.status}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 mt-2 text-xs text-gray-600">
+                <span>{neg.message_count} messages</span>
+                <span>{formatDate(neg.last_activity_at)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Dashboard = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, entitlements } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('orders');

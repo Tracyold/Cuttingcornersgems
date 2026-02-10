@@ -332,7 +332,6 @@ const AdminSold = () => {
               key={item.id} 
               item={item} 
               onUpdate={fetchSoldItems}
-              getAuthHeaders={getAuthHeaders}
             />
           ))}
         </div>

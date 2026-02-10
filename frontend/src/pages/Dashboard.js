@@ -837,9 +837,20 @@ const Dashboard = () => {
                                   </div>
                                 ))}
                               </div>
-                              <div className="mt-4 pt-4 border-t border-white/10 flex justify-between">
+                              <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
                                 <span className="text-gray-500">Total</span>
-                                <span className="font-mono">{formatPrice(order.total)}</span>
+                                <div className="flex items-center gap-3">
+                                  <span className="font-mono">{formatPrice(order.total)}</span>
+                                  <a
+                                    href={`${API_URL}/orders/${order.id}/invoice.pdf`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-gray-500 hover:text-white flex items-center gap-1"
+                                    data-testid={`invoice-link-${index}`}
+                                  >
+                                    <FileText className="w-3 h-3" /> Invoice
+                                  </a>
+                                </div>
                               </div>
                             </div>
                           ))}

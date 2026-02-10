@@ -1254,6 +1254,118 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         created_at=current_user["created_at"]
     )
 
+# ============ PASSWORD RESET ROUTES ============
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """
+    Initiate password reset flow.
+    
+    SECURITY: Always returns generic success response to prevent user enumeration.
+    Reset link is delivered ONLY via email (never in API response).
+    """
+    from services.password_reset import (
+        create_reset_token, build_reset_email_html, build_reset_email_text
+    )
+    from services.email_provider import get_email_provider, NullEmailProvider, EmailMessage
+    
+    # Generic response (returned regardless of whether user exists)
+    generic_response = {
+        "message": "If an account with that email exists, a password reset link has been sent."
+    }
+    
+    # Look up the user
+    user = await db.users.find_one({"email": request.email}, {"_id": 0})
+    
+    if not user:
+        # User doesn't exist - return generic response (no enumeration)
+        logger.info(f"Password reset requested for non-existent email: {request.email[:3]}***")
+        return generic_response
+    
+    # Check if email is enabled
+    settings = await db.site_settings.find_one({"id": "main"}, {"_id": 0}) or {}
+    email_provider = get_email_provider(settings)
+    
+    if isinstance(email_provider, NullEmailProvider):
+        # Email not configured - log and return generic response
+        # In production, admin should be notified; for now we just log
+        logger.warning(f"Password reset requested but email service disabled. User: {user['id']}")
+        return generic_response
+    
+    # Create reset token
+    token_data = await create_reset_token(db, user["id"], user["email"])
+    
+    # Build reset URL (frontend will handle the reset form)
+    # Use FRONTEND_URL env var if set, otherwise construct from request
+    frontend_url = os.environ.get("FRONTEND_URL", os.environ.get("REACT_APP_BACKEND_URL", ""))
+    # Remove /api suffix if present since reset page is on frontend
+    if frontend_url.endswith("/api"):
+        frontend_url = frontend_url[:-4]
+    reset_url = f"{frontend_url}/reset-password?token={token_data.token}"
+    
+    # Build email content
+    html_body = build_reset_email_html(reset_url, settings.get("email_from_name", "Support"))
+    text_body = build_reset_email_text(reset_url)
+    
+    # Send email
+    email_message = EmailMessage(
+        to=user["email"],
+        subject="Password Reset Request",
+        html_body=html_body,
+        text_body=text_body
+    )
+    
+    result = await email_provider.send(email_message)
+    
+    if result.sent:
+        logger.info(f"Password reset email sent to user {user['id']}")
+    else:
+        logger.error(f"Failed to send password reset email: {result.message}")
+    
+    # Always return generic response
+    return generic_response
+
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """
+    Complete password reset with token.
+    
+    Validates token and updates user password.
+    Token is single-use and expires after 1 hour.
+    """
+    from services.password_reset import validate_reset_token, mark_token_used
+    
+    # Validate the token
+    token_doc = await validate_reset_token(db, request.token)
+    
+    if not token_doc:
+        raise HTTPException(
+            status_code=400, 
+            detail="Invalid or expired reset token. Please request a new password reset."
+        )
+    
+    # Validate password length
+    if len(request.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Update user password
+    new_hash = hash_password(request.new_password)
+    result = await db.users.update_one(
+        {"id": token_doc["user_id"]},
+        {"$set": {"password_hash": new_hash}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=400, detail="Failed to update password")
+    
+    # Mark token as used
+    await mark_token_used(db, request.token)
+    
+    logger.info(f"Password reset completed for user {token_doc['user_id']}")
+    
+    return {"message": "Password has been reset successfully. You can now log in with your new password."}
+
 # ============ USER MESSAGE TO ADMIN ============
 
 class UserMessageCreate(BaseModel):

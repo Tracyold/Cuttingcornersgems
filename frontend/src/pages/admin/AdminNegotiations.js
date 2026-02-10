@@ -13,7 +13,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 // Status badge component
 const StatusBadge = ({ status }) => {

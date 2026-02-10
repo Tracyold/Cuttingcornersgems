@@ -504,7 +504,7 @@ const AdminNegotiations = () => {
           {negotiations.map((neg) => (
             <div 
               key={neg.negotiation_id}
-              className="gem-card overflow-hidden"
+              className={`gem-card overflow-hidden ${neg.is_deleted ? 'opacity-60 border-red-500/30' : ''}`}
               data-testid={`negotiation-${neg.negotiation_id}`}
             >
               <div 

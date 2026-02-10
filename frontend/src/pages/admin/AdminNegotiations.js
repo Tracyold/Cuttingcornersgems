@@ -463,8 +463,13 @@ const AdminNegotiations = () => {
           <h1 className="title-sm text-2xl">Negotiations</h1>
           <p className="text-gray-500 text-sm">Name Your Price offers and agreements</p>
         </div>
-        <div className="flex gap-2">
-          {['OPEN', 'ACCEPTED', 'CLOSED', ''].map((status) => (
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-toggle-neg">
+            <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
+            Show deleted
+          </label>
+          <div className="flex gap-2">
+            {['OPEN', 'ACCEPTED', 'CLOSED', ''].map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
@@ -477,6 +482,7 @@ const AdminNegotiations = () => {
               {status || 'All'}
             </button>
           ))}
+          </div>
         </div>
       </div>
 

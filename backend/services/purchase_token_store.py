@@ -166,6 +166,145 @@ class InMemoryPurchaseTokenStore(PurchaseTokenStoreInterface):
 
 
 # ==============================================================================
+# FILE-BACKED IMPLEMENTATION (Design/Dev with Persistence)
+# ==============================================================================
+
+class FilePurchaseTokenStore(PurchaseTokenStoreInterface):
+    """
+    File-backed store for design-stage persistence.
+    
+    Note: Tokens are stored but expire timestamps are honored.
+    """
+    
+    def __init__(self, base_dir: str = None):
+        from config.persistence import PERSISTENCE_DIR, PURCHASE_TOKENS_FILE
+        from services.persistence.json_store import JsonStore
+        
+        self._base_dir = base_dir or PERSISTENCE_DIR
+        self._store = JsonStore(self._base_dir)
+        self._filename = PURCHASE_TOKENS_FILE
+        self._tokens: Dict[str, TokenData] = {}
+        self._by_agreement: Dict[str, str] = {}
+        self._load_from_file()
+        logger.info(f"FilePurchaseTokenStore: Loaded {len(self._tokens)} tokens")
+    
+    def _load_from_file(self) -> None:
+        """Load tokens from JSON file."""
+        data = self._store.load(self._filename, default={"tokens": []})
+        for td in data.get("tokens", []):
+            try:
+                token_data = TokenData(
+                    token=td["token"],
+                    user_id=td["user_id"],
+                    product_id=td["product_id"],
+                    amount=td["amount"],
+                    expires_at=datetime.fromisoformat(td["expires_at"]) if isinstance(td["expires_at"], str) else td["expires_at"],
+                    agreement_id=td["agreement_id"],
+                    consumed=td.get("consumed", False),
+                    consumed_at=datetime.fromisoformat(td["consumed_at"]) if td.get("consumed_at") and isinstance(td["consumed_at"], str) else td.get("consumed_at")
+                )
+                self._tokens[token_data.token] = token_data
+                self._by_agreement[token_data.agreement_id] = token_data.token
+            except Exception as e:
+                logger.warning(f"FilePurchaseTokenStore: Failed to parse token: {e}")
+    
+    def _save_to_file(self) -> None:
+        """Save tokens to JSON file."""
+        tokens_list = []
+        for t in self._tokens.values():
+            tokens_list.append({
+                "token": t.token,
+                "user_id": t.user_id,
+                "product_id": t.product_id,
+                "amount": t.amount,
+                "expires_at": t.expires_at.isoformat(),
+                "agreement_id": t.agreement_id,
+                "consumed": t.consumed,
+                "consumed_at": t.consumed_at.isoformat() if t.consumed_at else None
+            })
+        self._store.save(self._filename, {"tokens": tokens_list})
+    
+    async def create_token(
+        self,
+        user_id: str,
+        product_id: str,
+        amount: float,
+        agreement_id: str,
+        ttl_minutes: int = 30
+    ) -> dict:
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=ttl_minutes)
+
+        token_data = TokenData(
+            token=token,
+            user_id=user_id,
+            product_id=product_id,
+            amount=amount,
+            expires_at=expires_at,
+            agreement_id=agreement_id,
+            consumed=False
+        )
+
+        self._tokens[token] = token_data
+        self._by_agreement[agreement_id] = token
+        self._save_to_file()
+
+        logger.info(f"FilePurchaseTokenStore: Created token for agreement {agreement_id}")
+        return {
+            "token": token,
+            "expires_at": expires_at
+        }
+
+    async def verify_token(self, user_id: str, token: str) -> dict:
+        token_data = self._tokens.get(token)
+
+        if not token_data:
+            return {"valid": False, "reason": "Token not found"}
+
+        if token_data.user_id != user_id:
+            return {"valid": False, "reason": "Token does not belong to user"}
+
+        if token_data.consumed:
+            return {"valid": False, "reason": "Token already consumed"}
+
+        if datetime.now(timezone.utc) > token_data.expires_at:
+            return {"valid": False, "reason": "Token expired"}
+
+        return {
+            "valid": True,
+            "product_id": token_data.product_id,
+            "amount": token_data.amount,
+            "expires_at": token_data.expires_at,
+            "agreement_id": token_data.agreement_id
+        }
+
+    async def consume_token(self, user_id: str, token: str) -> dict:
+        verification = await self.verify_token(user_id, token)
+
+        if not verification.get("valid"):
+            return {"consumed": False, "reason": verification.get("reason")}
+
+        token_data = self._tokens[token]
+        token_data.consumed = True
+        token_data.consumed_at = datetime.now(timezone.utc)
+        self._save_to_file()
+
+        logger.info(f"FilePurchaseTokenStore: Consumed token for agreement {token_data.agreement_id}")
+        return {
+            "consumed": True,
+            "agreement_id": token_data.agreement_id,
+            "amount": token_data.amount,
+            "product_id": token_data.product_id
+        }
+
+    async def get_token_by_agreement(self, agreement_id: str) -> Optional[TokenData]:
+        token_str = self._by_agreement.get(agreement_id)
+        if token_str:
+            return self._tokens.get(token_str)
+        return None
+
+
+# ==============================================================================
 # DB IMPLEMENTATION (STUB)
 # ==============================================================================
 

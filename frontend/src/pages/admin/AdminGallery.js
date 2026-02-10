@@ -7,6 +7,7 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 const CATEGORIES = ['sapphire', 'tourmaline', 'emerald', 'tanzanite', 'aquamarine', 'garnet', 'other'];
+const ERAS = ['PAST', 'PRESENT', 'FUTURE'];
 
 const emptyForm = {
   title: '',
@@ -19,7 +20,9 @@ const emptyForm = {
   color: '',
   carat: '',
   dimensions: '',
-  featured: false
+  featured: false,
+  era: '',
+  humble_beginnings: false
 };
 
 // Bulk Add Modal Component

@@ -63,7 +63,7 @@ const Layout = ({ children }) => {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="font-serif text-xl tracking-tight" data-testid="logo-link">
+            <Link to="/" className="title-sm text-xl tracking-tight" data-testid="logo-link">
               Cutting Corners
             </Link>
 
@@ -168,7 +168,7 @@ const Layout = ({ children }) => {
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
-              <h3 className="font-serif text-2xl mb-4">Cutting Corners</h3>
+              <h3 className="title-sm text-2xl mb-4">Cutting Corners</h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-md">
                 Precision gemstone cutting by Michael Wall. Based in Tempe, Arizona. 
                 Specializing in sapphires, tourmalines, emeralds, and more.

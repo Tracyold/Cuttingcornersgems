@@ -281,16 +281,15 @@ def get_content_store(db=None, force_memory: bool = False) -> ContentStoreInterf
         return _content_store_instance
     
     else:  # DB mode
-        if db is None:
-            # Fallback to file if DB not available
-            if _content_store_instance is None or not isinstance(_content_store_instance, FileContentStore):
-                _content_store_instance = FileContentStore()
-                logger.warning("ContentStore: DB mode but no db, falling back to FileContentStore")
+        if _content_store_instance is not None and isinstance(_content_store_instance, DbContentStore):
             return _content_store_instance
-        
-        if _content_store_instance is None or not isinstance(_content_store_instance, DbContentStore):
+        if db is not None:
             _content_store_instance = DbContentStore(db)
             logger.info("ContentStore: Using DbContentStore (DB mode)")
+            return _content_store_instance
+        if _content_store_instance is None:
+            _content_store_instance = FileContentStore()
+            logger.warning("ContentStore: DB mode but no db yet, temporary FileContentStore")
         return _content_store_instance
 
 

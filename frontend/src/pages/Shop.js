@@ -478,7 +478,7 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
       </div>
 
       {showInquiry && <InquiryPopup product={product} onClose={() => setShowInquiry(false)} />}
-      {showNypForm && <InquiryPopup product={product} onClose={() => setShowNypForm(false)} isOffer={true} />}
+      {showNypForm && <NegotiationPopup product={product} onClose={() => setShowNypForm(false)} />}
     </div>
   );
 

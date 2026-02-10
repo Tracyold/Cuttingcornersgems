@@ -66,7 +66,7 @@ const Home = () => {
           <p className="text-sm uppercase tracking-[0.3em] text-gray-400 mb-6 opacity-0 animate-fade-in transition-all duration-700" data-scroll-reveal>
             Tempe, Arizona
           </p>
-          <h1 className="page-title title-xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
+          <h1 className="hero-title title-xl tracking-tight mb-6 opacity-0 animate-fade-in delay-100">
             <span className="text-[#d4af37]">Cutting</span> Corners — Not the <span className="text-[#d4af37]">Quality</span>
           </h1>
           <p className="text-gray-400 text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto mb-10 opacity-0 animate-fade-in delay-200">
@@ -189,9 +189,12 @@ const Home = () => {
       {/* About Section */}
       <section className="section-spacing" data-testid="about-section">
         <div className="container-custom">
+          <div className="text-center mb-16">
+            <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
+            <h2 className="title-xl tracking-tight">About the Cutter</h2>
+          </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4 text-center">About the Cutter</p>
               <div className="aspect-square overflow-hidden relative">
                 <div className="absolute inset-0 shadow-[inset_0_0_30px_15px_rgba(0,0,0,0.7)] z-10 pointer-events-none" />
                 <img
@@ -208,7 +211,6 @@ const Home = () => {
               </div>
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">About</p>
               <h2 className="page-title title-xl mb-6">Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>

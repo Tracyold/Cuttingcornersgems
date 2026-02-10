@@ -10,7 +10,9 @@ import {
   User,
   Package,
   Send,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  RotateCcw
 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import { toast } from 'sonner';
@@ -380,11 +382,13 @@ const AdminNegotiations = () => {
   const [statusFilter, setStatusFilter] = useState('OPEN');
   const [selectedId, setSelectedId] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   const loadNegotiations = useCallback(async () => {
     try {
       setLoading(true);
-      const params = statusFilter ? `?status=${statusFilter}` : '';
+      let params = statusFilter ? `?status=${statusFilter}` : '?';
+      if (showDeleted) params += `${params.includes('?') && params.length > 1 ? '&' : params.endsWith('?') ? '' : '?'}include_deleted=true`;
       const data = await adminApi.get(`/admin/negotiations${params}`);
       setNegotiations(data);
     } catch (error) {
@@ -394,11 +398,37 @@ const AdminNegotiations = () => {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, showDeleted]);
 
   useEffect(() => {
     loadNegotiations();
   }, [loadNegotiations]);
+
+  const handleDeleteNeg = async (id) => {
+    if (!window.confirm('Delete this negotiation?')) return;
+    try {
+      await adminApi.post(`/admin/negotiations/${id}/delete`, {});
+      toast.success('Negotiation deleted');
+      loadNegotiations();
+    } catch (e) { toast.error('Delete failed'); }
+  };
+
+  const handleRestoreNeg = async (id) => {
+    try {
+      await adminApi.post(`/admin/negotiations/${id}/restore`);
+      toast.success('Negotiation restored');
+      loadNegotiations();
+    } catch (e) { toast.error('Restore failed'); }
+  };
+
+  const handlePurgeNeg = async (id) => {
+    if (window.prompt('Type PURGE to confirm permanent deletion') !== 'PURGE') return;
+    try {
+      await adminApi.delete(`/admin/negotiations/${id}?hard=true`);
+      toast.success('Negotiation permanently deleted');
+      loadNegotiations();
+    } catch (e) { toast.error('Purge failed'); }
+  };
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-US', {

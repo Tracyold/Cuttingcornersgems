@@ -52,7 +52,7 @@
     "admin_password": "adm1npa$$word",
     "test_user_email": "override_test@example.com",
     "test_user_password": "Test1234",
-    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+    "preview_url": "https://pending-invoice-flow.preview.emergentagent.com"
   },
 
   "seed_data_creation": "Used existing test user override_test@example.com and existing Humble Beginnings gallery item",

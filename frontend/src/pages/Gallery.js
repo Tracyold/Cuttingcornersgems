@@ -68,16 +68,6 @@ const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemC
     </div>
   );
 };
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <Lock className="w-8 h-8 text-gray-500" />
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
 
 const Gallery = () => {
   const [items, setItems] = useState([]);

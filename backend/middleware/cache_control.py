@@ -1,12 +1,12 @@
 """
 HTTP Cache Control Middleware
 Sets explicit cache headers by endpoint class to prevent stale data
+
+Note: services/redaction.py provides request logging redaction utilities.
+To enable safe request logging, integrate safe_log_request() in this middleware.
 """
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
-import hashlib
-import json
 
 
 class CacheControlMiddleware(BaseHTTPMiddleware):

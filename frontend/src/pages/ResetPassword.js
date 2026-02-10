@@ -87,7 +87,7 @@ const ResetPassword = () => {
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-red-500/10 flex items-center justify-center">
             <AlertCircle className="w-8 h-8 text-red-400" />
           </div>
-          <h1 className="page-title title-xl text-2xl mb-4">Invalid Reset Link/h1>
+          <h1 className="page-title title-xl text-2xl mb-4">Invalid Reset Link</h1>
           <p className="text-gray-400 mb-6">{error}</p>
           <Link 
             to="/dashboard?tab=auth" 

@@ -163,8 +163,8 @@ async def register_migration(
         "applied_at": datetime.now(timezone.utc).isoformat()
     }
     
-    result = await db.schema_version.update_one(
-        {"_id": "main"},
+    await db[SCHEMA_COLLECTION].update_one(
+        {"id": "main"},
         {
             "$push": {"migrations": migration_record},
             "$set": {"updated_at": datetime.now(timezone.utc).isoformat()}

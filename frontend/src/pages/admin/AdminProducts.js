@@ -568,7 +568,11 @@ const AdminProducts = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="page-title title-xl text-3xl">Products</h1>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm text-gray-400 cursor-pointer" data-testid="show-deleted-products-toggle">
+            <input type="checkbox" checked={showDeleted} onChange={e => setShowDeleted(e.target.checked)} className="rounded border-white/20" />
+            Show deleted
+          </label>
           <button onClick={() => setShowBulkModal(true)} className="btn-secondary flex items-center gap-2">
             <Plus className="w-4 h-4" /> Bulk Add
           </button>

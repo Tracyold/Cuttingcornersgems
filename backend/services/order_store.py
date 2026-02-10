@@ -279,15 +279,15 @@ def get_order_store(db=None, force_memory: bool = False) -> OrderStoreInterface:
         return _store_instance
     
     else:  # DB mode
-        if db is None:
-            if _store_instance is None or not isinstance(_store_instance, FileOrderStore):
-                _store_instance = FileOrderStore()
-                logger.warning("OrderStore: DB mode but no db, falling back to FileOrderStore")
+        if _store_instance is not None and isinstance(_store_instance, DbOrderStore):
             return _store_instance
-        
-        if _store_instance is None or not isinstance(_store_instance, DbOrderStore):
+        if db is not None:
             _store_instance = DbOrderStore(db)
             logger.info("OrderStore: Using DbOrderStore (DB mode)")
+            return _store_instance
+        if _store_instance is None:
+            _store_instance = FileOrderStore()
+            logger.warning("OrderStore: DB mode but no db yet, temporary FileOrderStore")
         return _store_instance
 
 

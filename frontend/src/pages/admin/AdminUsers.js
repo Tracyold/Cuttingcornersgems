@@ -4,13 +4,10 @@ import {
   MousePointer, Eye, Clock, MessageSquare, ChevronDown, 
   ChevronUp, ExternalLink, AlertTriangle, TrendingUp
 } from 'lucide-react';
-import { useAdmin } from '../../context/AdminContext';
-import axios from 'axios';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+import { adminApi } from '../../api/adminApi';
 
 // Expandable User Card
-const UserCard = ({ user, expanded, onToggle, getAuthHeaders }) => {
+const UserCard = ({ user, expanded, onToggle }) => {
   const [details, setDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
@@ -25,8 +22,8 @@ const UserCard = ({ user, expanded, onToggle, getAuthHeaders }) => {
     if (details) return;
     setLoadingDetails(true);
     try {
-      const response = await axios.get(`${API_URL}/admin/users/${user.id}/details`, getAuthHeaders());
-      setDetails(response.data);
+      const data = await adminApi.get(`/admin/users/${user.id}/details`);
+      setDetails(data);
     } catch (error) {
       console.error('Failed to fetch user details:', error);
     } finally {

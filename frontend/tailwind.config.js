@@ -8,9 +8,9 @@ module.exports = {
   theme: {
         extend: {
                 fontFamily: {
-                        serif: ['Playfair Display', 'Georgia', 'serif'],
-                        sans: ['Manrope', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        serif: ['CCVidaloka', 'Georgia', 'serif'],
+                        sans: ['CCArnoPro', 'Georgia', 'serif'],
+                        mono: ['CCAHAMONO', 'monospace'],
                 },
                 borderRadius: {
                         lg: 'var(--radius)',

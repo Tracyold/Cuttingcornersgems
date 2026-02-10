@@ -117,7 +117,6 @@ const ListEditor = ({ items, setItems, fields, title, icon: Icon }) => {
 };
 
 const AdminStudio = () => {
-  const { getAuthHeaders } = useAdmin();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [content, setContent] = useState(null);
@@ -129,8 +128,8 @@ const AdminStudio = () => {
   const fetchContent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/content/studio`, getAuthHeaders());
-      setContent(response.data);
+      const data = await adminApi.get('/admin/content/studio');
+      setContent(data);
     } catch (error) {
       toast.error('Failed to load Studio content');
     } finally {
@@ -141,7 +140,7 @@ const AdminStudio = () => {
   const handleSave = async () => {
     try {
       setSaving(true);
-      await axios.put(`${API_URL}/admin/content/studio`, content, getAuthHeaders());
+      await adminApi.put('/admin/content/studio', content);
       toast.success('Studio content saved!');
       fetchContent(); // Refresh to get updated version
     } catch (error) {

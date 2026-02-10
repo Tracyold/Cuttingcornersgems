@@ -1,0 +1,105 @@
+{
+  "action_photos": [
+    {
+      "alt": "Examining a rough stone",
+      "id": "d290ef5f-593f-42e0-8509-6cb9b874f50a",
+      "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=600",
+      "order": 0
+    },
+    {
+      "alt": "Cutting a sapphire",
+      "id": "5ac64dec-3459-4f57-990c-7d7195a11417",
+      "image_url": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600",
+      "order": 1
+    },
+    {
+      "alt": "Final polish",
+      "id": "61b5c75b-eb7b-4ce3-aac6-83e8e221c9a4",
+      "image_url": "https://images.unsplash.com/photo-1583937443566-6b5e69827c9d?w=600",
+      "order": 2
+    }
+  ],
+  "before_after": {
+    "after": {
+      "alt": "Polished gemstone after cutting",
+      "image_url": "https://images.unsplash.com/photo-1600721391776-b5cd0e0048f9?w=800"
+    },
+    "before": {
+      "alt": "Rough gemstone before cutting",
+      "image_url": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800"
+    },
+    "labels": {
+      "after_label": "After",
+      "before_label": "Before"
+    }
+  },
+  "cta": {
+    "primary_href": "/book",
+    "primary_label": "Book a Consultation",
+    "secondary_href": "/gallery",
+    "secondary_label": "View Gallery",
+    "text": "Ready to transform your gem? Let's discuss your project."
+  },
+  "enabled": true,
+  "equipment": [
+    {
+      "id": "04400bab-07a7-4146-b68f-566aad7ccf0a",
+      "image_alt": "Faceting machine",
+      "image_url": "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400",
+      "name": "Ultra-Tec V5",
+      "order": 0,
+      "purpose": "Precision faceting machine for cutting complex designs with micron-level accuracy"
+    },
+    {
+      "id": "f2221d19-314d-4bb7-a54b-2efbc89bc2c7",
+      "image_alt": "Polariscope",
+      "image_url": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=400",
+      "name": "Polariscope",
+      "order": 1,
+      "purpose": "Optical instrument for identifying gem materials and detecting strain patterns"
+    },
+    {
+      "id": "acb2853f-ba41-4cfa-87dc-995201f58e2e",
+      "image_alt": "Diamond cutting tools",
+      "image_url": "https://images.unsplash.com/photo-1615655406736-b37c4fabf923?w=400",
+      "name": "Diamond Laps",
+      "order": 2,
+      "purpose": "Various grit diamond-charged laps for cutting and polishing different materials"
+    }
+  ],
+  "hero": {
+    "subtitle": "Where rough stones are transformed into brilliant gems through precision craftsmanship",
+    "title": "The Studio"
+  },
+  "story_timeline": [
+    {
+      "body": "Started with a single faceting machine and a passion for precision. What began as a hobby quickly evolved into a dedication to the craft.",
+      "heading": "The Beginning",
+      "id": "5dfe0748-8b91-4ae7-9f87-8ac752ad9d62",
+      "image_alt": "Early workshop setup",
+      "image_url": "https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=600",
+      "order": 0,
+      "year": "2018"
+    },
+    {
+      "body": "Expanded the workshop with professional-grade equipment. Began taking on custom cutting projects for collectors and jewelers worldwide.",
+      "heading": "Growing the Craft",
+      "id": "c14438e7-0cf5-47a2-bdda-51f05bd02135",
+      "image_alt": "Expanded workshop",
+      "image_url": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=600",
+      "order": 1,
+      "year": "2020"
+    },
+    {
+      "body": "A fully equipped studio dedicated to precision gem cutting, restoration, and custom designs. Every stone tells a story, and we help bring that story to light.",
+      "heading": "Today",
+      "id": "c3ccab6f-dccd-4ab5-87cf-4d9715866ba0",
+      "image_alt": "Modern studio",
+      "image_url": "https://images.unsplash.com/photo-1583937443566-6b5e69827c9d?w=600",
+      "order": 2,
+      "year": "2024"
+    }
+  ],
+  "updated_at": "2026-02-10T05:14:53.197283+00:00",
+  "version": 1
+}

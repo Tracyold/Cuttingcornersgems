@@ -492,7 +492,7 @@ const AdminProducts = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this product?')) return;
+    if (!window.confirm('Delete this product? (soft-delete)')) return;
     try {
       await adminApi.delete(`/admin/products/${id}`);
       toast.success('Product deleted');
@@ -500,6 +500,27 @@ const AdminProducts = () => {
     } catch (error) {
       const errorMsg = error.response?.data?.detail || 'Failed to delete product';
       toast.error(errorMsg);
+    }
+  };
+
+  const handleRestore = async (id) => {
+    try {
+      await adminApi.post(`/admin/products/${id}/restore`);
+      toast.success('Product restored');
+      await fetchProducts();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to restore');
+    }
+  };
+
+  const handleHardDelete = async (id) => {
+    if (!window.confirm('PERMANENTLY delete this product? This cannot be undone.')) return;
+    try {
+      await adminApi.delete(`/admin/products/${id}?hard=true`);
+      toast.success('Product permanently deleted');
+      await fetchProducts();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to hard-delete');
     }
   };
 

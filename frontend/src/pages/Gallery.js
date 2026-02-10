@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Lock, Unlock, Sparkles } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
@@ -15,24 +16,143 @@ const CATEGORIES = [
   { id: 'other', name: 'Other' },
 ];
 
+const ERAS = [
+  { id: 'all', name: 'All Eras' },
+  { id: 'PAST', name: 'Past' },
+  { id: 'PRESENT', name: 'Present' },
+  { id: 'FUTURE', name: 'Future' },
+];
+
+// Humble Beginnings Gated Section Component
+const HumbleBeginningsSection = ({ items, entitlements, isAuthenticated, onItemClick }) => {
+  const { unlocked_nyp, total_spend, threshold, spend_to_unlock } = entitlements;
+  const humbleItems = items.filter(item => item.humble_beginnings);
+  
+  if (humbleItems.length === 0) {
+    return null;
+  }
+  
+  const isUnlocked = isAuthenticated && unlocked_nyp;
+  const progressPercent = Math.min((total_spend / threshold) * 100, 100);
+  
+  return (
+    <div className="mb-12" data-testid="humble-beginnings-section">
+      {/* Section Header */}
+      <div className="flex items-center gap-3 mb-6">
+        {isUnlocked ? (
+          <>
+            <Sparkles className="w-5 h-5 text-amber-400" />
+            <h2 className="text-xl font-serif text-amber-400">Humble Beginnings</h2>
+            <Unlock className="w-4 h-4 text-amber-400" />
+          </>
+        ) : (
+          <>
+            <Lock className="w-5 h-5 text-gray-500" />
+            <h2 className="text-xl font-serif text-gray-500">Humble Beginnings</h2>
+          </>
+        )}
+      </div>
+      
+      {/* Unlock Status Message */}
+      {isUnlocked ? (
+        <p className="text-amber-400/80 text-sm mb-6" data-testid="humble-unlocked-msg">
+          You've unlocked Humble Beginnings — a curated look at where it all started.
+        </p>
+      ) : (
+        <div className="bg-white/5 border border-white/10 rounded-lg p-4 mb-6" data-testid="humble-locked-msg">
+          {!isAuthenticated ? (
+            <p className="text-gray-500 text-sm">
+              Sign in and spend ${threshold.toLocaleString()} to unlock Humble Beginnings.
+            </p>
+          ) : (
+            <>
+              <p className="text-gray-500 text-sm mb-3">
+                Humble Beginnings unlocks after ${threshold.toLocaleString()} in purchases.
+              </p>
+              <div className="space-y-2">
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>Your progress</span>
+                  <span>${total_spend.toLocaleString()} / ${threshold.toLocaleString()}</span>
+                </div>
+                <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-gray-600 to-gray-500 transition-all duration-500"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+                <p className="text-xs text-gray-600">
+                  ${spend_to_unlock.toLocaleString()} more to unlock
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      
+      {/* Items Grid */}
+      <div className="gallery-grid">
+        {humbleItems.map((item, index) => (
+          <div
+            key={item.id}
+            onClick={() => isUnlocked && onItemClick(index)}
+            className={`group relative aspect-square overflow-hidden gem-card ${
+              isUnlocked ? 'cursor-pointer' : 'cursor-not-allowed'
+            } opacity-0 animate-fade-in`}
+            style={{ animationDelay: `${index * 50}ms` }}
+            data-testid={`humble-item-${index}`}
+          >
+            <img
+              src={item.image_url}
+              alt={item.title}
+              className={`w-full h-full object-cover transition-all duration-700 ${
+                isUnlocked 
+                  ? 'group-hover:scale-110' 
+                  : 'blur-md grayscale'
+              }`}
+            />
+            {isUnlocked ? (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  <p className="spec-text text-amber-400/80 mb-1">Humble Beginnings</p>
+                  <h3 className="font-serif text-base">{item.title}</h3>
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <Lock className="w-8 h-8 text-gray-500" />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const Gallery = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedEra, setSelectedEra] = useState('all');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [expandedMobileItem, setExpandedMobileItem] = useState(null);
+  const { isAuthenticated, entitlements } = useAuth();
 
   useEffect(() => {
     fetchGallery();
-  }, [selectedCategory]);
+  }, [selectedCategory, selectedEra]);
 
   const fetchGallery = async () => {
     try {
       setLoading(true);
-      const url = selectedCategory === 'all' 
-        ? `${API_URL}/gallery`
-        : `${API_URL}/gallery?category=${selectedCategory}`;
+      let url = `${API_URL}/gallery`;
+      const params = [];
+      if (selectedCategory !== 'all') params.push(`category=${selectedCategory}`);
+      if (selectedEra !== 'all') params.push(`era=${selectedEra}`);
+      if (params.length > 0) url += `?${params.join('&')}`;
+      
       const response = await axios.get(url);
       setItems(response.data);
     } catch (error) {
@@ -42,9 +162,15 @@ const Gallery = () => {
     }
   };
 
+  // Filter non-humble items for regular grid
+  const regularItems = items.filter(item => !item.humble_beginnings);
+  const humbleItems = items.filter(item => item.humble_beginnings);
+
   // Desktop lightbox functions
-  const openLightbox = (index) => {
-    setLightboxIndex(index);
+  const openLightbox = (index, isHumble = false) => {
+    const sourceItems = isHumble ? humbleItems : regularItems;
+    const actualIndex = items.findIndex(item => item.id === sourceItems[index]?.id);
+    setLightboxIndex(actualIndex >= 0 ? actualIndex : index);
     setLightboxOpen(true);
     document.body.style.overflow = 'hidden';
   };
@@ -64,6 +190,11 @@ const Gallery = () => {
 
   // Mobile item toggle
   const toggleMobileItem = (itemId) => {
+    const item = items.find(i => i.id === itemId);
+    // Don't allow expanding locked humble beginnings items
+    if (item?.humble_beginnings && !(isAuthenticated && entitlements.unlocked_nyp)) {
+      return;
+    }
     setExpandedMobileItem(prev => prev === itemId ? null : itemId);
   };
 

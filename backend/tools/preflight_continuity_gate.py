@@ -225,16 +225,19 @@ def check_quarantine_boundary(files: list) -> CheckResult:
         # Skip files within _draft
         if "_draft" in str(filepath):
             continue
+        # Skip this gate script itself
+        if "preflight_continuity_gate.py" in str(filepath):
+            continue
         
         lines = read_file_with_lines(filepath)
         for line_num, line in lines:
-            if "services._draft" in line or "services/_draft" in line:
-                if "from " in line or "import " in line:
-                    result.fail(
-                        f"Import from quarantined _draft module: {line.strip()[:50]}",
-                        str(filepath.relative_to(BACKEND_ROOT)),
-                        line_num
-                    )
+            # Look for actual import statements
+            if re.search(r'^\s*(from|import)\s+.*services[._]_draft', line):
+                result.fail(
+                    f"Import from quarantined _draft module: {line.strip()[:50]}",
+                    str(filepath.relative_to(BACKEND_ROOT)),
+                    line_num
+                )
     
     return result
 

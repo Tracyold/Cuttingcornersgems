@@ -203,7 +203,7 @@ const Home = () => {
               </div>
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center">
                 <p className="spec-text text-gray-500 mb-1">Industry Since</p>
-                <p className="font-serif text-3xl">2013</p>
+                <p className="title-sm text-3xl">2013</p>
                 <p className="text-gray-500 text-sm">Pro Since 2021</p>
               </div>
             </div>

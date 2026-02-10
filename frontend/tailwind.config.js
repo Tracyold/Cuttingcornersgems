@@ -8,9 +8,14 @@ module.exports = {
   theme: {
         extend: {
                 fontFamily: {
-                        serif: ['CCVidaloka', 'Georgia', 'serif'],
-                        sans: ['CCArnoPro', 'Georgia', 'serif'],
-                        mono: ['CCAHAMONO', 'monospace'],
+                        display: ['Oranienbaum', 'Georgia', 'serif'],
+                        subtitle: ['Montserrat Regular Pro', 'system-ui', 'sans-serif'],
+                        body: ['Comfortaa Regular', 'system-ui', 'sans-serif'],
+                        ui: ['Nexa Rust Sans', 'system-ui', 'sans-serif'],
+                        mono: ['AHAMONO-Regular', 'monospace'],
+                        /* Legacy mappings for backwards compatibility */
+                        serif: ['Oranienbaum', 'Georgia', 'serif'],
+                        sans: ['Comfortaa Regular', 'system-ui', 'sans-serif'],
                 },
                 borderRadius: {
                         lg: 'var(--radius)',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingBag, X, ChevronLeft, ChevronRight, Play } from 'lucide-react';
+import { ShoppingBag, X, ChevronLeft, ChevronRight, Play, Lock, Unlock, Sparkles } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
@@ -17,6 +17,101 @@ const CATEGORIES = [
   { id: 'aquamarine', name: 'Aquamarine' },
   { id: 'garnet', name: 'Garnet' },
 ];
+
+// Name Your Price Component - Shows locked/unlocked state
+const NameYourPriceSection = ({ product, entitlements, isAuthenticated, onNamePrice }) => {
+  const { unlocked_nyp, total_spend, threshold, spend_to_unlock } = entitlements;
+  
+  // Only show NYP section if product has NYP enabled
+  if (!product.nyp_enabled) {
+    return null;
+  }
+  
+  const progressPercent = Math.min((total_spend / threshold) * 100, 100);
+  
+  // UNLOCKED STATE
+  if (unlocked_nyp && isAuthenticated) {
+    return (
+      <div 
+        className="p-4 border border-amber-500/30 bg-amber-500/5 rounded-lg space-y-3"
+        data-testid="nyp-unlocked-section"
+      >
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-400" />
+          <span className="text-amber-400 font-semibold uppercase tracking-wider text-sm">
+            Exclusive Pricing Unlocked
+          </span>
+          <Unlock className="w-4 h-4 text-amber-400" />
+        </div>
+        <p className="text-gray-400 text-sm">
+          You've unlocked exclusive pricing. Make an offer on this gem.
+        </p>
+        <button 
+          onClick={onNamePrice}
+          className="w-full py-3 bg-amber-500/20 border border-amber-500/50 text-amber-400 uppercase tracking-widest text-sm hover:bg-amber-500/30 transition-colors"
+          data-testid="nyp-name-price-btn"
+        >
+          Name Your Price
+        </button>
+      </div>
+    );
+  }
+  
+  // LOCKED STATE (not authenticated or hasn't reached threshold)
+  return (
+    <div 
+      className="p-4 border border-white/10 bg-white/5 rounded-lg space-y-3 opacity-75"
+      data-testid="nyp-locked-section"
+    >
+      <div className="flex items-center gap-2">
+        <Lock className="w-5 h-5 text-gray-500" />
+        <span className="text-gray-500 font-semibold uppercase tracking-wider text-sm">
+          Name Your Price
+        </span>
+      </div>
+      
+      {!isAuthenticated ? (
+        <p className="text-gray-500 text-sm">
+          Sign in and spend ${threshold.toLocaleString()} to unlock exclusive pricing.
+        </p>
+      ) : (
+        <>
+          <p className="text-gray-500 text-sm">
+            Exclusive pricing unlocks after ${threshold.toLocaleString()} in purchases.
+          </p>
+          
+          {/* Progress indicator */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>Your progress</span>
+              <span>${total_spend.toLocaleString()} / ${threshold.toLocaleString()}</span>
+            </div>
+            <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-gray-600 to-gray-500 transition-all duration-500"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <p className="text-xs text-gray-600">
+              ${spend_to_unlock.toLocaleString()} more to unlock
+            </p>
+          </div>
+        </>
+      )}
+      
+      <button 
+        disabled
+        className="w-full py-3 bg-gray-800 text-gray-600 uppercase tracking-widest text-sm cursor-not-allowed"
+        data-testid="nyp-locked-btn"
+      >
+        <span className="flex items-center justify-center gap-2">
+          <Lock className="w-4 h-4" />
+          Locked
+        </span>
+      </button>
+    </div>
+  );
+};
 
 // Inquiry Popup Component
 const InquiryPopup = ({ product, onClose }) => {

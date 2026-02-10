@@ -613,28 +613,33 @@ async def admin_update_gallery_item(item_id: str, updates: GalleryItemUpdate, ad
 # ============ ADMIN INQUIRIES ROUTES ============
 
 @api_router.get("/admin/bookings")
-async def admin_get_bookings(admin: dict = Depends(get_admin_user)):
-    bookings = await db.bookings.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_bookings(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    bookings = await db.bookings.find(query, {"_id": 0}).to_list(1000)
     return bookings
 
 @api_router.get("/admin/product-inquiries")
-async def admin_get_product_inquiries(admin: dict = Depends(get_admin_user)):
-    inquiries = await db.product_inquiries.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_product_inquiries(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    inquiries = await db.product_inquiries.find(query, {"_id": 0}).to_list(1000)
     return inquiries
 
 @api_router.get("/admin/sell-inquiries")
-async def admin_get_sell_inquiries(admin: dict = Depends(get_admin_user)):
-    inquiries = await db.sell_inquiries.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_sell_inquiries(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    inquiries = await db.sell_inquiries.find(query, {"_id": 0}).to_list(1000)
     return inquiries
 
 @api_router.get("/admin/name-your-price-inquiries")
-async def admin_get_name_your_price_inquiries(admin: dict = Depends(get_admin_user)):
-    inquiries = await db.name_your_price_inquiries.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_name_your_price_inquiries(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    inquiries = await db.name_your_price_inquiries.find(query, {"_id": 0}).to_list(1000)
     return inquiries
 
 @api_router.get("/admin/orders")
-async def admin_get_orders(admin: dict = Depends(get_admin_user)):
-    orders = await db.orders.find({}, {"_id": 0}).to_list(1000)
+async def admin_get_orders(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
+    query = {} if include_deleted else {"is_deleted": {"$ne": True}}
+    orders = await db.orders.find(query, {"_id": 0}).to_list(1000)
     return orders
 
 @api_router.get("/admin/users")

@@ -90,16 +90,16 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* Text - Left Side */}
             <div className="space-y-6 text-left">
-              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
+              <p className="text-3xl md:text-4xl opacity-0 transition-all duration-700 delay-100" data-scroll-reveal>
                 <span className="text-[#d4af37]">Color</span> is the goal.
               </p>
-              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
+              <p className="text-3xl md:text-4xl opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
                 <span className="text-[#d4af37]">Conscious</span> of the weight.
               </p>
-              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
+              <p className="text-3xl md:text-4xl opacity-0 transition-all duration-700 delay-300" data-scroll-reveal>
                 <span className="text-[#d4af37]">Careful</span> with my approach.
               </p>
-              <p className="text-2xl md:text-3xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
+              <p className="text-3xl md:text-4xl opacity-0 transition-all duration-700 delay-400" data-scroll-reveal>
                 <span className="text-[#d4af37]">Cutting</span> is my craft.
               </p>
             </div>
@@ -155,7 +155,7 @@ const Home = () => {
                 data-scroll-reveal
               >
                 <service.icon className="w-8 h-8 mb-6 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
-                <h3 className="title-sm text-lg mb-3">{service.title}</h3>
+                <h3 className="title-sm text-xl mb-3">{service.title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
               </div>
             ))}
@@ -211,7 +211,7 @@ const Home = () => {
               </div>
             </div>
             <div className="opacity-0 transition-all duration-700 delay-200" data-scroll-reveal>
-              <h2 className="page-title title-xl mb-6">Michael Wall</h2>
+              <h2 className="page-title title-xl mb-6" style={{ fontSize: '4rem', lineHeight: '1.1' }}>Michael Wall</h2>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
                   Based in Tempe, Arizona, I've been part of the gemstone industry since 2013, 

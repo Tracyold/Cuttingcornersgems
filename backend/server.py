@@ -24,7 +24,7 @@ db = client[os.environ['DB_NAME']]
 # Import centralized security config (single source of truth)
 from config.security import (
     JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
-    ADMIN_USERNAME, ADMIN_PASSWORD_HASH, validate_admin_config
+    ADMIN_USERNAME, ADMIN_PASSWORD_HASH
 )
 
 app = FastAPI()

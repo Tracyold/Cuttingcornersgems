@@ -655,6 +655,28 @@ const PendingInvoiceCard = ({ order, index, onRefresh }) => {
       >
         {payLoading ? 'Processing...' : 'Pay Now'}
       </button>
+      <button
+        onClick={async () => {
+          try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/orders/${order.id}/invoice.pdf`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            if (!res.ok) throw new Error('Failed');
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `invoice-${order.id.slice(0, 8)}.pdf`;
+            a.click();
+            URL.revokeObjectURL(url);
+          } catch { toast.error('Failed to download invoice'); }
+        }}
+        className="w-full mt-2 py-2 text-xs text-gray-400 hover:text-white border border-white/10 hover:border-white/30 flex items-center justify-center gap-2 transition-colors"
+        data-testid={`pending-invoice-download-${index}`}
+      >
+        <FileText className="w-3 h-3" /> Download Invoice
+      </button>
     </div>
   );
 };

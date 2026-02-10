@@ -272,6 +272,8 @@ class ProductResponse(BaseModel):
     gia_report_image: Optional[str] = None
     name_your_price: bool = False
     name_your_price_phone: Optional[str] = None
+    is_deleted: Optional[bool] = None
+    deleted_at: Optional[str] = None
 
 # Gallery Models (Extended)
 class GalleryItemCreate(BaseModel):

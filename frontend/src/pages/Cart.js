@@ -53,8 +53,7 @@ const Cart = () => {
         payment_method: 'stripe'
       });
       clearCart();
-      toast.success('Order placed successfully!');
-      navigate('/dashboard');
+      setShowOrderConfirm(true);
     } catch (error) {
       toast.error('Failed to place order');
     } finally {

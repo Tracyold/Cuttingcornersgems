@@ -1,0 +1,80 @@
+{
+  "summary": "Sold Lifecycle Fix - Complete testing of order payment flow. Backend: 9/9 tests passed. Frontend: All key features verified including Cart checkout popup, Pending Invoices with countdown, Pay Now button with error toast.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/payments/checkout-session",
+        "issue": "When Stripe is disabled, the endpoint returns 200 with error_code before checking if order is already paid. This is by design (early return when provider not configured), but means the 'already paid' validation only runs when Stripe IS enabled.",
+        "priority": "LOW"
+      }
+    ]
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend Test 1: POST /api/orders creates order with status=pending",
+    "Backend Test 2: POST /api/orders sets commit_expires_at ~24h ahead",
+    "Backend Test 3: POST /api/orders has paid_at=null for new orders",
+    "Backend Test 4: Product NOT marked sold after order creation (only pending)",
+    "Backend Test 5: POST /api/admin/orders/{order_id}/mark-paid sets paid_at, payment_provider=manual, status=paid AND marks products sold",
+    "Backend Test 6: POST /api/admin/orders/{order_id}/mark-paid rejects already-paid orders with 400",
+    "Backend Test 7: POST /api/payments/checkout-session returns {provider:none, error_code:PAYMENT_PROVIDER_NOT_CONFIGURED} when Stripe disabled",
+    "Backend Test 8: GET /api/orders/{order_id}/invoice.pdf returns 200 with content-type application/pdf",
+    "Backend Test 9: Invoice PDF content starts with %PDF (valid PDF)",
+    "Frontend Test 10: Cart checkout shows order-confirm-popup after checkout",
+    "Frontend Test 11: Popup contains 'Go to My Account' button (data-testid=go-to-account-btn)",
+    "Frontend Test 12: Dashboard Orders tab shows Pending Invoices section (data-testid=pending-invoices)",
+    "Frontend Test 13: Pending invoice has countdown timer showing time left",
+    "Frontend Test 14: Pay Now button visible (data-testid=pay-now-btn-0)",
+    "Frontend Test 15: Click Pay Now shows toast 'Payment not configured yet.' when Stripe disabled"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_sold_lifecycle_v2.py",
+    "/app/test_reports/pytest/pytest_sold_lifecycle_v2.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_sold_lifecycle_v2.py",
+    "/app/frontend/src/pages/Cart.js"
+  ],
+
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (6/6 feature tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "test_user_email": "override_test@example.com",
+    "test_user_password": "Test1234",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "Created TEST_ prefixed products during pytest run for order testing. These are cleaned up after tests.",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "The sold lifecycle fix is complete. Key behaviors: 1) POST /api/orders creates order with status=pending, commit_expires_at=24h, paid_at=null - product NOT marked sold. 2) Admin mark-paid at /api/admin/orders/{id}/mark-paid sets paid_at, payment_provider=manual, status=paid AND marks products is_sold=true. 3) checkout-session returns PAYMENT_PROVIDER_NOT_CONFIGURED when Stripe disabled. 4) invoice.pdf returns valid PDF with PAID/NOT PAID watermark. 5) Frontend Cart shows popup after checkout (fixed bug where popup was hidden by empty cart early return). 6) Dashboard Orders tab shows Pending Invoices with countdown timer and Pay Now button. 7) Pay Now shows error toast when Stripe disabled.",
+
+  "bug_fix_applied": {
+    "file": "/app/frontend/src/pages/Cart.js",
+    "line": 64,
+    "description": "Fixed bug where order confirmation popup was not shown after checkout. The issue was that cart.items.length === 0 early return prevented the popup from rendering. Fixed by adding !showOrderConfirm to the condition.",
+    "before": "if (cart.items.length === 0) {",
+    "after": "if (cart.items.length === 0 && !showOrderConfirm) {"
+  }
+}

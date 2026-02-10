@@ -1851,6 +1851,7 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
         raise HTTPException(status_code=400, detail="Cart is empty")
     
     order_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc)
     order = {
         "id": order_id,
         "user_id": current_user["id"],
@@ -1858,7 +1859,10 @@ async def create_order(order_data: OrderCreate, current_user: dict = Depends(get
         "total": cart["total"],
         "status": "pending",
         "shipping_address": order_data.shipping_address,
-        "created_at": datetime.now(timezone.utc).isoformat()
+        "created_at": now.isoformat(),
+        "commit_expires_at": (now + timedelta(hours=24)).isoformat(),
+        "paid_at": None,
+        "payment_provider": None,
     }
     await db.orders.insert_one(order)
     

@@ -317,7 +317,7 @@ class DbPurchaseTokenStore(PurchaseTokenStoreInterface):
 
     async def create_token(self, user_id: str, product_id: str, amount: float,
                            agreement_id: str, ttl_minutes: int = 1440) -> dict:
-        token = str(uuid.uuid4())
+        token = secrets.token_urlsafe(32)
         from datetime import datetime, timezone, timedelta
         now = datetime.now(timezone.utc)
         expires_at = now + timedelta(minutes=ttl_minutes)

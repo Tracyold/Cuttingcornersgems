@@ -3,7 +3,7 @@ import { Plus, Edit, Trash2, X, Video, Star, ChevronLeft, ChevronRight, Check } 
 import { toast } from 'sonner';
 import { adminApi } from '../../api/adminApi';
 
-const CATEGORIES = ['sapphire', 'tourmaline', 'emerald', 'tanzanite', 'aquamarine', 'garnet', 'other'];
+const CATEGORIES = ['sapphire', 'tourmaline', 'emerald', 'aquamarine', 'garnet', 'other'];
 const ERAS = ['PAST', 'PRESENT', 'FUTURE'];
 
 const emptyForm = {

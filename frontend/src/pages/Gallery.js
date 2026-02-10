@@ -10,7 +10,6 @@ const CATEGORIES = [
   { id: 'sapphire', name: 'Sapphire' },
   { id: 'tourmaline', name: 'Tourmaline' },
   { id: 'emerald', name: 'Emerald' },
-  { id: 'tanzanite', name: 'Tanzanite' },
   { id: 'aquamarine', name: 'Aquamarine' },
   { id: 'garnet', name: 'Garnet' },
   { id: 'other', name: 'Other' },

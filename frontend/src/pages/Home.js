@@ -78,6 +78,11 @@ const Home = () => {
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in delay-500">
           <div className="w-px h-16 bg-gradient-to-b from-white/0 via-white/30 to-white/0" />
         </div>
+
+        {/* Industry badge */}
+        <div className="absolute bottom-6 right-6 z-10 text-right opacity-0 animate-fade-in delay-500">
+          <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Industry for 13 Years</p>
+        </div>
       </section>
 
       {/* Philosophy Section - Color Conscious Careful Cutting */}
@@ -205,8 +210,6 @@ const Home = () => {
                 />
               </div>
               <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-[#0A0A0A] border border-white/10 p-6 hidden md:flex flex-col justify-center">
-                <p className="spec-text text-gray-500 mb-1">Industry Since</p>
-                <p className="title-sm text-3xl">2013</p>
                 <p className="text-gray-500 text-sm">Pro Since 2021</p>
               </div>
             </div>

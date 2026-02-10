@@ -1,11 +1,58 @@
-/* Typography Roles - @font-face declarations for custom OTF fonts */
+/* Typography Roles - @font-face declarations for custom fonts */
+/* AUTHORITATIVE: Single source of truth for all site typography */
 
+/* Display / Section Titles */
+@font-face {
+  font-family: "Oranienbaum";
+  src: url("../assets/fonts/Oranienbaum.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Subtitle / Section Highlight Text */
+@font-face {
+  font-family: "Montserrat Regular Pro";
+  src: url("../assets/fonts/Montserrat-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Body Text */
+@font-face {
+  font-family: "Comfortaa Regular";
+  src: url("../assets/fonts/Comfortaa-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Navigation / Menu / Small Titles / Tag Labels */
+@font-face {
+  font-family: "Nexa Rust Sans";
+  src: url("../assets/fonts/NexaRustSans.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Numeric / Pricing / Measurement / Codes */
+@font-face {
+  font-family: "AHAMONO-Regular";
+  src: url("../assets/fonts/AHAMONO.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Legacy fonts (kept for backwards compatibility, not used) */
 @font-face {
   font-family: "CCVidaloka";
   src: url("../assets/fonts/Vidaloka.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
-  font-display: block;
+  font-display: swap;
 }
 
 @font-face {
@@ -13,13 +60,5 @@
   src: url("../assets/fonts/ArnoPro.otf") format("opentype");
   font-weight: 400;
   font-style: normal;
-  font-display: block;
-}
-
-@font-face {
-  font-family: "CCAHAMONO";
-  src: url("../assets/fonts/AHAMONO.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
+  font-display: swap;
 }

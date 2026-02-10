@@ -173,6 +173,19 @@ const BulkAddModal = ({ onClose, onComplete }) => {
                 </select>
               </div>
               <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Era</label>
+                <select
+                  value={currentForm.era || ''}
+                  onChange={(e) => handleChange('era', e.target.value || null)}
+                  className="input-dark h-10 text-sm"
+                >
+                  <option value="">None</option>
+                  {ERAS.map(era => (
+                    <option key={era} value={era}>{era}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Gem Type</label>
                 <input type="text" value={currentForm.gemstone_type} onChange={(e) => handleChange('gemstone_type', e.target.value)} className="input-dark h-10 text-sm" />
               </div>

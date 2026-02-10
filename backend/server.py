@@ -1662,8 +1662,8 @@ async def get_ttl_status_endpoint(admin: dict = Depends(get_admin_user)):
     Check TTL index status (admin-only, read-only)
     """
     from services.ttl import get_ttl_status
-    status = await get_ttl_status(db)
-    return status
+    ttl_status = await get_ttl_status(db)
+    return ttl_status
 
 @api_router.get("/admin/system/maintenance-status")
 async def get_maintenance_status_endpoint(admin: dict = Depends(get_admin_user)):

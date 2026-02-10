@@ -1878,6 +1878,212 @@ async def get_user_orders(current_user: dict = Depends(get_current_user)):
     orders = await db.orders.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
     return orders
 
+
+# ============ PAYMENT / MARK-SOLD INFRASTRUCTURE ============
+
+async def mark_products_sold(order_items: list):
+    """Internal: mark products as SOLD when payment is confirmed."""
+    sold_at = datetime.now(timezone.utc).isoformat()
+    for item in order_items:
+        product_id = item.get("product_id")
+        if product_id:
+            await db.products.update_one(
+                {"id": product_id},
+                {"$set": {"is_sold": True, "sold_at": sold_at, "in_stock": False}}
+            )
+
+
+@api_router.post("/admin/orders/{order_id}/mark-paid")
+async def admin_mark_order_paid(order_id: str, admin: dict = Depends(get_admin_user)):
+    """Admin manual payment completion — marks order paid and products sold."""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order.get("paid_at"):
+        raise HTTPException(status_code=400, detail="Order already paid")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {"paid_at": now, "payment_provider": "manual", "status": "paid"}}
+    )
+    await mark_products_sold(order.get("items", []))
+    
+    return {
+        "id": order_id,
+        "paid_at": now,
+        "payment_provider": "manual",
+        "status": "paid",
+        "products_marked_sold": len(order.get("items", []))
+    }
+
+
+class CheckoutSessionRequest(BaseModel):
+    order_id: Optional[str] = None
+    purchase_token: Optional[str] = None
+
+
+@api_router.post("/payments/checkout-session")
+async def create_checkout_session(
+    request: CheckoutSessionRequest,
+    user: dict = Depends(get_current_user)
+):
+    """
+    Single payment entrypoint. Supports order_id or purchase_token (negotiation flow).
+    Returns Stripe checkout URL when configured, or PAYMENT_PROVIDER_NOT_CONFIGURED.
+    """
+    from services.payment_provider import get_payment_provider
+    provider = await get_payment_provider(db)
+    
+    if not provider.is_configured():
+        return {"provider": "none", "error_code": "PAYMENT_PROVIDER_NOT_CONFIGURED"}
+    
+    # Determine amount and items from order_id or purchase_token
+    if request.order_id:
+        order = await db.orders.find_one({"id": request.order_id}, {"_id": 0})
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        if order["user_id"] != user["id"]:
+            raise HTTPException(status_code=403, detail="Not your order")
+        if order.get("paid_at"):
+            raise HTTPException(status_code=400, detail="Order already paid")
+        if order.get("status") != "pending":
+            raise HTTPException(status_code=400, detail="Order is not pending")
+        expires = order.get("commit_expires_at")
+        if expires and datetime.fromisoformat(expires) < datetime.now(timezone.utc):
+            raise HTTPException(status_code=400, detail="Order commit window expired")
+        
+        amount = order["total"]
+        line_items = order.get("items", [])
+        order_id = order["id"]
+    
+    elif request.purchase_token:
+        token_store = get_purchase_token_store()
+        result = await token_store.verify_token(user["id"], request.purchase_token)
+        if not result.get("valid"):
+            raise HTTPException(status_code=400, detail=result.get("reason", "Invalid token"))
+        amount = result["amount"]
+        line_items = [{"title": f"Negotiated: {result['product_id'][:8]}", "price": amount, "quantity": 1}]
+        order_id = result.get("agreement_id", "negotiation")
+    else:
+        raise HTTPException(status_code=400, detail="Provide order_id or purchase_token")
+    
+    settings = await db.settings.find_one({"id": "main"}, {"_id": 0}) or {}
+    frontend_url = os.environ.get("FRONTEND_URL", "")
+    success_url = f"{frontend_url}/dashboard?payment=success&order={order_id}"
+    cancel_url = f"{frontend_url}/dashboard?payment=cancelled&order={order_id}"
+    
+    payment_result = await provider.create_checkout_session(
+        order_id=order_id,
+        amount=amount,
+        line_items=line_items,
+        success_url=success_url,
+        cancel_url=cancel_url,
+    )
+    return payment_result.to_dict()
+
+
+@api_router.get("/orders/{order_id}/invoice.pdf")
+async def get_order_invoice(order_id: str, current_user: dict = Depends(get_current_user)):
+    """Generate a PDF invoice for an order."""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    if order["user_id"] != current_user["id"]:
+        raise HTTPException(status_code=403, detail="Not your order")
+    
+    is_paid = bool(order.get("paid_at"))
+    status_text = "PAID" if is_paid else "NOT PAID"
+    
+    # Build PDF using reportlab-style manual PDF
+    import io
+    
+    pdf_lines = []
+    pdf_lines.append(f"INVOICE")
+    pdf_lines.append(f"")
+    pdf_lines.append(f"Order ID: {order['id']}")
+    pdf_lines.append(f"Date: {order.get('created_at', 'N/A')}")
+    pdf_lines.append(f"Status: {status_text}")
+    if order.get("paid_at"):
+        pdf_lines.append(f"Paid At: {order['paid_at']}")
+    pdf_lines.append(f"")
+    pdf_lines.append(f"--- ITEMS ---")
+    for item in order.get("items", []):
+        title = item.get("title", "Item")
+        qty = item.get("quantity", 1)
+        price = item.get("price", 0)
+        pdf_lines.append(f"  {title} x{qty}  ${price * qty:,.2f}")
+    pdf_lines.append(f"")
+    pdf_lines.append(f"TOTAL: ${order.get('total', 0):,.2f}")
+    if order.get("shipping_address"):
+        pdf_lines.append(f"")
+        pdf_lines.append(f"Shipping: {order['shipping_address']}")
+    pdf_lines.append(f"")
+    pdf_lines.append(f"=============================")
+    pdf_lines.append(f"  {status_text}")
+    pdf_lines.append(f"=============================")
+    
+    # Generate minimal valid PDF
+    content = "\n".join(pdf_lines)
+    
+    # Use a simple text-based PDF structure
+    pdf_buffer = io.BytesIO()
+    pdf_buffer.write(b"%PDF-1.4\n")
+    
+    # Stream object (page content)
+    stream_content = ""
+    y = 750
+    for line in pdf_lines:
+        if line == "INVOICE":
+            stream_content += f"BT /F1 20 Tf {50} {y} Td ({line}) Tj ET\n"
+        elif line.startswith("==="):
+            stream_content += f"BT /F1 14 Tf {50} {y} Td ({line}) Tj ET\n"
+        elif line.strip() == status_text and y < 750:
+            stream_content += f"BT /F1 16 Tf {50} {y} Td ({line}) Tj ET\n"
+        else:
+            stream_content += f"BT /F1 10 Tf {50} {y} Td ({line}) Tj ET\n"
+        y -= 20
+    
+    stream_bytes = stream_content.encode()
+    
+    objects = []
+    # 1: Catalog
+    objects.append(b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n")
+    # 2: Pages
+    objects.append(b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n")
+    # 3: Page
+    objects.append(b"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n")
+    # 4: Stream
+    objects.append(f"4 0 obj\n<< /Length {len(stream_bytes)} >>\nstream\n".encode() + stream_bytes + b"\nendstream\nendobj\n")
+    # 5: Font
+    objects.append(b"5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n")
+    
+    offsets = []
+    for obj in objects:
+        offsets.append(pdf_buffer.tell())
+        pdf_buffer.write(obj)
+    
+    xref_pos = pdf_buffer.tell()
+    pdf_buffer.write(b"xref\n")
+    pdf_buffer.write(f"0 {len(objects) + 1}\n".encode())
+    pdf_buffer.write(b"0000000000 65535 f \n")
+    for off in offsets:
+        pdf_buffer.write(f"{off:010d} 00000 n \n".encode())
+    pdf_buffer.write(b"trailer\n")
+    pdf_buffer.write(f"<< /Size {len(objects) + 1} /Root 1 0 R >>\n".encode())
+    pdf_buffer.write(b"startxref\n")
+    pdf_buffer.write(f"{xref_pos}\n".encode())
+    pdf_buffer.write(b"%%EOF\n")
+    
+    pdf_buffer.seek(0)
+    
+    from fastapi.responses import StreamingResponse
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'inline; filename="invoice-{order_id[:8]}.pdf"'}
+    )
+
 # ============ PRODUCT INQUIRY ROUTES ============
 
 @api_router.post("/product-inquiry", response_model=ProductInquiryResponse)

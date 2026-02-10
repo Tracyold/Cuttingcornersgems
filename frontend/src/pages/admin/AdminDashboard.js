@@ -32,13 +32,14 @@ const AdminDashboard = () => {
     try {
       // Fetch stats from dedicated endpoint
       // Recent activity: include_deleted=true to show ALL items
-      const [statsData, bookingsData, productInquiriesData, sellInquiriesData, nypInquiriesData, ordersData] = await Promise.all([
+      const [statsData, bookingsData, productInquiriesData, sellInquiriesData, nypInquiriesData, ordersData, negotiationsData] = await Promise.all([
         adminApi.get('/admin/dashboard/stats'),
         adminApi.get('/admin/bookings?include_deleted=true'),
         adminApi.get('/admin/product-inquiries?include_deleted=true'),
         adminApi.get('/admin/sell-inquiries?include_deleted=true'),
         adminApi.get('/admin/name-your-price-inquiries?include_deleted=true'),
         adminApi.get('/admin/orders?include_deleted=true'),
+        adminApi.get('/admin/negotiations?include_deleted=true').catch(() => []),
       ]);
 
       setStats(statsData);
@@ -50,7 +51,8 @@ const AdminDashboard = () => {
         ...productInquiriesData.map(i => ({ ...i, type: 'inquiry', typeLabel: 'Inquiry', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
         ...sellInquiriesData.map(i => ({ ...i, type: 'sell', typeLabel: 'Sell Inquiry', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
         ...nypInquiriesData.map(i => ({ ...i, type: 'nyp', typeLabel: 'Name Your Price', activity_is_deleted: !!i.is_deleted, activity_is_pending: i.status === 'pending' })),
-      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
+        ...negotiationsData.map(n => ({ ...n, created_at: n.updated_at || n.created_at, type: 'negotiation', typeLabel: 'Negotiation', activity_is_deleted: !!n.is_deleted, activity_is_pending: n.status === 'OPEN' })),
+      ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 12);
 
       setRecentActivity(allActivity);
     } catch (error) {

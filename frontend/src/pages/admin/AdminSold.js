@@ -282,20 +282,47 @@ const InvoiceCard = ({ item, onUpdate }) => {
 const AdminSold = () => {
   const [soldItems, setSoldItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showDeleted, setShowDeleted] = useState(false);
 
   useEffect(() => {
     fetchSoldItems();
-  }, []);
+  }, [showDeleted]);
 
   const fetchSoldItems = async () => {
     try {
-      const data = await adminApi.get('/admin/sold');
+      const qs = showDeleted ? '?include_deleted=true' : '';
+      const data = await adminApi.get(`/admin/sold${qs}`);
       setSoldItems(data);
     } catch (error) {
       console.error('Failed to fetch sold items:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this sold record?')) return;
+    try {
+      await adminApi.post(`/admin/sold/${id}/delete`, {});
+      fetchSoldItems();
+      toast.success('Record deleted');
+    } catch (e) { toast.error('Delete failed'); }
+  };
+
+  const handleRestore = async (id) => {
+    try {
+      await adminApi.post(`/admin/sold/${id}/restore`);
+      fetchSoldItems();
+      toast.success('Record restored');
+    } catch (e) { toast.error('Restore failed'); }
+  };
+
+  const handlePurge = async (id) => {
+    try {
+      await adminApi.delete(`/admin/sold/${id}?hard=true`);
+      fetchSoldItems();
+      toast.success('Record permanently deleted');
+    } catch (e) { toast.error('Purge failed'); }
   };
 
   if (loading) {

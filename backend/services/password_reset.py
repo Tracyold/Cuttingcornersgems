@@ -109,17 +109,17 @@ async def validate_reset_token(db, token: str) -> Optional[Dict[str, Any]]:
     )
     
     if not token_doc:
-        logger.warning(f"Password reset token not found")
+        logger.warning("Password reset token not found")
         return None
     
     if token_doc.get("used", False):
-        logger.warning(f"Password reset token already used")
+        logger.warning("Password reset token already used")
         return None
     
     # Check expiration
     expires_at = datetime.fromisoformat(token_doc["expires_at"])
     if datetime.now(timezone.utc) > expires_at:
-        logger.warning(f"Password reset token expired")
+        logger.warning("Password reset token expired")
         return None
     
     return token_doc

@@ -69,7 +69,7 @@
   ],
   "hero": {
     "subtitle": "Where rough stones are transformed into brilliant gems through precision craftsmanship",
-    "title": "Persistence Test 1770700520"
+    "title": "The Studio"
   },
   "story_timeline": [
     {
@@ -100,6 +100,6 @@
       "year": "2024"
     }
   ],
-  "updated_at": "2026-02-10T05:15:21.067690+00:00",
-  "version": 3
+  "updated_at": "2026-02-10T05:17:26.735718+00:00",
+  "version": 4
 }

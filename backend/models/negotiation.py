@@ -136,12 +136,13 @@ class PurchaseQuoteResponse(BaseModel):
 
 
 class PurchaseCheckoutResponse(BaseModel):
-    """Response for checkout (dev mode)."""
+    """Response for checkout."""
     requires_payment: bool = True
     provider: str = "NOT_CONFIGURED"
     amount: float
     product_id: str
     agreement_id: str
+    checkout_url: Optional[str] = None
 
 
 # ==============================================================================

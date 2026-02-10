@@ -466,6 +466,8 @@ class OrderResponse(BaseModel):
     commit_expires_at: Optional[str] = None
     paid_at: Optional[str] = None
     payment_provider: Optional[str] = None
+    is_deleted: Optional[bool] = None
+    deleted_at: Optional[str] = None
 
 # ============ AUTH HELPERS ============
 

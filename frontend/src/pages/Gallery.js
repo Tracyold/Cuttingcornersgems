@@ -249,7 +249,7 @@ const Gallery = () => {
                   {expandedMobileItem === item.id ? (
                     <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
                       <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
-                      <h3 className="font-serif text-sm mb-2">{item.title}</h3>
+                      <h3 className="title-sm text-sm mb-2">{item.title}</h3>
                       {item.gemstone_type && (
                         <p className="text-xs text-gray-400 mt-1">Gem Type: {item.gemstone_type}</p>
                       )}

@@ -1,6 +1,6 @@
 ==========================================
 API ENDPOINT BASELINE TEST
-Base URL: https://gemstone-ecommerce.preview.emergentagent.com/api
+Base URL: https://studio-cms-verify.preview.emergentagent.com/api
 ==========================================
 
 === PUBLIC ENDPOINTS ===

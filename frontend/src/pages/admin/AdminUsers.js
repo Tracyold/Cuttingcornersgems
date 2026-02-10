@@ -40,6 +40,21 @@ const UserCard = ({ user, expanded, onToggle }) => {
     onToggle();
   };
 
+  const handleResetPassword = async () => {
+    if (!confirm(`Send password reset email to ${user.email}?`)) return;
+    
+    setResettingPassword(true);
+    try {
+      await adminApi.post(`/admin/users/${user.id}/password-reset`);
+      toast.success(`Password reset email sent to ${user.email}`);
+    } catch (error) {
+      const message = error.response?.data?.detail || 'Failed to send password reset email';
+      toast.error(message);
+    } finally {
+      setResettingPassword(false);
+    }
+  };
+
   return (
     <div className="gem-card overflow-hidden" data-testid={`user-card-${user.id}`}>
       {/* Header */}

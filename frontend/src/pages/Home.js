@@ -239,7 +239,7 @@ const Home = () => {
       <section className="section-spacing bg-[#0A0A0A] relative overflow-hidden" data-testid="cta-section">
         <div className="absolute inset-0 hero-glow opacity-50" />
         <div className="container-custom relative z-10 text-center">
-          <h2 className="title-xl mb-6">Ready to Start?</h2>
+          <h2 className="page-title title-xl text-3xl md:text-4xl lg:text-5xl mb-6">Ready to Start?</h2>
           <p className="text-gray-400 text-lg max-w-xl mx-auto mb-10">
             Whether you have a rough stone waiting to be transformed or need expert advice on your next project, 
             I'm here to help.

@@ -1,0 +1,62 @@
+{
+  "summary": "Admin Users 'Show Deleted' toggle feature verified successfully. All 8 backend API tests passed (100%) and all 6 frontend UI tests passed (100%). The toggle correctly filters users based on is_deleted status and calls the API with include_deleted query parameter.",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "Backend: GET /api/admin/users (without include_deleted) returns only non-deleted users (1 user)",
+    "Backend: GET /api/admin/users?include_deleted=true returns ALL users including soft-deleted (29 users total)",
+    "Backend: include_deleted=false behaves same as default (no parameter)",
+    "Backend: User count difference confirms toggle works (1 vs 29 users)",
+    "Backend: Deleted users have proper is_deleted=true field",
+    "Backend: User response includes summary data (total_orders, cart_items)",
+    "Backend: Unauthenticated request returns 403",
+    "Backend: Invalid token returns 401",
+    "Frontend: Admin Users page has 'Show deleted' toggle checkbox (data-testid='show-deleted-toggle')",
+    "Frontend: Toggle is unchecked by default - shows only 1 non-deleted user",
+    "Frontend: No DELETED badges visible when toggle is unchecked",
+    "Frontend: When toggle is checked, shows 29 users with 28 DELETED badges (data-testid='badge-deleted')",
+    "Frontend: User count text updates from '1 registered user(s)' to '29 registered user(s)' when toggle is ON",
+    "Frontend: Toggling back to unchecked hides deleted users (returns to 1 user, 0 DELETED badges)"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_admin_users_show_deleted.py",
+    "/app/test_reports/pytest/pytest_admin_users_show_deleted.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [],
+
+  "updated_files": [
+    "/app/backend/tests/test_admin_users_show_deleted.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (8/8 tests passed)",
+    "frontend": "100% (6/6 UI tests passed)"
+  },
+
+  "test_credentials": {
+    "admin_username": "postvibe",
+    "admin_password": "adm1npa$$word",
+    "preview_url": "https://forgot-password-flow-1.preview.emergentagent.com"
+  },
+
+  "seed_data_creation": "None - used existing test data (1 non-deleted user, 28 deleted test users)",
+
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "Admin Users 'Show Deleted' toggle feature is fully functional. The toggle at /admin/users page (data-testid='show-deleted-toggle') correctly calls GET /api/admin/users with ?include_deleted=true when checked. Deleted users display with red 'DELETED' badge (data-testid='badge-deleted'). Current test data has 1 real user (Tracy) and 28 soft-deleted test users."
+}

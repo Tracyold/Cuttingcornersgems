@@ -1256,38 +1256,51 @@ async def archive_before_delete(item: dict, item_type: str, collection_name: str
     await db[collection_name].insert_one(item)
 
 @api_router.delete("/admin/products/{product_id}")
-async def admin_delete_product(product_id: str, admin: dict = Depends(get_admin_user)):
+async def admin_delete_product(product_id: str, hard: bool = False, admin: dict = Depends(get_admin_user)):
     product = await db.products.find_one({"id": product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Data integrity check: verify product is not referenced elsewhere
-    # Check if product exists in any carts
-    cart_with_product = await db.carts.find_one(
-        {"items.product_id": product_id},
-        {"_id": 0, "user_id": 1}
-    )
-    if cart_with_product:
-        raise HTTPException(
-            status_code=409,
-            detail=f"Cannot delete product. It is currently in {1} user's cart. Remove it from carts first."
+    # Check if product is referenced by any order
+    order_ref = await db.orders.find_one({"items.product_id": product_id}, {"_id": 0, "id": 1})
+    
+    if order_ref:
+        # Referenced by orders — always soft-delete (preserve history)
+        if hard:
+            raise HTTPException(status_code=409, detail="Cannot hard-delete. Product exists in order history.")
+        await db.products.update_one(
+            {"id": product_id},
+            {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
         )
+        return {"message": "Product hidden (historical orders preserved)"}
     
-    # Check if product exists in any orders
-    order_with_product = await db.orders.find_one(
-        {"items.product_id": product_id},
-        {"_id": 0, "id": 1}
+    if hard:
+        # Unreferenced + hard delete requested
+        cart_ref = await db.carts.find_one({"items.product_id": product_id}, {"_id": 0, "user_id": 1})
+        if cart_ref:
+            raise HTTPException(status_code=409, detail="Cannot delete. Product is in a user's cart.")
+        await archive_before_delete(product, "product", "archived_products")
+        await db.products.delete_one({"id": product_id})
+        return {"message": "Product permanently deleted"}
+    
+    # Default: soft-delete
+    await db.products.update_one(
+        {"id": product_id},
+        {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
     )
-    if order_with_product:
-        raise HTTPException(
-            status_code=409,
-            detail="Cannot delete product. It exists in order history. Consider marking as out of stock instead."
-        )
-    
-    await archive_before_delete(product, "product", "archived_products")
-    await db.products.delete_one({"id": product_id})
-    
-    return {"message": "Product deleted and archived"}
+    return {"message": "Product hidden (soft-deleted)"}
+
+
+@api_router.post("/admin/products/{product_id}/restore")
+async def admin_restore_product(product_id: str, admin: dict = Depends(get_admin_user)):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    await db.products.update_one(
+        {"id": product_id},
+        {"$unset": {"is_deleted": "", "deleted_at": ""}}
+    )
+    return {"message": "Product restored"}
 
 @api_router.delete("/admin/gallery/{item_id}")
 async def admin_delete_gallery_item(item_id: str, admin: dict = Depends(get_admin_user)):

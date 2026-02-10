@@ -244,7 +244,6 @@ const UserCard = ({ user, expanded, onToggle }) => {
 };
 
 const AdminUsers = () => {
-  const { getAuthHeaders } = useAdmin();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [expandedUser, setExpandedUser] = useState(null);
@@ -255,8 +254,8 @@ const AdminUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/users`, getAuthHeaders());
-      setUsers(response.data);
+      const data = await adminApi.get('/admin/users');
+      setUsers(data);
     } catch (error) {
       console.error('Failed to fetch users:', error);
     } finally {

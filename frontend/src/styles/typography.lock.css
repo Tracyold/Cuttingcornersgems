@@ -34,11 +34,13 @@ body,
   font-family: var(--font-display-stack) !important;
   font-size: 3rem !important;
   line-height: 1.2 !important;
+  letter-spacing: 0.04em !important;
 }
 
 /* Page title - canonical class for top-of-page headers */
 .page-title {
   font-family: var(--font-display-stack) !important;
+  letter-spacing: 0.04em !important;
 }
 
 /* Small titles: product names, gallery captions, card titles, small headers */
@@ -74,6 +76,7 @@ h2.title-xl,
 .hero-title {
   font-size: 4.5rem !important;
   line-height: 1.1 !important;
+  letter-spacing: 0.04em !important;
 }
 
 /* Subtitle - Section highlights, subheadings */

@@ -240,8 +240,9 @@ const InquiryPopup = ({ product, onClose }) => {
 const ProductDetail = ({ product, onClose, isMobile = false }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showInquiry, setShowInquiry] = useState(false);
+  const [showNypForm, setShowNypForm] = useState(false);
   const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, entitlements } = useAuth();
   const navigate = useNavigate();
 
   const images = product.images || [product.image_url];
@@ -259,6 +260,11 @@ const ProductDetail = ({ product, onClose, isMobile = false }) => {
     } catch (error) {
       toast.error('Failed to add to cart');
     }
+  };
+
+  const handleNamePrice = () => {
+    // Open inquiry form with offer mode enabled
+    setShowNypForm(true);
   };
 
   const nextImage = () => setCurrentImageIndex(prev => (prev + 1) % images.length);

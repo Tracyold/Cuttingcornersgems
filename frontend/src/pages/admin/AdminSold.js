@@ -478,6 +478,9 @@ const AdminSold = () => {
                           <button onClick={() => handleDeleteOrder(order.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-order-${order.id}`}>Delete</button>
                         </>
                       )}
+                      {order.paid_at && (
+                        <button onClick={() => handleHardDeleteOrder(order.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`hard-delete-order-${order.id}`}>Hard Delete (Test)</button>
+                      )}
                     </>
                   )}
                 </div>

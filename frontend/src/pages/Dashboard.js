@@ -403,14 +403,29 @@ const NameYourPriceTab = () => {
           </div>
           
           {selectedNeg.status === 'ACCEPTED' && (
-            <button
-              onClick={() => handleCheckAgreement(selectedNeg.negotiation_id)}
-              className="btn-primary w-full mb-4"
-            >
-              <Check className="w-4 h-4 inline mr-2" />
-              Purchase at Accepted Price
-            </button>
+            <NegotiationCommitPanel negotiationId={selectedNeg.negotiation_id} onRefresh={fetchData} />
           )}
+
+          {/* Accept Offer button: shown when OPEN and latest admin message is COUNTER */}
+          {selectedNeg.status === 'OPEN' && (() => {
+            const msgs = selectedNeg.messages || [];
+            const lastAdminCounter = [...msgs].reverse().find(m => m.sender_role === 'ADMIN' && m.kind === 'COUNTER' && m.amount);
+            if (!lastAdminCounter) return null;
+            // Don't show if user already sent a message after the counter
+            const counterIdx = msgs.indexOf(lastAdminCounter);
+            const userAfter = msgs.slice(counterIdx + 1).some(m => m.sender_role === 'USER' && m.kind === 'OFFER');
+            if (userAfter) return null;
+            return (
+              <button
+                onClick={() => handleAcceptCounter(selectedNeg.negotiation_id)}
+                className="btn-primary w-full mb-4"
+                data-testid="accept-offer-btn"
+              >
+                <Check className="w-4 h-4 inline mr-2" />
+                Accept Offer (${lastAdminCounter.amount?.toLocaleString()})
+              </button>
+            );
+          })()}
         </div>
 
         {/* Messages */}

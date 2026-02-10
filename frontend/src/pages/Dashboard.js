@@ -766,6 +766,11 @@ const Dashboard = () => {
                     </div>
                   )}
 
+                  {/* Name Your Price Tab */}
+                  {activeTab === 'nyp' && (
+                    <NameYourPriceTab />
+                  )}
+
                   {/* Messages Tab */}
                   {activeTab === 'messages' && (
                     <div data-testid="messages-content">

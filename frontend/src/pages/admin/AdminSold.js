@@ -356,6 +356,17 @@ const AdminSold = () => {
     } catch (e) { toast.error('Restore failed'); }
   };
 
+  const handleHardDeleteOrder = async (orderId) => {
+    if (!window.confirm('PERMANENTLY delete this paid order? (Test cleanup only)')) return;
+    try {
+      await adminApi.post(`/admin/orders/${orderId}/hard-delete`);
+      fetchData();
+      toast.success('Order permanently deleted');
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Hard-delete failed');
+    }
+  };
+
   const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
   const formatPrice = (p) => p ? `$${Number(p).toLocaleString()}` : '$0';
 

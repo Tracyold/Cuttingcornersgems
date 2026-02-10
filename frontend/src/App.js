@@ -86,6 +86,7 @@ function App() {
               <Route path="/admin/settings/general" element={<AdminLayout><GeneralSettings /></AdminLayout>} />
               <Route path="/admin/settings/email" element={<AdminLayout><EmailSettings /></AdminLayout>} />
               <Route path="/admin/settings/analytics" element={<AdminLayout><AnalyticsSettings /></AdminLayout>} />
+              <Route path="/admin/studio" element={<AdminLayout><AdminStudio /></AdminLayout>} />
               <Route path="/admin/help" element={<AdminLayout><AdminHelp /></AdminLayout>} />
               <Route path="/admin/help/:topic" element={<AdminLayout><AdminHelp /></AdminLayout>} />
 

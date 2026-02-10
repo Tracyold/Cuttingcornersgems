@@ -9,7 +9,7 @@ import time
 from datetime import datetime
 
 # Use deployed URL for testing
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://design-finalize.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://forgot-password-flow-1.preview.emergentagent.com')
 API_URL = f"{BASE_URL}/api"
 
 # Test credentials

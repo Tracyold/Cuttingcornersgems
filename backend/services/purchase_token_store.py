@@ -336,14 +336,20 @@ _token_store: Optional[PurchaseTokenStoreInterface] = None
 
 
 def get_purchase_token_store() -> PurchaseTokenStoreInterface:
-    """Get the singleton purchase token store instance."""
+    """Get the singleton purchase token store instance based on PERSISTENCE_MODE."""
     global _token_store
     if _token_store is None:
-        use_db = os.environ.get("USE_DB_PURCHASE_TOKEN_STORE", "false").lower() == "true"
-        if use_db:
+        from config.persistence import PERSISTENCE_MODE
+        
+        if PERSISTENCE_MODE == "FILE":
+            _token_store = FilePurchaseTokenStore()
+            logger.info("PurchaseTokenStore: Using FilePurchaseTokenStore (FILE mode)")
+        elif PERSISTENCE_MODE == "DB":
             _token_store = DbPurchaseTokenStore(None)
+            logger.info("PurchaseTokenStore: Using DbPurchaseTokenStore (DB mode)")
         else:
             _token_store = InMemoryPurchaseTokenStore()
+            logger.info("PurchaseTokenStore: Using InMemoryPurchaseTokenStore (MEMORY mode)")
     return _token_store
 
 

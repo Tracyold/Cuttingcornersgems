@@ -102,6 +102,7 @@ function App() {
                     <Route path="/booking" element={<Booking />} />
                     <Route path="/sell" element={<SellInquiry />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/studio" element={<Studio />} />
                   </Routes>
                 </Layout>
               } />

@@ -71,7 +71,7 @@ const NameYourPriceSection = ({ product, entitlements, isAuthenticated, onNamePr
       
       {!isAuthenticated ? (
         <p className="text-gray-500 text-sm">
-          Sign in and spend ${threshold.toLocaleString()} to unlock exclusive pricing.
+          Sign in to see feature availability
         </p>
       ) : (
         <>

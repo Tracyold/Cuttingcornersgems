@@ -1,118 +1,55 @@
-# Cutting Corners - PRD (Product Requirements Document)
+# Cutting Corners - Gemstone Cutting Business Website
 
 ## Original Problem Statement
-Create a modern and compelling website for a gemstone cutter called "Cutting Corners" by Michael Wall in Tempe, Arizona. The site needs to draw people in with effects and subtle color schemes. Professional yet edgy and laid back aesthetic. Features include: gallery, shop, booking page. Users can create accounts for booking, buying, and custom work.
+Full-stack web application for a professional gemstone cutting business based in Tempe, Arizona. Features include gallery, shop, booking, sell inquiry, admin panel, user authentication, and email services.
 
-## User Personas
-1. **Gemstone Collector** - Looking for unique, precision-cut gemstones
-2. **Jewelry Maker** - Needs custom cutting services for their designs
-3. **Casual Buyer** - Interested in purchasing finished gemstones
-4. **Custom Work Client** - Wants consultation for re-cutting or special projects
-5. **Admin/Owner** - Michael Wall managing the business operations
+## Architecture
+- **Frontend**: React + Tailwind CSS + Shadcn UI
+- **Backend**: Python FastAPI + MongoDB
+- **Typography**: Self-hosted custom fonts with role-based CSS system
 
-## Technology Stack
-- Frontend: React 19, Tailwind CSS, Shadcn UI, Sonner (toasts)
-- Backend: FastAPI, MongoDB (Motor async driver)
-- Auth: JWT with bcrypt password hashing
-- Fonts: Playfair Display, Manrope, JetBrains Mono
+## Core Features Implemented
+- Gallery, Shop, Cart, Booking, Sell Inquiry pages
+- Admin panel with full CRUD for products, gallery, inquiries, users
+- JWT Authentication with Forgot/Reset Password flow
+- Provider-agnostic email engine (SendGrid, Resend, Mailgun, Postmark, AWS SES)
+- Admin soft-delete & purchase blocking, user self-delete
+- Stripe payment integration
+- Studio page (admin-toggleable)
+- Continuity gate preflight script
 
-## What's Been Implemented
+## Typography System
+- **Display (Oranienbaum)**: `.title-xl`, `.page-title` — enforced at `text-2xl` globally
+- **Subtitle (Montserrat)**: `.title-sm`, headings by default
+- **Body (Comfortaa)**: Default body text
+- **UI (Nexa Rust Sans)**: Nav, buttons, menus
+- **Mono (AHAMONO)**: Prices, codes, measurements
+- Controlled via `/app/frontend/src/styles/typography.lock.css`
 
-### Core Website (Completed Jan 2026)
-- ✅ Full-stack application (React + FastAPI + MongoDB)
-- ✅ Dark theme with custom fonts
-- ✅ Home page with hero, services, featured gems
-- ✅ Gallery with category sidebar and lightbox
-- ✅ Shop with product grid, mobile/desktop layouts
-- ✅ Booking form with service/stone dropdowns
-- ✅ User registration and login (JWT)
-- ✅ User dashboard
-- ✅ Sell Inquiry page
+## Landing Page Section Order (as of Feb 2026)
+1. Hero Section
+2. Philosophy Section ("My Four C's")
+3. Services Section
+4. About Section (with "View Portfolio" button → Gallery)
+5. CTA Section
 
-### Admin Panel V2 (Completed Feb 2026)
-- ✅ Secure admin login (postvibe/adm1npa$$word)
-- ✅ **Dynamic Dashboard** with live backend stats
-- ✅ **Products Management** with Bulk Add (max 10)
-- ✅ **Gallery Management** with Bulk Add (max 10)
-- ✅ **Inquiries Page** with expandable cards and tabs
-- ✅ **Sold Items Page** with full invoice details
-- ✅ **Settings Pages** with enable/disable toggles
+## What's Been Implemented (Feb 10, 2026)
+- Applied `text-2xl` to all Oranienbaum (`.title-xl`) titles globally via CSS
+- Increased philosophy section text size (`text-xl md:text-2xl`)
+- Decreased "Studio" overlay text to `text-sm`
+- Changed "Book a Consultation" → "View Portfolio" linking to `/gallery`
+- Increased hero subtitle size (`text-lg md:text-xl lg:text-2xl`)
+- Decreased "Cutting Corners" nav logo to `text-sm`
+- Swapped Services ↔ Philosophy section order on landing page
+- Scroll reveal effects preserved with IntersectionObserver
 
-### Admin Panel V3 - Data & Archives (Completed Feb 2026)
-- ✅ **Data & Archives Page** with 6 tabs:
-  - Sold (30+ days old)
-  - Inquiries (30+ days old)
-  - Bookings (90+ days old)
-  - Deleted Gallery
-  - Deleted Products
-  - All Deleted Items
-- ✅ **Auto-Archive System**:
-  - Manual archive button for bookings
-  - Auto-archive runs on schedule (30/90 day thresholds)
-  - Archives compressed to .txt files with standard format
-  - Batch download as .md files
-- ✅ **Pre-Deletion Data Extraction**:
-  - All deleted items archived before removal
-  - Captures: date created, date deleted, views, clicks, meta links, cache
-- ✅ **Analytics & Data Collection Settings**:
-  - Enable/disable toggle (default OFF)
-  - Provider selection (Google Analytics, Plausible, Fathom, Mixpanel, Amplitude, Heap, PostHog, Custom)
-  - Test connection button (MOCKED)
-  - Data collection type toggles (browser, device, clicks, views, duration, interaction rate)
-- ✅ **Test Data Seed** for admin testing:
-  - Creates test product inquiry
-  - Creates test sell inquiry
-  - Creates test Name Your Price inquiry
-  - Creates test sold item with full invoice details
+## Backlog
+- No pending tasks. Awaiting user instructions.
 
-## Prioritized Backlog
-
-### P0 (Critical - Completed)
-- [x] Core website functionality
-- [x] Admin panel with full management
-- [x] Data & Archives system
-- [x] Analytics settings placeholder
-
-### P1 (High Priority - Ready for Keys)
-- [ ] Stripe payment integration (settings UI ready)
-- [ ] Email notifications (settings UI ready)
-- [ ] SMS/2FA verification (settings UI ready)
-- [ ] Cloud storage for images (settings UI ready)
-- [ ] CAPTCHA protection (settings UI ready)
-- [ ] Analytics service connection (settings UI ready)
-
-### P2 (Nice to Have)
-- [ ] Advanced search/filtering
-- [ ] Customer reviews
-- [ ] Blog section
-- [ ] Order analytics/reporting
-
-## API Endpoints
-
-### Public
-- `/api/auth/register`, `/api/auth/login` - User auth
-- `/api/gallery/items`, `/api/shop/products` - Content
-- `/api/booking`, `/api/sell-inquiry` - Inquiries
-
-### Admin (Protected)
-- `/api/admin/login` - Admin auth
-- `/api/admin/dashboard/stats` - Live stats
-- `/api/admin/products`, `/api/admin/gallery` - CRUD
-- `/api/admin/bookings/{id}/archive` - Manual archive
-- `/api/admin/sold`, `/api/admin/sold/{id}` - Sold items
-- `/api/admin/data/archived/*` - Archive data
-- `/api/admin/data/archive/run` - Run auto-archive
-- `/api/admin/data/download/*` - Download archives
-- `/api/admin/data/purge/*` - Purge archives
-- `/api/admin/settings/test-analytics` - Test analytics
-- `/api/admin/seed-test-data` - Create test data
-
-## Test Credentials
-- **Admin**: postvibe / adm1npa$$word
-- **Preview URL**: https://design-finalize.preview.emergentagent.com
-
-## Notes
-- All 3rd party integrations are **CONFIGURABLE PLACEHOLDERS**
-- Analytics test connection is **MOCKED**
-- Archives are empty until items reach age threshold (30/90 days)
-- Delete operations now archive data before removal
+## Key Files
+- `/app/frontend/src/pages/Home.js` — Landing page
+- `/app/frontend/src/components/Layout.js` — Navigation & footer
+- `/app/frontend/src/styles/typography.lock.css` — Font role definitions
+- `/app/frontend/src/styles/typography.roles.css` — @font-face declarations
+- `/app/backend/server.py` — All API endpoints
+- `/app/tools/preflight_continuity_gate.py` — Continuity checks

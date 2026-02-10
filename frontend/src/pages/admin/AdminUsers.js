@@ -250,6 +250,19 @@ const UserCard = ({ user, expanded, onToggle }) => {
                   <p className="text-sm text-gray-500">No messages</p>
                 )}
               </div>
+
+              {/* Actions */}
+              <div className="pt-4 border-t border-white/10 flex gap-3">
+                <button
+                  onClick={handleResetPassword}
+                  disabled={resettingPassword}
+                  className="btn-secondary text-sm flex items-center gap-2"
+                  data-testid="reset-password-btn"
+                >
+                  <Key className="w-4 h-4" />
+                  {resettingPassword ? 'Sending...' : 'Send Password Reset'}
+                </button>
+              </div>
             </div>
           ) : (
             <p className="text-gray-500 text-center py-4">Failed to load details</p>

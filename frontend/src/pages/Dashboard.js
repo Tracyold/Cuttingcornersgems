@@ -1,15 +1,99 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Package, Calendar, User, LogOut, MessageSquare, Send, DollarSign, Lock, Unlock, Phone, Bell, ChevronDown, ChevronUp, Check, Clock, AlertCircle } from 'lucide-react';
+import { Package, Calendar, User, LogOut, MessageSquare, Send, DollarSign, Lock, Unlock, Phone, Bell, ChevronDown, ChevronUp, Check, Clock, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
+// Forgot Password Form Component
+const ForgotPasswordForm = ({ onBack }) => {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post(`${API_URL}/auth/forgot-password`, { email });
+      setSent(true);
+      toast.success('Check your email for reset instructions');
+    } catch (error) {
+      // Always show success message to prevent email enumeration
+      setSent(true);
+      toast.success('Check your email for reset instructions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (sent) {
+    return (
+      <div className="gem-card p-8 max-w-md mx-auto text-center" data-testid="forgot-password-sent">
+        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/10 flex items-center justify-center">
+          <Check className="w-8 h-8 text-green-400" />
+        </div>
+        <h2 className="font-serif text-2xl mb-4">Check Your Email</h2>
+        <p className="text-gray-400 mb-6">
+          If an account exists with that email, you'll receive password reset instructions shortly.
+        </p>
+        <button 
+          onClick={onBack} 
+          className="text-sm text-gray-500 hover:text-white flex items-center gap-2 mx-auto"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back to Sign In
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="gem-card p-8 max-w-md mx-auto" data-testid="forgot-password-form">
+      <h2 className="font-serif text-2xl mb-2 text-center">Reset Password</h2>
+      <p className="text-gray-500 text-sm text-center mb-6">
+        Enter your email address and we'll send you a link to reset your password.
+      </p>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Email *</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="input-dark h-10 text-sm"
+            placeholder="your@email.com"
+            data-testid="forgot-email"
+          />
+        </div>
+        
+        <button 
+          type="submit" 
+          disabled={loading} 
+          className="btn-primary w-full"
+          data-testid="forgot-submit"
+        >
+          {loading ? 'Sending...' : 'Send Reset Link'}
+        </button>
+      </form>
+      
+      <button 
+        onClick={onBack} 
+        className="text-sm text-gray-500 hover:text-white flex items-center gap-2 mx-auto mt-6"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back to Sign In
+      </button>
+    </div>
+  );
+};
+
 // Auth Component for non-logged in users
 const AuthSection = ({ onSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -35,6 +119,10 @@ const AuthSection = ({ onSuccess }) => {
       setLoading(false);
     }
   };
+
+  if (showForgotPassword) {
+    return <ForgotPasswordForm onBack={() => setShowForgotPassword(false)} />;
+  }
 
   return (
     <div className="gem-card p-8 max-w-md mx-auto" data-testid="auth-section">
@@ -81,6 +169,19 @@ const AuthSection = ({ onSuccess }) => {
             data-testid="auth-password"
           />
         </div>
+
+        {isLogin && (
+          <div className="text-right">
+            <button 
+              type="button"
+              onClick={() => setShowForgotPassword(true)} 
+              className="text-xs text-gray-500 hover:text-white"
+              data-testid="forgot-password-link"
+            >
+              Forgot password?
+            </button>
+          </div>
+        )}
         
         <button 
           type="submit" 

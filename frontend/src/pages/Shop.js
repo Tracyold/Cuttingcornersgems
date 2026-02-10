@@ -114,13 +114,13 @@ const NameYourPriceSection = ({ product, entitlements, isAuthenticated, onNamePr
 };
 
 // Inquiry Popup Component
-const InquiryPopup = ({ product, onClose }) => {
+const InquiryPopup = ({ product, onClose, isOffer = false }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    is_offer: false,
+    is_offer: isOffer,
     offer_price: ''
   });
 

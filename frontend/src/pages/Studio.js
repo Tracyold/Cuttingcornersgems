@@ -36,7 +36,7 @@ const BeforeAfterSlider = ({ before, after, labels }) => {
   return (
     <div 
       ref={containerRef}
-      className="relative w-full aspect-[4/3] max-w-2xl mx-auto overflow-hidden cursor-ew-resize select-none"
+      className="relative w-full aspect-[4/3] max-w-5xl mx-auto overflow-hidden cursor-ew-resize select-none"
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
       onTouchMove={handleTouchMove}

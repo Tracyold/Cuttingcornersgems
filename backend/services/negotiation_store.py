@@ -851,12 +851,12 @@ def get_negotiation_store(db=None) -> NegotiationStoreInterface:
             _negotiation_store = FileNegotiationStore()
             logger.info("NegotiationStore: Using FileNegotiationStore (FILE mode)")
         elif PERSISTENCE_MODE == "DB":
-            if db is None:
-                _negotiation_store = FileNegotiationStore()
-                logger.warning("NegotiationStore: DB mode but no db, falling back to FileNegotiationStore")
-            else:
+            if db is not None:
                 _negotiation_store = DbNegotiationStore(db)
                 logger.info("NegotiationStore: Using DbNegotiationStore (DB mode)")
+            else:
+                _negotiation_store = FileNegotiationStore()
+                logger.warning("NegotiationStore: DB mode but no db yet, temporary FileNegotiationStore")
         else:
             _negotiation_store = InMemoryNegotiationStore()
             logger.info("NegotiationStore: Using InMemoryNegotiationStore (MEMORY mode)")

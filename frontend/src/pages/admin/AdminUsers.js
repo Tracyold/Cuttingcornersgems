@@ -16,6 +16,8 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
   const [togglingBlock, setTogglingBlock] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [overrideLoading, setOverrideLoading] = useState(false);
+  const [overrideNote, setOverrideNote] = useState(user.nyp_override_note || '');
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';

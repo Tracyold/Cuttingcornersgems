@@ -264,10 +264,11 @@ def get_order_store(db=None, force_memory: bool = False) -> OrderStoreInterface:
     """
     Factory function to get appropriate order store based on environment.
     
-    Selection logic:
+    Selection logic (updated for PERSISTENCE_MODE):
     - force_memory=True: Always return InMemoryOrderStore
-    - ENV != "production" OR db is None: InMemoryOrderStore
-    - Otherwise: DbOrderStore
+    - PERSISTENCE_MODE=FILE: FileOrderStore
+    - PERSISTENCE_MODE=MEMORY: InMemoryOrderStore
+    - PERSISTENCE_MODE=DB: DbOrderStore
     
     Args:
         db: Optional MongoDB database instance
@@ -278,24 +279,35 @@ def get_order_store(db=None, force_memory: bool = False) -> OrderStoreInterface:
     """
     global _store_instance
     
-    env = os.environ.get("ENV", "development").lower()
-    is_production = env == "production"
+    from config.persistence import PERSISTENCE_MODE
     
     if force_memory:
         logger.info("OrderStore: Using InMemoryOrderStore (forced)")
         return InMemoryOrderStore()
     
-    if not is_production or db is None:
-        if _store_instance is None or not isinstance(_store_instance, InMemoryOrderStore):
-            _store_instance = InMemoryOrderStore()
-            logger.info(f"OrderStore: Using InMemoryOrderStore (env={env}, db_available={db is not None})")
+    if PERSISTENCE_MODE == "FILE":
+        if _store_instance is None or not isinstance(_store_instance, FileOrderStore):
+            _store_instance = FileOrderStore()
+            logger.info("OrderStore: Using FileOrderStore (FILE mode)")
         return _store_instance
     
-    # Production with DB available
-    if _store_instance is None or not isinstance(_store_instance, DbOrderStore):
-        _store_instance = DbOrderStore(db)
-        logger.info("OrderStore: Using DbOrderStore (production)")
-    return _store_instance
+    elif PERSISTENCE_MODE == "MEMORY":
+        if _store_instance is None or not isinstance(_store_instance, InMemoryOrderStore):
+            _store_instance = InMemoryOrderStore()
+            logger.info("OrderStore: Using InMemoryOrderStore (MEMORY mode)")
+        return _store_instance
+    
+    else:  # DB mode
+        if db is None:
+            if _store_instance is None or not isinstance(_store_instance, FileOrderStore):
+                _store_instance = FileOrderStore()
+                logger.warning("OrderStore: DB mode but no db, falling back to FileOrderStore")
+            return _store_instance
+        
+        if _store_instance is None or not isinstance(_store_instance, DbOrderStore):
+            _store_instance = DbOrderStore(db)
+            logger.info("OrderStore: Using DbOrderStore (DB mode)")
+        return _store_instance
 
 
 def reset_store_instance() -> None:

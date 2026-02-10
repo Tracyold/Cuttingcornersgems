@@ -3,10 +3,8 @@ import {
   Wrench, Lock, Unlock, AlertTriangle, Download, 
   CheckCircle, XCircle, Clock, Info
 } from 'lucide-react';
-import axios from 'axios';
 import { toast } from 'sonner';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+import { adminApi } from '../../api/adminApi';
 
 // Tool configuration
 const SYSTEM_TOOLS = [

@@ -1377,6 +1377,22 @@ async def admin_restore_order(order_id: str, admin: dict = Depends(get_admin_use
     return {"message": "Order restored"}
 
 
+@api_router.post("/admin/orders/{order_id}/hard-delete")
+async def admin_hard_delete_order(order_id: str, admin: dict = Depends(get_admin_user)):
+    """Hard-delete a paid order — TEST CLEANUP ONLY, blocked in production."""
+    env = os.environ.get("ENV", "development").lower()
+    if env == "production":
+        raise HTTPException(status_code=403, detail="Hard-delete of paid orders is disabled in production")
+    
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    logging.info(f"TEST_CLEANUP: Hard-deleting order {order_id} (paid_at={order.get('paid_at')})")
+    await db.orders.delete_one({"id": order_id})
+    return {"message": "Order hard-deleted (test cleanup)", "order_id": order_id}
+
+
 @api_router.post("/admin/{domain}/{item_id}/delete")
 async def admin_soft_delete_record(
     domain: str, item_id: str,

@@ -98,6 +98,23 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
     }
   };
 
+  const handleToggleOverride = async () => {
+    const newState = !user.nyp_override_enabled;
+    setOverrideLoading(true);
+    try {
+      await adminApi.patch(`/admin/users/${user.id}/entitlements`, {
+        override_enabled: newState,
+        note: overrideNote || null
+      });
+      toast.success(newState ? 'HB/NYP override enabled' : 'HB/NYP override disabled');
+      if (onUserUpdate) onUserUpdate();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to update override');
+    } finally {
+      setOverrideLoading(false);
+    }
+  };
+
   const isDeleted = user.is_deleted;
   const isBlocked = user.purchase_blocked;
 

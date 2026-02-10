@@ -57,6 +57,12 @@ Full-stack web application for a professional gemstone cutting business based in
 4. The Cutter Section (with "View Portfolio" -> Gallery)
 5. CTA Section
 
+## Dashboard Count Parity + Recent Activity (Feb 2026 - Completed)
+- Dashboard stat counts now use `is_deleted: {$ne: true}` filter, matching list page defaults
+- Recent Activity includes ALL items (deleted + pending), fetched with `?include_deleted=true`
+- DELETED badge (red) + PENDING badge (yellow) shown per activity item; both can appear together
+- Deleted activity items visually dimmed (opacity-60)
+
 ## Sold Product Lifecycle (Feb 2026 - Completed)
 - `is_sold: bool` and `sold_at: str` fields added to Product model
 - **AUTO:** `POST /api/orders` auto-marks purchased products as SOLD (`is_sold=true`, `sold_at`, `in_stock=false`)

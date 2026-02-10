@@ -94,6 +94,7 @@ function App() {
               <Route path="/admin/help/:topic" element={<AdminLayout><AdminHelp /></AdminLayout>} />
 
               {/* Public Routes */}
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/*" element={
                 <Layout>
                   <Routes>

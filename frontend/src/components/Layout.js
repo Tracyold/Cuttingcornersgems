@@ -63,7 +63,7 @@ const Layout = ({ children }) => {
         <div className="container-custom">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="title-sm text-sm tracking-tight" data-testid="logo-link">
+            <Link to="/" className="title-xl text-lg tracking-tight" data-testid="logo-link">
               Cutting Corners
             </Link>
 

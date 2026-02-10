@@ -1,6 +1,6 @@
 ==========================================
 API ENDPOINT BASELINE TEST
-Base URL: https://studio-cms-verify.preview.emergentagent.com/api
+Base URL: https://password-reset-ready.preview.emergentagent.com/api
 ==========================================
 
 === PUBLIC ENDPOINTS ===

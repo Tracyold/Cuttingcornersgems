@@ -44,7 +44,7 @@
 ### **Quick Test Path**:
 
 1. **Login to Admin**
-   - Go to: https://studio-cms-verify.preview.emergentagent.com/admin
+   - Go to: https://password-reset-ready.preview.emergentagent.com/admin
    - Username: `postvibe`
    - Password: `adm1npa$$word`
 
@@ -54,7 +54,7 @@
    - Click "Create"
 
 3. **View on Mobile**
-   - Go to: https://studio-cms-verify.preview.emergentagent.com/gallery
+   - Go to: https://password-reset-ready.preview.emergentagent.com/gallery
    - Resize browser to mobile width (< 768px)
    - Click the item you created
    - **Verify**: You see Gem Type, Color, and Weight displayed
@@ -65,7 +65,7 @@
    - Click "Create"
 
 5. **View on Mobile**
-   - Go to: https://studio-cms-verify.preview.emergentagent.com/shop
+   - Go to: https://password-reset-ready.preview.emergentagent.com/shop
    - Resize to mobile width
    - Click the product
    - **Verify**: Navigates to dedicated page showing all fields
@@ -93,10 +93,10 @@
 
 ## 🔗 URLs
 
-- **App**: https://studio-cms-verify.preview.emergentagent.com
-- **Admin**: https://studio-cms-verify.preview.emergentagent.com/admin
-- **Gallery**: https://studio-cms-verify.preview.emergentagent.com/gallery
-- **Shop**: https://studio-cms-verify.preview.emergentagent.com/shop
+- **App**: https://password-reset-ready.preview.emergentagent.com
+- **Admin**: https://password-reset-ready.preview.emergentagent.com/admin
+- **Gallery**: https://password-reset-ready.preview.emergentagent.com/gallery
+- **Shop**: https://password-reset-ready.preview.emergentagent.com/shop
 
 ---
 

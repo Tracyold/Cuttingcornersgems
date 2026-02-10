@@ -406,7 +406,7 @@ const AdminStudio = () => {
         <ListEditor
           items={content.action_photos || []}
           setItems={(items) => setContent(prev => ({ ...prev, action_photos: items }))}
-          title="Action Photos"
+          title="The Process"
           icon={Camera}
           fields={[
             { key: 'image_url', label: 'Image URL', placeholder: 'https://...' },

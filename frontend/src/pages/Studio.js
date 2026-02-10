@@ -330,7 +330,7 @@ const Studio = () => {
           <div className="container-custom">
             <div className="flex items-center gap-3 mb-12">
               <Camera className="w-5 h-5 text-amber-400" />
-              <h2 className="text-2xl title-xl text-white">In Action</h2>
+              <h2 className="text-2xl title-xl text-white">The Process</h2>
             </div>
             <ActionPhotosGallery photos={sortedPhotos} />
           </div>

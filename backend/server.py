@@ -582,6 +582,11 @@ async def admin_create_product(product: ProductCreate, admin: dict = Depends(get
 @api_router.patch("/admin/products/{product_id}", response_model=ProductResponse)
 async def admin_update_product(product_id: str, updates: ProductUpdate, admin: dict = Depends(get_admin_user)):
     update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    # Auto-set sold_at timestamp when marking as sold
+    if update_data.get("is_sold") is True and "sold_at" not in update_data:
+        update_data["sold_at"] = datetime.now(timezone.utc).isoformat()
+    elif update_data.get("is_sold") is False:
+        update_data["sold_at"] = None
     if update_data:
         await db.products.update_one({"id": product_id}, {"$set": update_data})
     product = await db.products.find_one({"id": product_id}, {"_id": 0})

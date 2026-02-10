@@ -2790,7 +2790,8 @@ async def admin_close_negotiation(
 # ============ ADMIN USER ENTITLEMENTS OVERRIDE ============
 
 class EntitlementOverrideRequest(BaseModel):
-    nyp_override_enabled: bool
+    override_enabled: bool
+    note: Optional[str] = None
 
 
 @api_router.patch("/admin/users/{user_id}/entitlements")
@@ -2800,23 +2801,30 @@ async def admin_set_user_entitlement_override(
     admin: dict = Depends(get_admin_user)
 ):
     """
-    Admin toggle for NYP override.
-    When enabled, user is eligible for NYP regardless of spend.
+    Admin toggle for NYP / HB override.
+    When enabled, user is eligible for NYP and Humble Beginnings regardless of spend.
     """
-    # Check user exists
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    await db.users.update_one(
-        {"id": user_id},
-        {"$set": {"nyp_override_enabled": request.nyp_override_enabled}}
-    )
+    update_fields = {
+        "nyp_override_enabled": request.override_enabled,
+        "nyp_override_set_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if request.note is not None:
+        update_fields["nyp_override_note"] = request.note
+    elif not request.override_enabled:
+        update_fields["nyp_override_note"] = None
+    
+    await db.users.update_one({"id": user_id}, {"$set": update_fields})
     
     return {
-        "message": "User entitlement override updated",
-        "user_id": user_id,
-        "nyp_override_enabled": request.nyp_override_enabled
+        "id": user_id,
+        "email": user.get("email"),
+        "override_enabled": request.override_enabled,
+        "nyp_override_note": update_fields.get("nyp_override_note", user.get("nyp_override_note")),
+        "nyp_override_set_at": update_fields["nyp_override_set_at"],
     }
 
 

@@ -10,7 +10,8 @@ const DEFAULT_ENTITLEMENTS = {
   total_spend: 0,
   unlocked_nyp: false,
   threshold: 1000,
-  spend_to_unlock: 1000
+  spend_to_unlock: 1000,
+  override_enabled: false
 };
 
 export const AuthProvider = ({ children }) => {

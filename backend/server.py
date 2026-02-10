@@ -2350,6 +2350,79 @@ async def admin_set_user_entitlement_override(
     }
 
 
+# ============ ADMIN DEV DATA EXPORT/IMPORT ============
+
+@api_router.get("/admin/dev/export")
+async def admin_export_data(admin: dict = Depends(get_admin_user)):
+    """
+    Export all persisted design-stage data as JSON.
+    
+    Returns list of available data files with their contents.
+    Purpose: Download design data for deployment or backup.
+    """
+    from config.persistence import PERSISTENCE_DIR
+    from services.persistence.json_store import JsonStore
+    import os
+    
+    store = JsonStore(PERSISTENCE_DIR)
+    files = store.list_files("*.json")
+    
+    export_data = {
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "persistence_dir": PERSISTENCE_DIR,
+        "files": {}
+    }
+    
+    for filename in files:
+        data = store.load(filename, default=None)
+        if data is not None:
+            export_data["files"][filename] = data
+    
+    return export_data
+
+
+@api_router.get("/admin/dev/export/{filename}")
+async def admin_export_single_file(
+    filename: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Export a single persisted data file.
+    
+    Args:
+        filename: JSON filename (e.g., content_studio.json)
+    """
+    from config.persistence import PERSISTENCE_DIR
+    from services.persistence.json_store import JsonStore
+    
+    # Security: only allow .json files
+    if not filename.endswith(".json"):
+        raise HTTPException(status_code=400, detail="Only JSON files allowed")
+    
+    store = JsonStore(PERSISTENCE_DIR)
+    
+    if not store.exists(filename):
+        raise HTTPException(status_code=404, detail=f"File not found: {filename}")
+    
+    data = store.load(filename, default=None)
+    return {
+        "filename": filename,
+        "data": data
+    }
+
+
+@api_router.get("/admin/dev/persistence-status")
+async def admin_persistence_status(admin: dict = Depends(get_admin_user)):
+    """
+    Get current persistence configuration status.
+    
+    Returns:
+        Current mode, directory, and store implementations in use.
+    """
+    from services.store_factory import get_persistence_status
+    return get_persistence_status()
+
+
 
 # These endpoints are automatically disabled in production
 # dev_router is defined at top of file with api_router

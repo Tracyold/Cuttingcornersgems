@@ -612,39 +612,226 @@ class FileNegotiationStore(NegotiationStoreInterface):
 # ==============================================================================
 
 class DbNegotiationStore(NegotiationStoreInterface):
-    """Database-backed store (STUB for future implementation)."""
+    """MongoDB-backed negotiation store for production."""
 
     def __init__(self, db):
         self._db = db
-        logger.info("DbNegotiationStore initialized (STUB)")
+        self._threads_col = "negotiation_threads"
+        self._agreements_col = "negotiation_agreements"
+        logger.info("DbNegotiationStore initialized")
 
-    async def create_thread(self, *args, **kwargs) -> NegotiationThread:
-        # TODO: Implement MongoDB storage
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    def _thread_from_doc(self, doc: dict) -> NegotiationThread:
+        messages = []
+        for md in doc.get("messages", []):
+            ca = md["created_at"]
+            messages.append(NegotiationMessage(
+                message_id=md["message_id"],
+                sender_role=md["sender_role"],
+                kind=md["kind"],
+                amount=md.get("amount"),
+                text=md.get("text"),
+                created_at=datetime.fromisoformat(ca) if isinstance(ca, str) else ca
+            ))
+        def _dt(val):
+            if isinstance(val, str):
+                return datetime.fromisoformat(val)
+            return val
+        return NegotiationThread(
+            negotiation_id=doc["negotiation_id"],
+            user_id=doc["user_id"],
+            user_email=doc["user_email"],
+            user_name=doc["user_name"],
+            product_id=doc["product_id"],
+            product_title=doc["product_title"],
+            product_price=doc["product_price"],
+            status=doc["status"],
+            created_at=_dt(doc["created_at"]),
+            updated_at=_dt(doc["updated_at"]),
+            last_activity_at=_dt(doc["last_activity_at"]),
+            messages=messages,
+            accepted_agreement_id=doc.get("accepted_agreement_id")
+        )
+
+    def _thread_to_doc(self, t: NegotiationThread) -> dict:
+        return {
+            "negotiation_id": t.negotiation_id,
+            "user_id": t.user_id,
+            "user_email": t.user_email,
+            "user_name": t.user_name,
+            "product_id": t.product_id,
+            "product_title": t.product_title,
+            "product_price": t.product_price,
+            "status": t.status,
+            "created_at": t.created_at.isoformat(),
+            "updated_at": t.updated_at.isoformat(),
+            "last_activity_at": t.last_activity_at.isoformat(),
+            "messages": [
+                {
+                    "message_id": m.message_id,
+                    "sender_role": m.sender_role,
+                    "kind": m.kind,
+                    "amount": m.amount,
+                    "text": m.text,
+                    "created_at": m.created_at.isoformat()
+                } for m in t.messages
+            ],
+            "accepted_agreement_id": t.accepted_agreement_id
+        }
+
+    def _agreement_from_doc(self, doc: dict) -> NegotiationAgreement:
+        def _dt(val):
+            if val is None:
+                return None
+            return datetime.fromisoformat(val) if isinstance(val, str) else val
+        return NegotiationAgreement(
+            agreement_id=doc["agreement_id"],
+            negotiation_id=doc["negotiation_id"],
+            user_id=doc["user_id"],
+            product_id=doc["product_id"],
+            product_title=doc["product_title"],
+            accepted_amount=doc["accepted_amount"],
+            status=doc["status"],
+            purchase_token=doc["purchase_token"],
+            purchase_token_expires_at=_dt(doc["purchase_token_expires_at"]),
+            created_at=_dt(doc["created_at"]),
+            used_at=_dt(doc.get("used_at"))
+        )
+
+    async def create_thread(
+        self, user_id, user_email, user_name, product_id,
+        product_title, product_price, initial_offer_amount, text=None
+    ) -> NegotiationThread:
+        negotiation_id = str(uuid.uuid4())
+        now = datetime.now(timezone.utc)
+        initial_message = NegotiationMessage(
+            message_id=str(uuid.uuid4()), sender_role="USER",
+            kind="OFFER", amount=initial_offer_amount, text=text, created_at=now
+        )
+        thread = NegotiationThread(
+            negotiation_id=negotiation_id, user_id=user_id, user_email=user_email,
+            user_name=user_name, product_id=product_id, product_title=product_title,
+            product_price=product_price, status="OPEN", created_at=now,
+            updated_at=now, last_activity_at=now, messages=[initial_message],
+            accepted_agreement_id=None
+        )
+        await self._db[self._threads_col].insert_one(self._thread_to_doc(thread))
+        logger.info(f"DbNegotiationStore: Created thread {negotiation_id}")
+        return thread
 
     async def list_threads_for_user(self, user_id: str) -> List[NegotiationThreadSummary]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+        cursor = self._db[self._threads_col].find(
+            {"user_id": user_id}, {"_id": 0}
+        ).sort("last_activity_at", -1)
+        return [self._to_summary(self._thread_from_doc(d)) async for d in cursor]
 
     async def list_threads_for_admin(self, status=None) -> List[NegotiationThreadSummary]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+        query = {"status": status} if status else {}
+        cursor = self._db[self._threads_col].find(
+            query, {"_id": 0}
+        ).sort("last_activity_at", -1)
+        return [self._to_summary(self._thread_from_doc(d)) async for d in cursor]
 
     async def get_thread(self, negotiation_id: str) -> Optional[NegotiationThread]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+        doc = await self._db[self._threads_col].find_one(
+            {"negotiation_id": negotiation_id}, {"_id": 0}
+        )
+        return self._thread_from_doc(doc) if doc else None
 
-    async def add_message(self, *args, **kwargs) -> Optional[NegotiationThread]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    async def add_message(self, negotiation_id, sender_role, kind, amount=None, text=None):
+        thread = await self.get_thread(negotiation_id)
+        if not thread:
+            return None
+        now = datetime.now(timezone.utc)
+        message = NegotiationMessage(
+            message_id=str(uuid.uuid4()), sender_role=sender_role,
+            kind=kind, amount=amount, text=text, created_at=now
+        )
+        thread.messages.append(message)
+        thread.updated_at = now
+        thread.last_activity_at = now
+        await self._db[self._threads_col].replace_one(
+            {"negotiation_id": negotiation_id},
+            self._thread_to_doc(thread)
+        )
+        return thread
 
-    async def set_status(self, *args, **kwargs) -> Optional[NegotiationThread]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    async def set_status(self, negotiation_id, status):
+        thread = await self.get_thread(negotiation_id)
+        if not thread:
+            return None
+        thread.status = status
+        thread.updated_at = datetime.now(timezone.utc)
+        await self._db[self._threads_col].replace_one(
+            {"negotiation_id": negotiation_id},
+            self._thread_to_doc(thread)
+        )
+        return thread
 
-    async def create_agreement_on_accept(self, *args, **kwargs) -> Optional[NegotiationAgreement]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    async def create_agreement_on_accept(self, negotiation_id, accepted_amount, ttl_minutes=30):
+        thread = await self.get_thread(negotiation_id)
+        if not thread:
+            return None
+        now = datetime.now(timezone.utc)
+        agreement_id = str(uuid.uuid4())
+        purchase_token = secrets.token_urlsafe(32)
+        agreement = NegotiationAgreement(
+            agreement_id=agreement_id, negotiation_id=negotiation_id,
+            user_id=thread.user_id, product_id=thread.product_id,
+            product_title=thread.product_title, accepted_amount=accepted_amount,
+            status="ACTIVE", purchase_token=purchase_token,
+            purchase_token_expires_at=now + timedelta(minutes=ttl_minutes),
+            created_at=now, used_at=None
+        )
+        doc = {
+            "agreement_id": agreement_id, "negotiation_id": negotiation_id,
+            "user_id": thread.user_id, "product_id": thread.product_id,
+            "product_title": thread.product_title, "accepted_amount": accepted_amount,
+            "status": "ACTIVE", "purchase_token": purchase_token,
+            "purchase_token_expires_at": agreement.purchase_token_expires_at.isoformat(),
+            "created_at": now.isoformat(), "used_at": None
+        }
+        await self._db[self._agreements_col].insert_one(doc)
+        thread.accepted_agreement_id = agreement_id
+        await self._db[self._threads_col].replace_one(
+            {"negotiation_id": negotiation_id},
+            self._thread_to_doc(thread)
+        )
+        return agreement
 
-    async def get_agreement_for_negotiation(self, negotiation_id: str) -> Optional[NegotiationAgreement]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    async def get_agreement_for_negotiation(self, negotiation_id):
+        doc = await self._db[self._agreements_col].find_one(
+            {"negotiation_id": negotiation_id}, {"_id": 0}
+        )
+        return self._agreement_from_doc(doc) if doc else None
 
-    async def get_agreement_by_id(self, agreement_id: str) -> Optional[NegotiationAgreement]:
-        raise NotImplementedError("DbNegotiationStore not implemented yet")
+    async def get_agreement_by_id(self, agreement_id):
+        doc = await self._db[self._agreements_col].find_one(
+            {"agreement_id": agreement_id}, {"_id": 0}
+        )
+        return self._agreement_from_doc(doc) if doc else None
+
+    def _to_summary(self, thread: NegotiationThread) -> NegotiationThreadSummary:
+        last_message = thread.messages[-1] if thread.messages else None
+        last_amount = None
+        for msg in reversed(thread.messages):
+            if msg.amount is not None:
+                last_amount = msg.amount
+                break
+        return NegotiationThreadSummary(
+            negotiation_id=thread.negotiation_id,
+            user_id=thread.user_id,
+            user_email=thread.user_email,
+            user_name=thread.user_name,
+            product_id=thread.product_id,
+            product_title=thread.product_title,
+            product_price=thread.product_price,
+            status=thread.status,
+            created_at=thread.created_at,
+            last_activity_at=thread.last_activity_at,
+            last_message_preview=last_message.text[:50] if last_message and last_message.text else None,
+            last_amount=last_amount,
+            message_count=len(thread.messages)
+        )
 
 
 # ==============================================================================

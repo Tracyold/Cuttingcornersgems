@@ -302,17 +302,75 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
               </div>
 
               {/* Actions */}
-              <div className="pt-4 border-t border-white/10 flex gap-3">
+              <div className="pt-4 border-t border-white/10 flex flex-wrap gap-3">
                 <button
                   onClick={handleResetPassword}
-                  disabled={resettingPassword}
+                  disabled={resettingPassword || isDeleted}
                   className="btn-secondary text-sm flex items-center gap-2"
                   data-testid="reset-password-btn"
                 >
                   <Key className="w-4 h-4" />
                   {resettingPassword ? 'Sending...' : 'Send Password Reset'}
                 </button>
+                
+                {!isDeleted && (
+                  <button
+                    onClick={handleToggleBlock}
+                    disabled={togglingBlock}
+                    className={`text-sm flex items-center gap-2 px-3 py-1.5 border transition-colors ${
+                      isBlocked 
+                        ? 'border-green-500/50 text-green-400 hover:bg-green-500/10' 
+                        : 'border-orange-500/50 text-orange-400 hover:bg-orange-500/10'
+                    }`}
+                    data-testid="toggle-block-btn"
+                  >
+                    {isBlocked ? <ShieldCheck className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
+                    {togglingBlock ? 'Updating...' : (isBlocked ? 'Unblock Purchases' : 'Block Purchases')}
+                  </button>
+                )}
+                
+                {!isDeleted && (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="text-sm flex items-center gap-2 px-3 py-1.5 border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors"
+                    data-testid="delete-user-btn"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete User
+                  </button>
+                )}
               </div>
+              
+              {/* Delete Confirmation Modal */}
+              {showDeleteConfirm && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowDeleteConfirm(false)}>
+                  <div className="bg-[#0a0a0a] border border-white/10 p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+                    <h3 className="font-serif text-xl mb-4">Delete User Account</h3>
+                    <p className="text-gray-400 text-sm mb-4">
+                      Soft-delete disables login and purchases. Order history, bookings, and inquiries are preserved.
+                    </p>
+                    <p className="text-sm mb-4">
+                      User: <span className="text-white">{user.email}</span>
+                    </p>
+                    <div className="flex gap-3 justify-end">
+                      <button 
+                        onClick={() => setShowDeleteConfirm(false)}
+                        className="btn-secondary text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleDeleteUser}
+                        disabled={deleting}
+                        className="text-sm px-4 py-2 bg-red-600 hover:bg-red-700 text-white transition-colors"
+                        data-testid="confirm-delete-btn"
+                      >
+                        {deleting ? 'Deleting...' : 'Delete Account'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-gray-500 text-center py-4">Failed to load details</p>
@@ -328,10 +386,6 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [expandedUser, setExpandedUser] = useState(null);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   const fetchUsers = async () => {
     try {
       const data = await adminApi.get('/admin/users');
@@ -342,6 +396,10 @@ const AdminUsers = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   if (loading) {
     return (

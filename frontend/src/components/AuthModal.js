@@ -15,7 +15,8 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    phone: ''
   });
 
   if (!isOpen) return null;

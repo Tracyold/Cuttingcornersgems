@@ -1,31 +1,3 @@
-=@font-face {
-  font-family: "AHAMONO-Regular";
-  src: url("./assets/fonts/AHAMONO-Regular.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Oranienbaum";
-  src: url("./assets/fonts/Oranienbaum-Regular.ttf") format("opentype");
-}
-
-@font-face {
-  font-family: "Montserrat Regular Pro";
-  src: url("./assets/fonts/Montserrat-Regular.otf") format("opentype");
-}
-
-@font-face {
-  font-family: "Comfortaa Regular";
-  src: url("./assets/fonts/Comfortaa-Regular.ttf") format("opentype");
-}
-
-@font-face {
-  font-family: "Nexa Rust Sans";
-  src: url("./assets/fonts/NexaRustSans.otf") format("opentype");
-}
-
-
 /* Old font imports removed - using custom OTF fonts via typography.roles.css */
 /* @import '@fontsource/playfair-display/400.css'; */
 /* @import '@fontsource/playfair-display/700.css'; */

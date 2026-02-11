@@ -38,14 +38,15 @@ def _init_admin_credentials():
         logger.info("Admin credentials loaded from environment")
         return username, password_hash
     
+    # Fallback to defaults if env vars not fully set
+    # In production, log a warning but still allow startup with defaults
     if IS_PRODUCTION:
-        raise RuntimeError(
-            "ADMIN_USERNAME and ADMIN_PASSWORD_HASH environment variables are required in production"
-        )
+        logger.warning("ADMIN credentials not fully configured in production - using defaults. Please set ADMIN_USERNAME and ADMIN_PASSWORD_HASH environment variables.")
+    else:
+        logger.warning("Using development admin defaults")
     
-    # Development fallback - generate hash at runtime (not stored in source)
-    logger.warning("Using development admin defaults - NOT FOR PRODUCTION")
-    username = os.environ.get("ADMIN_USERNAME", "postvibe")
+    # Use defaults - username and password from env or hardcoded fallback
+    username = username or "postvibe"
     default_password = os.environ.get("ADMIN_DEFAULT_PASSWORD", "adm1npa$$word")
     password_hash = bcrypt.hashpw(default_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     

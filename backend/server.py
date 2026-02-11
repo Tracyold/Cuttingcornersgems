@@ -39,7 +39,7 @@ app = FastAPI()
 
 @app.get("/healthz")
 def health_check():
-    return {"status": "ok"}
+    return {"status": "ok": True}
 # Add cache control middleware
 from middleware.cache_control import CacheControlMiddleware
 app.add_middleware(CacheControlMiddleware)

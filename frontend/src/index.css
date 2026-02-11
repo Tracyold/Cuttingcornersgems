@@ -1,28 +1,28 @@
-@font-face {
+=@font-face {
   font-family: "AHAMONO-Regular";
-  src: url("/fonts/AHAMONO-Regular.otf") format("opentype");
+  src: url("frontend/publich /fonts/AHAMONO-Regular.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Oranienbaum";
-  src: url("/fonts/Oranienbaum-Regular.otf") format("opentype");
+  src: url("frontend/public/fonts/Oranienbaum-Regular.ttf") format("opentype");
 }
 
 @font-face {
   font-family: "Montserrat Regular Pro";
-  src: url("/fonts/Montserrat-Regular.otf") format("opentype");
+  src: url("frontend/public/fonts/Montserrat-Regular.otf") format("opentype");
 }
 
 @font-face {
   font-family: "Comfortaa Regular";
-  src: url("/fonts/Comfortaa-Regular.otf") format("opentype");
+  src: url("frontend/public/fonts/Comfortaa-Regular.ttf") format("opentype");
 }
 
 @font-face {
   font-family: "Nexa Rust Sans";
-  src: url("/fonts/NexaRustSans.otf") format("opentype");
+  src: url("frontend/public/fonts/NexaRustSans.otf") format("opentype");
 }
 
 

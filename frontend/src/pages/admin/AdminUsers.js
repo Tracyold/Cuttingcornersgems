@@ -477,6 +477,72 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
                   </div>
                 </div>
               )}
+
+              {/* Send Message Modal */}
+              {showMessageModal && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowMessageModal(false)}>
+                  <div className="bg-[#0a0a0a] border border-white/10 p-6 max-w-lg w-full mx-4" onClick={e => e.stopPropagation()}>
+                    <h3 className="title-sm text-xl mb-4 flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-blue-400" />
+                      Send Message to {user.name || user.email}
+                    </h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-gray-500 mb-1 block">Subject</label>
+                        <input
+                          type="text"
+                          value={messageSubject}
+                          onChange={(e) => setMessageSubject(e.target.value)}
+                          placeholder="Message subject..."
+                          className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-blue-500"
+                          data-testid="message-subject-input"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs uppercase tracking-widest text-gray-500 mb-1 block">Message</label>
+                        <textarea
+                          value={messageBody}
+                          onChange={(e) => setMessageBody(e.target.value)}
+                          placeholder="Type your message..."
+                          rows={5}
+                          className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
+                          data-testid="message-body-input"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex gap-3 justify-end mt-6">
+                      <button 
+                        onClick={() => {
+                          setShowMessageModal(false);
+                          setMessageSubject('');
+                          setMessageBody('');
+                        }}
+                        className="btn-secondary text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleSendMessage}
+                        disabled={sendingMessage || !messageSubject.trim() || !messageBody.trim()}
+                        className="text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        data-testid="confirm-send-message-btn"
+                      >
+                        {sendingMessage ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="w-4 h-4" />
+                            Send Message
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-gray-500 text-center py-4">Failed to load details</p>

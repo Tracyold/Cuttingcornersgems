@@ -331,19 +331,41 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
 
               {/* Messages to Admin */}
               <div className="border border-white/10 p-4 space-y-3">
-                <h4 className="text-sm font-semibold flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-gray-400" />
-                  Messages to Admin ({details.messages?.length || 0})
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-gray-400" />
+                    Messages ({details.messages?.length || 0})
+                  </h4>
+                  <button
+                    onClick={() => setShowMessageModal(true)}
+                    className="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 hover:bg-blue-500/30 transition-colors flex items-center gap-1"
+                    data-testid="send-message-btn"
+                  >
+                    <Mail className="w-3 h-3" />
+                    Send Message
+                  </button>
+                </div>
                 {details.messages?.length > 0 ? (
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {details.messages.map((msg, i) => (
-                      <div key={i} className="text-sm bg-white/5 p-2">
+                      <div key={i} className={`text-sm p-2 ${msg.from_admin ? 'bg-blue-500/10 border-l-2 border-blue-500' : 'bg-white/5'}`}>
                         <div className="flex justify-between text-xs text-gray-500 mb-1">
-                          <span>{msg.subject || 'No subject'}</span>
+                          <span className="flex items-center gap-1">
+                            {msg.from_admin && <span className="text-blue-400">[Admin]</span>}
+                            {msg.subject || 'No subject'}
+                          </span>
                           <span>{formatDate(msg.created_at)}</span>
                         </div>
-                        <p className="text-gray-400">{msg.message?.slice(0, 100)}...</p>
+                        <p className="text-gray-400">{msg.message?.slice(0, 100)}{msg.message?.length > 100 ? '...' : ''}</p>
+                        {msg.replies?.length > 0 && (
+                          <div className="mt-2 pl-2 border-l-2 border-blue-500/50 space-y-1">
+                            {msg.replies.map((reply, ri) => (
+                              <div key={ri} className="text-xs text-blue-300">
+                                <span className="text-gray-500">{formatDate(reply.created_at)}:</span> {reply.message?.slice(0, 80)}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

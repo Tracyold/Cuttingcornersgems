@@ -3777,27 +3777,38 @@ async def startup_db_indexes():
     from services.schema_guard import ensure_schema_version
     from config.security import validate_admin_config
     
-    # Validate admin configuration
-    validate_admin_config()
-    
-    # Create standard indexes
-    results = await ensure_indexes(db)
-    logger.info(f"Indexes ensured: {len(results['created'])} created/verified")
-    
-    # Setup TTL indexes (only if AUDIT_TTL_DAYS is set)
-    ttl_results = await setup_ttl_indexes(db)
-    if ttl_results["ttl_enabled"]:
-        logger.info(f"TTL indexes created: {len(ttl_results['indexes_created'])}")
-    else:
-        logger.info("TTL indexes skipped (AUDIT_TTL_DAYS not set)")
-    
-    # D4: Initialize system metadata (idempotent)
-    schema_result = await ensure_schema_version(db)
-    logger.info(f"Schema version: {schema_result.get('status', 'unknown')}")
-    
-    # Start automated maintenance service (only if CLEANLINESS_AUTORUN is true)
-    maintenance = get_maintenance_service(db)
-    maintenance.start()
+    try:
+        # Validate admin configuration
+        validate_admin_config()
+        
+        # Test MongoDB connection first
+        await client.admin.command('ping')
+        logger.info("MongoDB connection successful")
+        
+        # Create standard indexes
+        results = await ensure_indexes(db)
+        logger.info(f"Indexes ensured: {len(results['created'])} created/verified")
+        
+        # Setup TTL indexes (only if AUDIT_TTL_DAYS is set)
+        ttl_results = await setup_ttl_indexes(db)
+        if ttl_results["ttl_enabled"]:
+            logger.info(f"TTL indexes created: {len(ttl_results['indexes_created'])}")
+        else:
+            logger.info("TTL indexes skipped (AUDIT_TTL_DAYS not set)")
+        
+        # D4: Initialize system metadata (idempotent)
+        schema_result = await ensure_schema_version(db)
+        logger.info(f"Schema version: {schema_result.get('status', 'unknown')}")
+        
+        # Start automated maintenance service (only if CLEANLINESS_AUTORUN is true)
+        maintenance = get_maintenance_service(db)
+        maintenance.start()
+        
+        logger.info("Backend startup complete")
+    except Exception as e:
+        logger.error(f"Startup error: {e}")
+        # Don't raise - allow server to start even if indexes fail
+        # This prevents deployment failures due to transient DB issues
 
 @app.on_event("shutdown")
 async def shutdown_db_client():

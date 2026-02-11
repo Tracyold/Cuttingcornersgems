@@ -1776,6 +1776,68 @@ async def admin_mark_message_read(message_id: str, admin: dict = Depends(get_adm
     await db.user_messages.update_one({"id": message_id}, {"$set": {"read": True}})
     return {"message": "Marked as read"}
 
+class AdminReplyCreate(BaseModel):
+    message: str
+
+@api_router.post("/admin/messages/{message_id}/reply")
+async def admin_reply_to_message(message_id: str, reply_data: AdminReplyCreate, admin: dict = Depends(get_admin_user)):
+    """Admin: Reply to a user message"""
+    # Get the original message
+    original = await db.user_messages.find_one({"id": message_id}, {"_id": 0})
+    if not original:
+        raise HTTPException(status_code=404, detail="Message not found")
+    
+    reply_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    reply = {
+        "id": reply_id,
+        "reply_to": message_id,
+        "message": reply_data.message,
+        "created_at": now
+    }
+    
+    # Add reply to the original message
+    await db.user_messages.update_one(
+        {"id": message_id},
+        {
+            "$push": {"replies": reply},
+            "$set": {"read": True, "replied_at": now}
+        }
+    )
+    
+    return {"message": "Reply sent", "reply_id": reply_id}
+
+class AdminMessageToUser(BaseModel):
+    subject: str
+    message: str
+
+@api_router.post("/admin/users/{user_id}/message")
+async def admin_send_message_to_user(user_id: str, message_data: AdminMessageToUser, admin: dict = Depends(get_admin_user)):
+    """Admin: Send a new message to a specific user"""
+    # Verify user exists
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    message_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    message = {
+        "id": message_id,
+        "user_id": user_id,
+        "user_email": user.get("email"),
+        "user_name": user.get("name"),
+        "subject": message_data.subject,
+        "message": message_data.message,
+        "created_at": now,
+        "from_admin": True,
+        "read": False
+    }
+    await db.user_messages.insert_one(message)
+    
+    return {"message": "Message sent to user", "id": message_id}
+
 # ============ BOOKING ROUTES ============
 
 @api_router.post("/bookings", response_model=BookingResponse)

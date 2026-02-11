@@ -18,6 +18,10 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [overrideLoading, setOverrideLoading] = useState(false);
   const [overrideNote, setOverrideNote] = useState(user.nyp_override_note || '');
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [messageSubject, setMessageSubject] = useState('');
+  const [messageBody, setMessageBody] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';

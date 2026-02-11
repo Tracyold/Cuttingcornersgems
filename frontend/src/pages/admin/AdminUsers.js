@@ -119,6 +119,31 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
     }
   };
 
+  const handleSendMessage = async () => {
+    if (!messageSubject.trim() || !messageBody.trim()) {
+      toast.error('Please enter both subject and message');
+      return;
+    }
+    setSendingMessage(true);
+    try {
+      await adminApi.post(`/admin/users/${user.id}/message`, {
+        subject: messageSubject,
+        message: messageBody
+      });
+      toast.success(`Message sent to ${user.name || user.email}`);
+      setShowMessageModal(false);
+      setMessageSubject('');
+      setMessageBody('');
+      // Refresh details to show new message
+      setDetails(null);
+      fetchDetails();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Failed to send message');
+    } finally {
+      setSendingMessage(false);
+    }
+  };
+
   const isDeleted = user.is_deleted;
   const isBlocked = user.purchase_blocked;
 

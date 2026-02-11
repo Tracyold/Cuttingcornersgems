@@ -140,17 +140,32 @@ const AuthSection = ({ onSuccess }) => {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         {!isLogin && (
-          <div>
-            <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Name *</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              required={!isLogin}
-              className="input-dark h-10 text-sm"
-              data-testid="auth-name"
-            />
-          </div>
+          <>
+            <div>
+              <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Name *</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                required={!isLogin}
+                className="input-dark h-10 text-sm"
+                data-testid="auth-name"
+              />
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Phone *</label>
+              <input
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                required={!isLogin}
+                className="input-dark h-10 text-sm"
+                placeholder="Your phone number"
+                data-testid="auth-phone"
+              />
+              <p className="text-xs text-gray-600 mt-1">Required for order communication</p>
+            </div>
+          </>
         )}
         
         <div>

@@ -141,19 +141,37 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'register' && (
-                <div>
-                  <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="input-dark"
-                    placeholder="Your name"
-                    data-testid="auth-name-input"
-                  />
-                </div>
+                <>
+                  <div>
+                    <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="input-dark"
+                      placeholder="Your name"
+                      data-testid="auth-name-input"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">
+                      Phone <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                      className="input-dark"
+                      placeholder="Your phone number"
+                      data-testid="auth-phone-input"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Required for order communication</p>
+                  </div>
+                </>
               )}
               <div>
                 <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">Email</label>

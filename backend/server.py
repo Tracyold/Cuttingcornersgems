@@ -37,6 +37,9 @@ from config.security import (
 
 app = FastAPI()
 
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
 # Add cache control middleware
 from middleware.cache_control import CacheControlMiddleware
 app.add_middleware(CacheControlMiddleware)

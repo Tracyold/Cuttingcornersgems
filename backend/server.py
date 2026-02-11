@@ -1724,8 +1724,11 @@ async def send_message_to_admin(message_data: UserMessageCreate, current_user: d
 
 @api_router.get("/user/messages")
 async def get_user_messages(current_user: dict = Depends(get_current_user)):
-    """Get messages sent by the current user"""
-    messages = await db.user_messages.find({"user_id": current_user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    """Get messages for the current user (both sent and received from admin)"""
+    messages = await db.user_messages.find(
+        {"user_id": current_user["id"]}, 
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
     return messages
 
 # ============ USER SELF-DELETE ============

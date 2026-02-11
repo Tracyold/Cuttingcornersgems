@@ -98,18 +98,26 @@ const AuthSection = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    phone: ''
   });
   const { login, register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Phone validation for registration
+    if (!isLogin && !formData.phone.trim()) {
+      toast.error('Phone number is required to create an account');
+      return;
+    }
+    
     setLoading(true);
     try {
       if (isLogin) {
         await login(formData.email, formData.password);
       } else {
-        await register(formData.name, formData.email, formData.password);
+        await register(formData.name, formData.email, formData.password, formData.phone);
       }
       toast.success(isLogin ? 'Welcome back!' : 'Account created!');
       if (onSuccess) onSuccess();

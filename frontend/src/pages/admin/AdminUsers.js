@@ -585,6 +585,7 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [expandedUser, setExpandedUser] = useState(null);
   const [showDeleted, setShowDeleted] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState({});
 
   const fetchUsers = async () => {
     try {
@@ -598,8 +599,30 @@ const AdminUsers = () => {
     }
   };
 
+  const fetchUnreadCounts = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+      const response = await axios.get(`${API_URL}/api/admin/messages/unread-counts`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUnreadCounts(response.data.per_user || {});
+    } catch (error) {
+      console.error('Failed to fetch unread counts:', error);
+    }
+  };
+
+  const handleMessagesRead = (userId) => {
+    setUnreadCounts(prev => {
+      const updated = { ...prev };
+      delete updated[userId];
+      return updated;
+    });
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchUnreadCounts();
   }, [showDeleted]);
 
   if (loading) {

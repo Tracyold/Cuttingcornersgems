@@ -1924,6 +1924,36 @@ async def admin_get_messages(include_deleted: bool = False, admin: dict = Depend
     messages = await db.user_messages.find(query, {"_id": 0}).sort("created_at", -1).to_list(500)
     return messages
 
+@api_router.get("/admin/messages/unread-counts")
+async def admin_get_unread_message_counts(admin: dict = Depends(get_admin_user)):
+    """Admin: Get count of unread messages per user and total"""
+    # Get all unread messages not from admin
+    unread_messages = await db.user_messages.find(
+        {"read": {"$ne": True}, "from_admin": {"$ne": True}, "is_deleted": {"$ne": True}},
+        {"_id": 0, "user_id": 1}
+    ).to_list(1000)
+    
+    # Count per user
+    user_counts = {}
+    for msg in unread_messages:
+        user_id = msg.get("user_id")
+        if user_id:
+            user_counts[user_id] = user_counts.get(user_id, 0) + 1
+    
+    return {
+        "total_unread": len(unread_messages),
+        "per_user": user_counts
+    }
+
+@api_router.patch("/admin/users/{user_id}/messages/mark-read")
+async def admin_mark_user_messages_read(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Admin: Mark all messages from a user as read"""
+    result = await db.user_messages.update_many(
+        {"user_id": user_id, "from_admin": {"$ne": True}},
+        {"$set": {"read": True}}
+    )
+    return {"message": f"Marked {result.modified_count} messages as read"}
+
 @api_router.patch("/admin/messages/{message_id}/read")
 async def admin_mark_message_read(message_id: str, admin: dict = Depends(get_admin_user)):
     """Admin: Mark message as read"""

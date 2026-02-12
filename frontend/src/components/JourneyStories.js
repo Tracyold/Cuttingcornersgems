@@ -147,6 +147,7 @@ const JourneyCard = ({ journey, onClick }) => {
     <div 
       className="group cursor-pointer"
       data-testid={`journey-card-${journey.id}`}
+      onClick={onClick}
     >
       {/* Before/After Slider */}
       <div 

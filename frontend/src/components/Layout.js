@@ -31,7 +31,6 @@ const Layout = ({ children }) => {
   }, []);
 
   const baseNavLinks = [
-    { path: '/', label: 'Home' },
     { path: '/gallery', label: 'Portfolio' },
     { path: '/shop', label: 'Shop' },
     { path: '/sell', label: 'Sell' },
@@ -40,7 +39,7 @@ const Layout = ({ children }) => {
 
   // Conditionally add Studio link
   const navLinks = studioEnabled 
-    ? [...baseNavLinks.slice(0, 2), { path: '/studio', label: 'Studio' }, ...baseNavLinks.slice(2)]
+    ? [baseNavLinks[0], { path: '/studio', label: 'Studio' }, ...baseNavLinks.slice(1)]
     : baseNavLinks;
 
   const isActive = (path) => {

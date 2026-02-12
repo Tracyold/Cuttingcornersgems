@@ -55,7 +55,7 @@
     "admin_password": "adm1npa$$word",
     "test_user_email": "smoke2@example.com",
     "test_user_password": "Test1234",
-    "preview_url": "https://pending-invoice-flow.preview.emergentagent.com"
+    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
   },
 
   "seed_data_creation": "Created TEST_DELETE_PRODUCT_* prefixed products during pytest run. These are cleaned up after tests.",

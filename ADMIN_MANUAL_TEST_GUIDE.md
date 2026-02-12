@@ -1,8 +1,8 @@
 # 🧪 Admin Manual Test Guide - Mobile & Desktop
 
 **Last Updated**: Current Session  
-**App URL**: https://pending-invoice-flow.preview.emergentagent.com  
-**Admin URL**: https://pending-invoice-flow.preview.emergentagent.com/admin
+**App URL**: https://journey-ui-sandbox.preview.emergentagent.com  
+**Admin URL**: https://journey-ui-sandbox.preview.emergentagent.com/admin
 
 ---
 
@@ -340,7 +340,7 @@
 ### **Issue: Items not appearing**
 - Check browser console for errors
 - Verify backend is running: `sudo supervisorctl status backend`
-- Check API response: `curl https://pending-invoice-flow.preview.emergentagent.com/api/gallery`
+- Check API response: `curl https://journey-ui-sandbox.preview.emergentagent.com/api/gallery`
 
 ### **Issue: Mobile view showing desktop layout**
 - Verify screen width < 768px

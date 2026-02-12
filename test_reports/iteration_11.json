@@ -60,7 +60,7 @@
     "admin_password": "adm1npa$$word",
     "test_user_email": "override_test@example.com",
     "test_user_password": "Test1234",
-    "preview_url": "https://pending-invoice-flow.preview.emergentagent.com"
+    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
   },
 
   "seed_data_creation": "Created TEST_ prefixed products during pytest run for order testing. These are cleaned up after tests.",

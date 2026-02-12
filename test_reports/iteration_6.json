@@ -51,7 +51,7 @@
   "test_credentials": {
     "admin_username": "postvibe",
     "admin_password": "password",
-    "preview_url": "https://pending-invoice-flow.preview.emergentagent.com"
+    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
   },
 
   "seed_data_creation": "None - no persistent test data created",

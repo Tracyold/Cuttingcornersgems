@@ -56,7 +56,7 @@
   "test_credentials": {
     "admin_username": "postvibe",
     "admin_password": "adm1npa$$word",
-    "preview_url": "https://pending-invoice-flow.preview.emergentagent.com"
+    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
   },
 
   "seed_data_creation": "No seed data created - tested with existing data showing 2 deleted bookings, 3 deleted product inquiries, 1 deleted sell inquiry, 10 pending items total",

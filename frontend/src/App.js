@@ -112,6 +112,7 @@ function App() {
                     <Route path="/sell" element={<SellInquiry />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/studio" element={<Studio />} />
+                    <Route path="/faq" element={<FAQ />} />
                   </Routes>
                 </Layout>
               } />

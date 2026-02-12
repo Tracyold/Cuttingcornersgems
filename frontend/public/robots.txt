@@ -1,5 +1,5 @@
 User-agent: *
-Allow: /
+Allow: /admin
 
 # Optional (recommended later if you want)
 # Disallow: /admin

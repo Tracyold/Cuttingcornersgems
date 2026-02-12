@@ -193,7 +193,7 @@ const Layout = ({ children }) => {
                 <p>
                   <a href="mailto:mwall@cuttingcornersgems.com" className="hover:text-white transition-colors">mwall@cuttingcornersgems.com</a>
                 </p>
-                <p className="text-xs text-gray-600">Calls & Texts Welcome</p>
+                <p className="text-xs text-gray-600">Texts, Calls & Emails Welcome</p>
               </div>
             </div>
           </div>

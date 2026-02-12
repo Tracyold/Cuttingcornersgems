@@ -1221,12 +1221,37 @@ const Dashboard = () => {
                           <h3 className="font-semibold mb-4">Previous Messages</h3>
                           <div className="space-y-3">
                             {messages.map((msg, index) => (
-                              <div key={msg.id} className="gem-card p-4" data-testid={`message-${index}`}>
+                              <div 
+                                key={msg.id} 
+                                className={`gem-card p-4 ${msg.from_admin ? 'border-l-2 border-amber-500 bg-amber-500/5' : 'border-l-2 border-teal-500 bg-teal-500/5'}`} 
+                                data-testid={`message-${index}`}
+                              >
                                 <div className="flex justify-between items-start mb-2">
-                                  <p className="font-medium">{msg.subject}</p>
+                                  <div className="flex items-center gap-2">
+                                    {msg.from_admin ? (
+                                      <span className="bg-amber-500 text-black text-[10px] px-1.5 py-0.5 rounded font-semibold">ADMIN</span>
+                                    ) : (
+                                      <span className="bg-teal-500 text-black text-[10px] px-1.5 py-0.5 rounded font-semibold">YOU</span>
+                                    )}
+                                    <p className="font-medium">{msg.subject}</p>
+                                  </div>
                                   <span className="text-xs text-gray-500">{formatDate(msg.created_at)}</span>
                                 </div>
-                                <p className="text-sm text-gray-400">{msg.message}</p>
+                                <p className="text-sm text-gray-400 ml-12">{msg.message}</p>
+                                {/* Admin replies */}
+                                {msg.replies?.length > 0 && (
+                                  <div className="mt-3 pl-4 border-l-2 border-amber-500/50 space-y-2">
+                                    {msg.replies.map((reply, ri) => (
+                                      <div key={ri} className="text-sm">
+                                        <div className="flex items-center gap-2 mb-1">
+                                          <span className="bg-amber-500 text-black text-[9px] px-1 py-0.5 rounded font-semibold">ADMIN REPLY</span>
+                                          <span className="text-xs text-gray-500">{formatDate(reply.created_at)}</span>
+                                        </div>
+                                        <p className="text-gray-400">{reply.message}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             ))}
                           </div>

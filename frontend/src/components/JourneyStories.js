@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Gem, Sparkles, ArrowLeft } from 'lucide-react';
+import { X, Gem, Sparkles, ArrowLeft, ZoomIn } from 'lucide-react';
 
 // Sample journey data - this would come from API later
 const SAMPLE_JOURNEYS = [
@@ -108,7 +108,7 @@ const JourneyCard = ({ journey, onClick }) => {
       className="group cursor-pointer"
       data-testid={`journey-card-${journey.id}`}
     >
-      <div className="relative aspect-[4/5] overflow-hidden mb-4">
+      <div className="relative aspect-square overflow-hidden mb-4">
         {/* Before/After Split Preview */}
         <div className="absolute inset-0 flex">
           <div className="w-1/2 h-full overflow-hidden">

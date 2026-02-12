@@ -183,6 +183,11 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate, unreadCount, onMessa
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full min-w-[20px] text-center font-semibold" data-testid="badge-unread">
+                {unreadCount}
+              </span>
+            )}
             {user.nyp_override_enabled && (
               <span className="text-xs bg-amber-500/30 text-amber-400 px-2 py-0.5 font-semibold" data-testid="badge-override">OVERRIDE ON</span>
             )}

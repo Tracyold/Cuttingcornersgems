@@ -961,8 +961,20 @@ const Dashboard = () => {
       {/* Header */}
       <section className="section-spacing pb-16">
         <div className="container-custom">
-          <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Welcome back</p>
-          <h1 className="page-title title-xl">{user.name}</h1>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm uppercase tracking-[0.2em] text-gray-500 mb-4">Welcome back</p>
+              <h1 className="page-title title-xl">{user.name}</h1>
+            </div>
+            <Link 
+              to="/faq" 
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors"
+              data-testid="dashboard-faq-link"
+            >
+              <HelpCircle className="w-4 h-4" />
+              FAQ
+            </Link>
+          </div>
         </div>
       </section>
 

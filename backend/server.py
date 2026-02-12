@@ -343,6 +343,60 @@ class GalleryItem(BaseModel):
     era: Optional[str] = None
     humble_beginnings: bool = False
 
+# Journey Models (for Journey Stories feature)
+class JourneyStepCreate(BaseModel):
+    image: str  # URL to step image
+    title: Optional[str] = None
+
+class JourneyCreate(BaseModel):
+    gem_name: str
+    subtitle: str
+    color: str = '#4a6fa5'  # Accent color for the journey
+    before_image: str  # URL for before/rough image (thumbnail left)
+    after_image: str   # URL for after/cut image (thumbnail right)
+    timeline_images: List[str] = []  # Up to 8 URLs for timeline
+
+class JourneyUpdate(BaseModel):
+    gem_name: Optional[str] = None
+    subtitle: Optional[str] = None
+    color: Optional[str] = None
+    before_image: Optional[str] = None
+    after_image: Optional[str] = None
+    timeline_images: Optional[List[str]] = None
+
+class JourneyResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    gem_name: str
+    subtitle: str
+    color: str
+    before_image: str
+    after_image: str
+    timeline_images: List[str] = []
+    created_at: str
+
+# Design Models (for Cutting Designs feature)
+class DesignCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+    image_url: str
+    category: Optional[str] = None
+
+class DesignUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    image_url: Optional[str] = None
+    category: Optional[str] = None
+
+class DesignResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str
+    title: str
+    description: Optional[str] = None
+    image_url: str
+    category: Optional[str] = None
+    created_at: str
+
 # Name Your Price Inquiry
 class NameYourPriceInquiry(BaseModel):
     name: str

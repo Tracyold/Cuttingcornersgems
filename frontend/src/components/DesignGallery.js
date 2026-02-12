@@ -1,51 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ZoomIn, PenTool } from 'lucide-react';
+import axios from 'axios';
 
-// Sample design data - this would come from API later
-const SAMPLE_DESIGNS = [
-  {
-    id: 'design-1',
-    title: 'Portuguese Round',
-    description: 'A classic round brilliant with extra facets for maximum sparkle. 57 facets on the crown and pavilion.',
-    image: 'https://images.unsplash.com/photo-1615655406736-b37c4fabf923?w=800',
-    category: 'Round Cuts',
-  },
-  {
-    id: 'design-2',
-    title: 'Modified Cushion',
-    description: 'Custom cushion design with brilliant-style faceting. Optimized for color retention in sapphires.',
-    image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800',
-    category: 'Cushion Cuts',
-  },
-  {
-    id: 'design-3',
-    title: 'Precision Emerald',
-    description: 'Step-cut emerald design with extended corner facets for improved brilliance.',
-    image: 'https://images.unsplash.com/photo-1583937443749-887582ecdf5b?w=800',
-    category: 'Step Cuts',
-  },
-  {
-    id: 'design-4',
-    title: 'Hexagonal Brilliant',
-    description: 'Unique hexagonal outline with brilliant-style faceting. Perfect for tourmalines.',
-    image: 'https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=800',
-    category: 'Fancy Cuts',
-  },
-  {
-    id: 'design-5',
-    title: 'Oval Precision',
-    description: 'Modified oval brilliant with optimized light return. Reduces bow-tie effect.',
-    image: 'https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800',
-    category: 'Oval Cuts',
-  },
-  {
-    id: 'design-6',
-    title: 'Trillion Modern',
-    description: 'Contemporary trillion design with curved sides and brilliant faceting.',
-    image: 'https://images.unsplash.com/photo-1603561596112-0a132b757442?w=800',
-    category: 'Fancy Cuts',
-  },
-];
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Image Popup Component
 const ImagePopup = ({ design, onClose }) => {
@@ -64,14 +21,18 @@ const ImagePopup = ({ design, onClose }) => {
       </button>
       <div className="max-w-4xl w-full" onClick={(e) => e.stopPropagation()}>
         <img
-          src={design.image}
+          src={design.image_url}
           alt={design.title}
           className="w-full max-h-[70vh] object-contain mb-6"
         />
         <div className="text-center">
-          <p className="text-xs uppercase tracking-widest text-amber-400 mb-2">{design.category}</p>
+          {design.category && (
+            <p className="text-xs uppercase tracking-widest text-amber-400 mb-2">{design.category}</p>
+          )}
           <h3 className="text-2xl title-sm mb-3">{design.title}</h3>
-          <p className="text-gray-400 max-w-xl mx-auto">{design.description}</p>
+          {design.description && (
+            <p className="text-gray-400 max-w-xl mx-auto">{design.description}</p>
+          )}
         </div>
       </div>
     </div>
@@ -88,7 +49,7 @@ const DesignCard = ({ design, onClick }) => {
     >
       <div className="relative aspect-square overflow-hidden mb-4 rounded shadow-[inset_0_0_20px_6px_rgba(0,0,0,0.4)]">
         <img 
-          src={design.image} 
+          src={design.image_url} 
           alt={design.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -107,7 +68,30 @@ const DesignCard = ({ design, onClick }) => {
 // Main Design Gallery Component
 const DesignGallery = () => {
   const [selectedDesign, setSelectedDesign] = useState(null);
-  const [designs] = useState(SAMPLE_DESIGNS);
+  const [designs, setDesigns] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDesigns = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/designs`);
+        setDesigns(response.data);
+      } catch (err) {
+        console.error('Failed to fetch designs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDesigns();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="w-8 h-8 border-2 border-white/20 border-t-amber-400 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div data-testid="design-gallery-section">

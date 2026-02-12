@@ -194,6 +194,9 @@ const Layout = ({ children }) => {
                   <a href="mailto:mwall@cuttingcornersgems.com" className="hover:text-white transition-colors">mwall@cuttingcornersgems.com</a>
                 </p>
                 <p className="text-xs text-gray-600">Texts, Calls & Emails Welcome</p>
+                <Link to="/faq" className="block text-gray-500 hover:text-white transition-colors mt-4" data-testid="footer-faq-link">
+                  FAQ
+                </Link>
               </div>
             </div>
           </div>

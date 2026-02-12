@@ -63,7 +63,8 @@ const Layout = ({ children }) => {
           <div className="grid grid-cols-[1fr_auto_1fr] items-center h-20">
             {/* Logo - left */}
             <Link to="/" className="font-display text-xl justify-self-start" style={{ letterSpacing: '0.04em' }} data-testid="logo-link">
-              Cutting Corners Gems
+              <span className="hidden sm:inline">Cutting Corners Gems</span>
+              <span className="sm:hidden text-lg">CC Gems</span>
             </Link>
 
             {/* Desktop Navigation - center */}
@@ -81,12 +82,12 @@ const Layout = ({ children }) => {
             </div>
 
             {/* Right side */}
-            <div className="flex items-center gap-6 justify-self-end">
+            <div className="flex items-center gap-4 sm:gap-6 justify-self-end">
               {/* Cart */}
               <Link to="/cart" className="relative" data-testid="cart-link">
                 <ShoppingBag className="w-5 h-5 text-gray-400 hover:text-white transition-colors" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-white text-black text-[10px] font-bold flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 w-4 h-4 bg-amber-500 text-black text-[10px] font-bold flex items-center justify-center">
                     {itemCount}
                   </span>
                 )}

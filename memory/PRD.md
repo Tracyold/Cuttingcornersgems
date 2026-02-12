@@ -87,9 +87,11 @@ A gemstone portfolio website for showcasing gem cutting work, with features for 
 - `gallery` - Gallery items
 - `products` - Shop products
 - `users` - User accounts
+- `user_messages` - Messages between users and admin
 - `inquiries` - Contact inquiries
 
 ## Backlog / Future Tasks
+- Refine Admin UI/UX for AdminJourneys.js and AdminDesigns.js (better forms, error messages, confirmation modals)
 - Image upload integration (currently URL-based)
 - Reorder functionality for journeys/designs
 - Mobile responsiveness testing

@@ -362,21 +362,22 @@ const Gallery = () => {
                         {regularItems.map((item, index) => (
                           <div
                             key={item.id}
-                            onClick={() => openLightbox(index)}
-                            className="group relative aspect-square overflow-hidden gem-card cursor-pointer opacity-0 animate-fade-in"
+                            className="opacity-0 animate-fade-in"
                             style={{ animationDelay: `${index * 50}ms` }}
-                            data-testid={`gallery-item-${index}`}
                           >
-                            <img
-                              src={item.image_url}
-                              alt={item.title}
-                              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                              <p className="spec-text text-gray-400 mb-1">{item.era || item.category}</p>
-                              <h3 className="title-sm text-base">{item.title}</h3>
+                            <div
+                              onClick={() => openLightbox(index)}
+                              className="group relative aspect-square overflow-hidden gem-card cursor-pointer mb-4"
+                              data-testid={`gallery-item-${index}`}
+                            >
+                              <img
+                                src={item.image_url}
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </div>
+                            <p className="text-sm text-amber-400 uppercase tracking-widest">{item.title}</p>
                           </div>
                         ))}
                       </div>

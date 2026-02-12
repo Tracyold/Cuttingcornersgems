@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Gem, Sparkles, ArrowLeft, ZoomIn } from 'lucide-react';
+import { X, Gem, Sparkles, ArrowLeft, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Sample journey data - this would come from API later
 const SAMPLE_JOURNEYS = [

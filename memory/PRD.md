@@ -30,15 +30,22 @@ A gemstone portfolio website for showcasing gem cutting work, with features for 
 - Dashboard with statistics
 - Products management
 - Gallery management (removed "FUTURE" from eras)
-- **Journeys management** (NEW)
+- **Journeys management**
   - Add/edit/delete journeys
   - Slider thumbnail images (before/after URLs)
   - Timeline images (up to 8 URLs)
   - Accent color picker
-- **Designs management** (NEW)
+- **Designs management**
   - Add/edit/delete designs
   - Image URL, title, category, description
-- User management
+- **User management with Message Notifications** (Feb 2026)
+  - Red badge on "Users" nav link showing total unread messages
+  - Per-user red badges showing unread count on user cards
+  - Auto mark-as-read when user card is expanded
+  - Color-coded message styling:
+    - ADMIN messages: gold/amber tag and background
+    - USER messages: teal tag and background
+  - Send message to user functionality
 - Various settings (Stripe, Storage, Security, Email, Analytics)
 
 ### Navigation

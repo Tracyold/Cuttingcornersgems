@@ -81,14 +81,17 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedEra, setSelectedEra] = useState('all');
+  const [viewMode, setViewMode] = useState('gallery');
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [expandedMobileItem, setExpandedMobileItem] = useState(null);
   const { isAuthenticated, entitlements } = useAuth();
 
   useEffect(() => {
-    fetchGallery();
-  }, [selectedCategory, selectedEra]);
+    if (viewMode === 'gallery') {
+      fetchGallery();
+    }
+  }, [selectedCategory, selectedEra, viewMode]);
 
   const fetchGallery = async () => {
     try {

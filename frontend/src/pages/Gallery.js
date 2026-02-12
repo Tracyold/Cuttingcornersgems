@@ -168,28 +168,60 @@ const Gallery = () => {
       </section>
 
       {/* Mobile View Mode Toggle */}
-      <div className="md:hidden sticky top-16 z-30 bg-black/90 backdrop-blur-sm border-b border-white/10 px-4 py-3">
+      <div className="md:hidden sticky top-20 z-30 bg-black/95 backdrop-blur-md border-b border-white/10 px-4 py-4">
         <div className="flex gap-2">
           {VIEW_MODES.map(mode => {
             const Icon = mode.icon;
-            const isActive = viewMode === mode.id;
+            const isActiveMode = viewMode === mode.id;
             return (
               <button
                 key={mode.id}
                 onClick={() => setViewMode(mode.id)}
-                className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm transition-colors ${
-                  isActive 
-                    ? 'bg-white/10 text-white' 
-                    : 'text-gray-500 hover:text-white'
+                className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-all border ${
+                  isActiveMode 
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-400' 
+                    : 'border-white/20 text-gray-400 hover:border-teal-500/50 hover:text-teal-400'
                 }`}
                 data-testid={`mobile-view-${mode.id}`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : ''}`} />
-                {mode.name}
+                <Icon className={`w-4 h-4 ${isActiveMode ? 'text-amber-400' : ''}`} />
+                <span>{mode.name}</span>
               </button>
             );
           })}
         </div>
+        
+        {/* Mobile Category/Era Filter for Gallery view */}
+        {viewMode === 'gallery' && (
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+            {ERAS.filter(e => e.id !== 'all').map(era => (
+              <button
+                key={era.id}
+                onClick={() => setSelectedEra(era.id === selectedEra ? 'all' : era.id)}
+                className={`flex-shrink-0 px-4 py-2 text-xs font-medium border transition-all ${
+                  selectedEra === era.id
+                    ? 'bg-teal-500/20 border-teal-500 text-teal-400'
+                    : 'border-white/20 text-gray-500 hover:border-teal-500/50'
+                }`}
+              >
+                {era.name}
+              </button>
+            ))}
+            {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id === selectedCategory ? 'all' : cat.id)}
+                className={`flex-shrink-0 px-4 py-2 text-xs font-medium border transition-all ${
+                  selectedCategory === cat.id
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+                    : 'border-white/20 text-gray-500 hover:border-amber-500/50'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Mobile Gallery/Journeys/Designs */}

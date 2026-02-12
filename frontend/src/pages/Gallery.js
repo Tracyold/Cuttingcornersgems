@@ -288,7 +288,7 @@ const Gallery = () => {
                         <button
                           key={era.id}
                           onClick={() => setSelectedEra(era.id)}
-                          className={`category-item block w-full text-left ${isActive ? 'active text-amber-400' : ''}`}
+                          className={`category-item block w-full text-left ${isActive ? 'active !text-amber-400' : ''}`}
                           data-testid={`era-${era.id}`}
                         >
                           {era.name}
@@ -306,7 +306,7 @@ const Gallery = () => {
                         <button
                           key={cat.id}
                           onClick={() => setSelectedCategory(cat.id)}
-                          className={`category-item block w-full text-left ${isActive ? 'active text-amber-400' : ''}`}
+                          className={`category-item block w-full text-left ${isActive ? 'active !text-amber-400' : ''}`}
                           data-testid={`category-${cat.id}`}
                         >
                           {cat.name}

@@ -201,7 +201,8 @@ const JourneyCard = ({ journey, onClick }) => {
         
         {/* Click to View Overlay */}
         <div 
-          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          onClick={onClick}
         >
           <span className="text-sm uppercase tracking-widest bg-black/60 px-4 py-2 rounded">View Journey</span>
         </div>

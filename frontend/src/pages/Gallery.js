@@ -27,7 +27,6 @@ const ERAS = [
   { id: 'all', name: 'All Eras' },
   { id: 'PAST', name: 'Past' },
   { id: 'PRESENT', name: 'Present' },
-  { id: 'FUTURE', name: 'Future' },
 ];
 
 // Humble Beginnings Section - ONLY renders for eligible users

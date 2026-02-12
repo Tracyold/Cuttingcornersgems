@@ -48,7 +48,7 @@
     "admin_password": "adm1npa$$word",
     "test_user_email": "sold_lifecycle_test@example.com",
     "test_user_password": "Test1234",
-    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
+    "preview_url": "https://notification-hub-47.preview.emergentagent.com"
   },
 
   "seed_data_creation": "Created test user sold_lifecycle_test@example.com and test product for order flow testing (auto-deleted after test)",

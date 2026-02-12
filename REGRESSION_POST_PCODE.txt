@@ -1,6 +1,6 @@
 ==========================================
 API ENDPOINT BASELINE TEST
-Base URL: https://journey-ui-sandbox.preview.emergentagent.com/api
+Base URL: https://notification-hub-47.preview.emergentagent.com/api
 ==========================================
 
 === PUBLIC ENDPOINTS ===

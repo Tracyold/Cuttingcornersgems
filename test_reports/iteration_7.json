@@ -50,7 +50,7 @@
   "test_credentials": {
     "admin_username": "postvibe",
     "admin_password": "adm1npa$$word",
-    "preview_url": "https://journey-ui-sandbox.preview.emergentagent.com"
+    "preview_url": "https://notification-hub-47.preview.emergentagent.com"
   },
 
   "seed_data_creation": "None - used existing test data (1 non-deleted user, 28 deleted test users)",

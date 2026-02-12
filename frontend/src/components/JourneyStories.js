@@ -255,14 +255,6 @@ const JourneyDetail = ({ journey, onClose }) => {
                   style={{ borderColor: journey.color }}
                 />
                 
-                {/* Step Number - Mobile */}
-                <div 
-                  className="md:hidden absolute left-0 top-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium"
-                  style={{ backgroundColor: journey.color }}
-                >
-                  {index + 1}
-                </div>
-                
                 {/* Image - Clickable */}
                 <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
                   <div 
@@ -279,20 +271,24 @@ const JourneyDetail = ({ journey, onClose }) => {
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white" />
                     </div>
-                    {/* Step number badge - Desktop */}
-                    <div 
-                      className="hidden md:flex absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center text-xs font-medium"
-                      style={{ backgroundColor: journey.color }}
-                    >
-                      {index + 1}
-                    </div>
                   </div>
                 </div>
                 
-                {/* Text */}
-                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-                  <h3 className="title-sm text-xl mb-2">{step.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+                {/* Text with Step Number */}
+                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center relative ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
+                  {/* Step Number Badge */}
+                  <div 
+                    className={`absolute top-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
+                      index % 2 === 0 ? 'left-12 md:left-12' : 'left-12 md:right-0 md:left-auto'
+                    }`}
+                    style={{ backgroundColor: journey.color }}
+                  >
+                    {index + 1}
+                  </div>
+                  <div className="pt-10 md:pt-0">
+                    <h3 className="title-sm text-xl mb-2">{step.title}</h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+                  </div>
                 </div>
               </div>
             ))}

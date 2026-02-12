@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
 
   const baseNavLinks = [
     { path: '/', label: 'Home' },
-    { path: '/gallery', label: 'Gallery' },
+    { path: '/gallery', label: 'Portfolio' },
     { path: '/shop', label: 'Shop' },
     { path: '/sell', label: 'Sell' },
     { path: '/booking', label: 'Book' },

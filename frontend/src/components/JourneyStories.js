@@ -157,8 +157,45 @@ const JourneyCard = ({ journey, onClick }) => {
   );
 };
 
+// Image Popup Component
+const ImagePopup = ({ image, title, onClose }) => {
+  return (
+    <div 
+      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4"
+      onClick={onClose}
+      data-testid="image-popup"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10"
+        data-testid="image-popup-close"
+      >
+        <X className="w-8 h-8" />
+      </button>
+      <div className="max-w-5xl max-h-[90vh] w-full" onClick={(e) => e.stopPropagation()}>
+        <img
+          src={image}
+          alt={title}
+          className="w-full h-full max-h-[85vh] object-contain"
+        />
+        <p className="text-center text-gray-400 mt-4 text-sm">{title}</p>
+      </div>
+    </div>
+  );
+};
+
 // Journey Detail Page - Scrollable Timeline (NOT a slideshow)
 const JourneyDetail = ({ journey, onClose }) => {
+  const [popupImage, setPopupImage] = useState(null);
+
+  const openImagePopup = (step) => {
+    setPopupImage(step);
+  };
+
+  const closeImagePopup = () => {
+    setPopupImage(null);
+  };
+
   return (
     <div 
       className="fixed inset-0 z-50 bg-black overflow-y-auto"
@@ -226,14 +263,22 @@ const JourneyDetail = ({ journey, onClose }) => {
                   {index + 1}
                 </div>
                 
-                {/* Image */}
+                {/* Image - Clickable */}
                 <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div 
+                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group"
+                    onClick={() => openImagePopup(step)}
+                    data-testid={`timeline-image-${index}`}
+                  >
                     <img
                       src={step.image}
                       alt={step.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+                    {/* Hover overlay with zoom icon */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <ZoomIn className="w-8 h-8 text-white" />
+                    </div>
                     {/* Step number badge - Desktop */}
                     <div 
                       className="hidden md:flex absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center text-xs font-medium"
@@ -269,6 +314,15 @@ const JourneyDetail = ({ journey, onClose }) => {
         {/* Bottom Padding */}
         <div className="h-16" />
       </div>
+
+      {/* Image Popup */}
+      {popupImage && (
+        <ImagePopup
+          image={popupImage.image}
+          title={popupImage.title}
+          onClose={closeImagePopup}
+        />
+      )}
     </div>
   );
 };

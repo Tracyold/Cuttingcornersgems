@@ -232,6 +232,7 @@ const JourneyCard = ({ journey, onClick }) => {
           onTouchStart={(e) => {
             e.stopPropagation();
             setIsDragging(true);
+            setWasDragging(true);
           }}
           onTouchEnd={handleTouchEnd}
         >

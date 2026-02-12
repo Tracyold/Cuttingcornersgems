@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Sparkles, Gem } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import JourneyStories from '../components/JourneyStories';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
+
+// View modes for the gallery
+const VIEW_MODES = [
+  { id: 'gallery', name: 'Gallery', icon: Sparkles },
+  { id: 'journeys', name: 'Journeys', icon: Gem },
+];
 
 const CATEGORIES = [
   { id: 'all', name: 'All Gemstones' },

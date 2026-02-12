@@ -30,11 +30,11 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
         await login(formData.email, formData.password);
         toast.success('Welcome back!');
       } else {
-        await register(formData.name, formData.email, formData.password);
+        await register(formData.name, formData.email, formData.password, formData.phone);
         toast.success('Account created successfully!');
       }
       onClose();
-      setFormData({ name: '', email: '', password: '' });
+      setFormData({ name: '', email: '', password: '', phone: '' });
     } catch (error) {
       const message = error.response?.data?.detail || 'Something went wrong';
       toast.error(message);

@@ -166,56 +166,86 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Mobile Gallery - 2 column grid, no categories */}
+      {/* Mobile View Mode Toggle */}
+      <div className="md:hidden sticky top-16 z-30 bg-black/90 backdrop-blur-sm border-b border-white/10 px-4 py-3">
+        <div className="flex gap-2">
+          {VIEW_MODES.map(mode => {
+            const Icon = mode.icon;
+            return (
+              <button
+                key={mode.id}
+                onClick={() => setViewMode(mode.id)}
+                className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm transition-colors ${
+                  viewMode === mode.id 
+                    ? 'bg-white/10 text-white' 
+                    : 'text-gray-500 hover:text-white'
+                }`}
+                data-testid={`mobile-view-${mode.id}`}
+              >
+                <Icon className="w-4 h-4" />
+                {mode.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mobile Gallery/Journeys */}
       <section className="pb-24 md:hidden">
         <div className="px-4">
-          {loading ? (
-            <div className="grid grid-cols-2 gap-3">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="aspect-square bg-white/5 animate-pulse" />
-              ))}
-            </div>
-          ) : items.length === 0 ? (
-            <div className="text-center py-24">
-              <p className="text-gray-500">No items in gallery.</p>
-            </div>
+          {viewMode === 'journeys' ? (
+            <JourneyStories />
           ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {items.map((item, index) => (
-                <div
-                  key={item.id}
-                  onClick={() => toggleMobileItem(item.id)}
-                  className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  data-testid={`mobile-gallery-item-${index}`}
-                >
-                  {/* Image or Info overlay */}
-                  {expandedMobileItem === item.id ? (
-                    <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
-                      <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
-                      <h3 className="title-sm text-sm mb-2">{item.title}</h3>
-                      {item.gemstone_type && (
-                        <p className="text-xs text-gray-400 mt-1">Gem Type: {item.gemstone_type}</p>
-                      )}
-                      {item.color && (
-                        <p className="text-xs text-gray-400">Color: {item.color}</p>
-                      )}
-                      {item.carat && (
-                        <p className="text-xs text-gray-400">Weight: {item.carat}</p>
-                      )}
-                      <p className="text-xs text-gray-600 mt-3 uppercase tracking-wider">Not For Sale</p>
-                      <p className="text-[10px] text-gray-600 mt-2">Tap to close</p>
-                    </div>
-                  ) : (
-                    <img
-                      src={item.image_url}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+            <>
+              {loading ? (
+                <div className="grid grid-cols-2 gap-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+                  ))}
                 </div>
-              ))}
-            </div>
+              ) : items.length === 0 ? (
+                <div className="text-center py-24">
+                  <p className="text-gray-500">No items in gallery.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {items.map((item, index) => (
+                    <div
+                      key={item.id}
+                      onClick={() => toggleMobileItem(item.id)}
+                      className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                      data-testid={`mobile-gallery-item-${index}`}
+                    >
+                      {/* Image or Info overlay */}
+                      {expandedMobileItem === item.id ? (
+                        <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
+                          <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
+                          <h3 className="title-sm text-sm mb-2">{item.title}</h3>
+                          {item.gemstone_type && (
+                            <p className="text-xs text-gray-400 mt-1">Gem Type: {item.gemstone_type}</p>
+                          )}
+                          {item.color && (
+                            <p className="text-xs text-gray-400">Color: {item.color}</p>
+                          )}
+                          {item.carat && (
+                            <p className="text-xs text-gray-400">Weight: {item.carat}</p>
+                          )}
+                          <p className="text-xs text-gray-600 mt-3 uppercase tracking-wider">Not For Sale</p>
+                          <p className="text-[10px] text-gray-600 mt-2">Tap to close</p>
+                        </div>
+                      ) : (
+                        <img
+                          src={item.image_url}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

@@ -369,20 +369,26 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate, unreadCount, onMessa
                 {details.messages?.length > 0 ? (
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {details.messages.map((msg, i) => (
-                      <div key={i} className={`text-sm p-2 ${msg.from_admin ? 'bg-blue-500/10 border-l-2 border-blue-500' : 'bg-white/5'}`}>
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
-                          <span className="flex items-center gap-1">
-                            {msg.from_admin && <span className="text-blue-400">[Admin]</span>}
-                            {msg.subject || 'No subject'}
+                      <div key={i} className={`text-sm p-2 ${msg.from_admin ? 'bg-amber-500/10 border-l-2 border-amber-500' : 'bg-teal-500/10 border-l-2 border-teal-500'}`}>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="flex items-center gap-2">
+                            {msg.from_admin ? (
+                              <span className="bg-amber-500 text-black text-[10px] px-1.5 py-0.5 rounded font-semibold">ADMIN</span>
+                            ) : (
+                              <span className="bg-teal-500 text-black text-[10px] px-1.5 py-0.5 rounded font-semibold">USER</span>
+                            )}
+                            <span className="text-gray-500">{msg.subject || 'No subject'}</span>
                           </span>
-                          <span>{formatDate(msg.created_at)}</span>
+                          <span className="text-gray-500">{formatDate(msg.created_at)}</span>
                         </div>
                         <p className="text-gray-400">{msg.message?.slice(0, 100)}{msg.message?.length > 100 ? '...' : ''}</p>
                         {msg.replies?.length > 0 && (
-                          <div className="mt-2 pl-2 border-l-2 border-blue-500/50 space-y-1">
+                          <div className="mt-2 pl-2 border-l-2 border-amber-500/50 space-y-1">
                             {msg.replies.map((reply, ri) => (
-                              <div key={ri} className="text-xs text-blue-300">
-                                <span className="text-gray-500">{formatDate(reply.created_at)}:</span> {reply.message?.slice(0, 80)}
+                              <div key={ri} className="text-xs">
+                                <span className="bg-amber-500 text-black text-[9px] px-1 py-0.5 rounded font-semibold mr-1">ADMIN</span>
+                                <span className="text-gray-500">{formatDate(reply.created_at)}:</span> 
+                                <span className="text-amber-300 ml-1">{reply.message?.slice(0, 80)}</span>
                               </div>
                             ))}
                           </div>

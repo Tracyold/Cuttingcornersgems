@@ -226,7 +226,7 @@ const Gallery = () => {
 
       {/* Mobile Gallery/Journeys/Designs */}
       <section className="pb-24 md:hidden">
-        <div className="px-4">
+        <div className="px-4 pt-4">
           {viewMode === 'journeys' ? (
             <JourneyStories />
           ) : viewMode === 'designs' ? (
@@ -234,7 +234,7 @@ const Gallery = () => {
           ) : (
             <>
               {loading ? (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {[...Array(6)].map((_, i) => (
                     <div key={i} className="aspect-square bg-white/5 animate-pulse" />
                   ))}
@@ -244,38 +244,46 @@ const Gallery = () => {
                   <p className="text-gray-500">No items in gallery.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   {items.map((item, index) => (
                     <div
                       key={item.id}
                       onClick={() => toggleMobileItem(item.id)}
-                      className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in"
+                      className="relative aspect-square overflow-hidden cursor-pointer opacity-0 animate-fade-in border border-white/10"
                       style={{ animationDelay: `${index * 50}ms` }}
                       data-testid={`mobile-gallery-item-${index}`}
                     >
                       {/* Image or Info overlay */}
                       {expandedMobileItem === item.id ? (
-                        <div className="absolute inset-0 bg-black flex flex-col items-center justify-center p-4 text-center z-10">
-                          <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">{item.category}</p>
-                          <h3 className="title-sm text-sm mb-2">{item.title}</h3>
-                          {item.gemstone_type && (
-                            <p className="text-xs text-gray-400 mt-1">Gem Type: {item.gemstone_type}</p>
-                          )}
-                          {item.color && (
-                            <p className="text-xs text-gray-400">Color: {item.color}</p>
-                          )}
-                          {item.carat && (
-                            <p className="text-xs text-gray-400">Weight: {item.carat}</p>
-                          )}
-                          <p className="text-xs text-gray-600 mt-3 uppercase tracking-wider">Not For Sale</p>
-                          <p className="text-[10px] text-gray-600 mt-2">Tap to close</p>
+                        <div className="absolute inset-0 bg-black/95 flex flex-col items-center justify-center p-4 text-center z-10">
+                          <p className="text-xs uppercase tracking-widest text-amber-400 mb-2">{item.category}</p>
+                          <h3 className="title-sm text-sm mb-3">{item.title}</h3>
+                          <div className="space-y-1">
+                            {item.gemstone_type && (
+                              <p className="text-xs text-gray-400">Gem Type: <span className="text-teal-400">{item.gemstone_type}</span></p>
+                            )}
+                            {item.color && (
+                              <p className="text-xs text-gray-400">Color: <span className="text-teal-400">{item.color}</span></p>
+                            )}
+                            {item.carat && (
+                              <p className="text-xs text-gray-400">Weight: <span className="text-teal-400">{item.carat}</span></p>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-600 mt-4 uppercase tracking-wider border border-white/10 px-3 py-1">Not For Sale</p>
+                          <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
                         </div>
                       ) : (
-                        <img
-                          src={item.image_url}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
+                        <>
+                          <img
+                            src={item.image_url}
+                            alt={item.title}
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Mobile item label */}
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                            <p className="text-[10px] text-amber-400 uppercase tracking-wider">{item.era}</p>
+                          </div>
+                        </>
                       )}
                     </div>
                   ))}

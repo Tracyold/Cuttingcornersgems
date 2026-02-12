@@ -148,6 +148,21 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
                   />
                 </div>
               )}
+              {mode === 'register' && (
+                <div>
+                  <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    required
+                    className="input-dark"
+                    placeholder="(555) 123-4567"
+                    data-testid="auth-phone-input"
+                  />
+                </div>
+              )}
               <div>
                 <label className="block text-sm uppercase tracking-widest text-gray-400 mb-2">Email</label>
                 <input

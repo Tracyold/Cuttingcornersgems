@@ -4,8 +4,7 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Sample journey data - this would come from API later
-const SAMPLE_JOURNEYS = [
+// Image Popup Component
   {
     id: 'journey-1',
     gemName: 'Montana Sapphire',

@@ -260,7 +260,7 @@ const JourneyDetail = ({ journey, onClose }) => {
                 {/* Image - Clickable */}
                 <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
                   <div 
-                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group rounded shadow-[0_0_25px_4px_rgba(255,255,255,0.15),0_0_50px_10px_rgba(0,0,0,0.6)]"
+                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group rounded"
                     onClick={() => openImagePopup(step)}
                     data-testid={`timeline-image-${index}`}
                   >
@@ -269,6 +269,8 @@ const JourneyDetail = ({ journey, onClose }) => {
                       alt={step.title}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
+                    {/* Inner vignette border */}
+                    <div className="absolute inset-0 shadow-[inset_0_0_30px_10px_rgba(0,0,0,0.6)] pointer-events-none" />
                     {/* Hover overlay with zoom icon */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white" />

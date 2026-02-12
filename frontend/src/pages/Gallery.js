@@ -8,7 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 
 // View modes for the gallery
 const VIEW_MODES = [
-  { id: 'gallery', name: 'Gallery', icon: Sparkles },
+  { id: 'gallery', name: 'Galleries', icon: Sparkles },
   { id: 'journeys', name: 'Journeys', icon: Gem },
 ];
 

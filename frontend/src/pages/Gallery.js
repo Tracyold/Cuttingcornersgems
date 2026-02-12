@@ -325,6 +325,8 @@ const Gallery = () => {
             <div data-testid="gallery-content">
               {viewMode === 'journeys' ? (
                 <JourneyStories />
+              ) : viewMode === 'designs' ? (
+                <DesignGallery />
               ) : (
                 /* Gallery Grid */
                 <div data-testid="gallery-grid">

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingBag, X, ChevronLeft, ChevronRight, Play, Lock, Unlock, Sparkles } from 'lucide-react';
+import { ShoppingBag, X, ChevronLeft, ChevronRight, Play, Lock, Unlock, Sparkles, HelpCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'sonner';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';

@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Package, Image, Settings, CreditCard, 
   Cloud, Shield, Users, MessageSquare, LogOut, Menu, X,
   HelpCircle, ChevronRight, Receipt, Mail, Database, BarChart3, Wrench, Film,
-  DollarSign
+  DollarSign, Gem, PenTool
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
 

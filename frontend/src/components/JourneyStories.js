@@ -189,23 +189,6 @@ const JourneyCard = ({ journey, onClick }) => {
             </div>
           </div>
         </div>
-        
-        {/* Labels */}
-        <div className="absolute bottom-3 left-3 text-[10px] uppercase tracking-widest text-white/80 bg-black/40 px-2 py-1 rounded">Rough</div>
-        <div className="absolute bottom-3 right-3 text-[10px] uppercase tracking-widest text-white/80 bg-black/40 px-2 py-1 rounded">Cut</div>
-        
-        {/* Steps Count Badge */}
-        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 text-xs tracking-wider">
-          {journey.steps.length} STEPS
-        </div>
-        
-        {/* Click to View Overlay */}
-        <div 
-          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          onClick={onClick}
-        >
-          <span className="text-sm uppercase tracking-widest bg-black/60 px-4 py-2 rounded">View Journey</span>
-        </div>
       </div>
       
       {/* Card Info - Clickable */}

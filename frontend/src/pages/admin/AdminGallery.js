@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { adminApi } from '../../api/adminApi';
 
 const CATEGORIES = ['sapphire', 'tourmaline', 'emerald', 'aquamarine', 'garnet', 'other'];
-const ERAS = ['PAST', 'PRESENT', 'FUTURE'];
+const ERAS = ['PAST', 'PRESENT'];
 
 const emptyForm = {
   title: '',

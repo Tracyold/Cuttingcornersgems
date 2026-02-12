@@ -10,6 +10,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 const VIEW_MODES = [
   { id: 'gallery', name: 'Galleries', icon: Sparkles },
   { id: 'journeys', name: 'Journeys', icon: Gem },
+  { id: 'designs', name: 'Designs', icon: Gem },
 ];
 
 const CATEGORIES = [

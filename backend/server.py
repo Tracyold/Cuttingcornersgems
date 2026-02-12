@@ -709,6 +709,90 @@ async def admin_update_gallery_item(item_id: str, updates: GalleryItemUpdate, ad
         raise HTTPException(status_code=404, detail="Gallery item not found")
     return GalleryItem(**item)
 
+# ============ ADMIN JOURNEY ROUTES ============
+
+@api_router.get("/admin/journeys", response_model=List[JourneyResponse])
+async def admin_get_journeys(admin: dict = Depends(get_admin_user)):
+    journeys = await db.journeys.find({}, {"_id": 0}).to_list(100)
+    return journeys
+
+@api_router.post("/admin/journeys", response_model=JourneyResponse)
+async def admin_create_journey(journey: JourneyCreate, admin: dict = Depends(get_admin_user)):
+    journey_id = str(uuid.uuid4())
+    journey_data = journey.model_dump()
+    journey_data["id"] = journey_id
+    journey_data["created_at"] = datetime.now(timezone.utc).isoformat()
+    # Limit timeline images to 8
+    if len(journey_data.get("timeline_images", [])) > 8:
+        journey_data["timeline_images"] = journey_data["timeline_images"][:8]
+    await db.journeys.insert_one(journey_data)
+    return JourneyResponse(**journey_data)
+
+@api_router.patch("/admin/journeys/{journey_id}", response_model=JourneyResponse)
+async def admin_update_journey(journey_id: str, updates: JourneyUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    # Limit timeline images to 8
+    if "timeline_images" in update_data and len(update_data["timeline_images"]) > 8:
+        update_data["timeline_images"] = update_data["timeline_images"][:8]
+    if update_data:
+        await db.journeys.update_one({"id": journey_id}, {"$set": update_data})
+    journey = await db.journeys.find_one({"id": journey_id}, {"_id": 0})
+    if not journey:
+        raise HTTPException(status_code=404, detail="Journey not found")
+    return JourneyResponse(**journey)
+
+@api_router.delete("/admin/journeys/{journey_id}")
+async def admin_delete_journey(journey_id: str, admin: dict = Depends(get_admin_user)):
+    result = await db.journeys.delete_one({"id": journey_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Journey not found")
+    return {"message": "Journey deleted"}
+
+# Public endpoint to get journeys
+@api_router.get("/journeys", response_model=List[JourneyResponse])
+async def get_journeys():
+    journeys = await db.journeys.find({}, {"_id": 0}).to_list(100)
+    return journeys
+
+# ============ ADMIN DESIGN ROUTES ============
+
+@api_router.get("/admin/designs", response_model=List[DesignResponse])
+async def admin_get_designs(admin: dict = Depends(get_admin_user)):
+    designs = await db.designs.find({}, {"_id": 0}).to_list(100)
+    return designs
+
+@api_router.post("/admin/designs", response_model=DesignResponse)
+async def admin_create_design(design: DesignCreate, admin: dict = Depends(get_admin_user)):
+    design_id = str(uuid.uuid4())
+    design_data = design.model_dump()
+    design_data["id"] = design_id
+    design_data["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.designs.insert_one(design_data)
+    return DesignResponse(**design_data)
+
+@api_router.patch("/admin/designs/{design_id}", response_model=DesignResponse)
+async def admin_update_design(design_id: str, updates: DesignUpdate, admin: dict = Depends(get_admin_user)):
+    update_data = {k: v for k, v in updates.model_dump().items() if v is not None}
+    if update_data:
+        await db.designs.update_one({"id": design_id}, {"$set": update_data})
+    design = await db.designs.find_one({"id": design_id}, {"_id": 0})
+    if not design:
+        raise HTTPException(status_code=404, detail="Design not found")
+    return DesignResponse(**design)
+
+@api_router.delete("/admin/designs/{design_id}")
+async def admin_delete_design(design_id: str, admin: dict = Depends(get_admin_user)):
+    result = await db.designs.delete_one({"id": design_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Design not found")
+    return {"message": "Design deleted"}
+
+# Public endpoint to get designs
+@api_router.get("/designs", response_model=List[DesignResponse])
+async def get_designs():
+    designs = await db.designs.find({}, {"_id": 0}).to_list(100)
+    return designs
+
 # ============ ADMIN INQUIRIES ROUTES ============
 
 @api_router.get("/admin/bookings")

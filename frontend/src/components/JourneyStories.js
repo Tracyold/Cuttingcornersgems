@@ -104,6 +104,7 @@ const SAMPLE_JOURNEYS = [
 const JourneyCard = ({ journey, onClick }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [wasDragging, setWasDragging] = useState(false);
   const [showClickPrompt, setShowClickPrompt] = useState(false);
   const containerRef = React.useRef(null);
 
@@ -119,6 +120,7 @@ const JourneyCard = ({ journey, onClick }) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
+    setWasDragging(true);
   };
 
   const handleMouseMove = (e) => {
@@ -130,7 +132,9 @@ const JourneyCard = ({ journey, onClick }) => {
     if (isDragging) {
       setIsDragging(false);
       // Show the prompt after dragging to let them know there's more
-      setShowClickPrompt(true);
+      setTimeout(() => {
+        setShowClickPrompt(true);
+      }, 100);
     }
   };
 
@@ -141,12 +145,15 @@ const JourneyCard = ({ journey, onClick }) => {
   const handleTouchEnd = () => {
     setIsDragging(false);
     // Show the prompt after dragging to let them know there's more
-    setShowClickPrompt(true);
+    setTimeout(() => {
+      setShowClickPrompt(true);
+    }, 100);
   };
 
   const handleCardClick = (e) => {
-    // If currently dragging, don't do anything
-    if (isDragging) {
+    // If we just finished dragging, don't trigger click action
+    if (wasDragging) {
+      setWasDragging(false);
       return;
     }
     

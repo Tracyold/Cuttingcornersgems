@@ -104,6 +104,8 @@ const SAMPLE_JOURNEYS = [
 const JourneyCard = ({ journey, onClick }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [showClickPrompt, setShowClickPrompt] = useState(false);
   const containerRef = React.useRef(null);
 
   const handleMove = (clientX) => {
@@ -116,7 +118,9 @@ const JourneyCard = ({ journey, onClick }) => {
 
   const handleMouseDown = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
+    setHasInteracted(true);
   };
 
   const handleMouseMove = (e) => {
@@ -129,8 +133,41 @@ const JourneyCard = ({ journey, onClick }) => {
   };
 
   const handleTouchMove = (e) => {
+    setHasInteracted(true);
     handleMove(e.touches[0].clientX);
   };
+
+  const handleCardClick = (e) => {
+    // If just finished dragging, don't do anything
+    if (hasInteracted) {
+      setHasInteracted(false);
+      return;
+    }
+    
+    // First click shows the prompt
+    if (!showClickPrompt) {
+      setShowClickPrompt(true);
+      return;
+    }
+    
+    // Second click opens the timeline
+    onClick();
+    setShowClickPrompt(false);
+  };
+
+  // Reset prompt when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setShowClickPrompt(false);
+      }
+    };
+    
+    if (showClickPrompt) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [showClickPrompt]);
 
   React.useEffect(() => {
     if (isDragging) {
@@ -145,15 +182,15 @@ const JourneyCard = ({ journey, onClick }) => {
 
   return (
     <div 
-      className="group cursor-pointer"
+      className="group"
       data-testid={`journey-card-${journey.id}`}
-      onClick={onClick}
     >
       {/* Before/After Slider */}
       <div 
         ref={containerRef}
-        className="relative aspect-square overflow-hidden mb-4 select-none"
+        className="relative aspect-square overflow-hidden mb-4 select-none cursor-pointer"
         onTouchMove={handleTouchMove}
+        onClick={handleCardClick}
       >
         {/* After Image (Background) */}
         <img 
@@ -180,7 +217,11 @@ const JourneyCard = ({ journey, onClick }) => {
           className="absolute top-0 bottom-0 w-1 bg-black cursor-ew-resize z-10"
           style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           onMouseDown={handleMouseDown}
-          onTouchStart={() => setIsDragging(true)}
+          onTouchStart={(e) => {
+            e.stopPropagation();
+            setIsDragging(true);
+            setHasInteracted(true);
+          }}
         >
           {/* Handle Circle */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black rounded-full flex items-center justify-center shadow-lg border border-white/20">
@@ -190,10 +231,17 @@ const JourneyCard = ({ journey, onClick }) => {
             </div>
           </div>
         </div>
+
+        {/* Click Prompt Overlay */}
+        {showClickPrompt && (
+          <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-20 transition-opacity duration-200">
+            <span className="text-sm uppercase tracking-widest text-white">Click to see timeline</span>
+          </div>
+        )}
       </div>
       
       {/* Card Info */}
-      <div className="space-y-1">
+      <div className="space-y-1 cursor-pointer" onClick={() => { setShowClickPrompt(true); }}>
         <h3 className="title-sm text-lg group-hover:text-amber-400 transition-colors">{journey.gemName}</h3>
         <p className="text-sm text-gray-500">{journey.subtitle}</p>
       </div>

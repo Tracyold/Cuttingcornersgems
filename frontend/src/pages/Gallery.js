@@ -341,6 +341,8 @@ const Gallery = () => {
                   )}
                 </>
               )}
+                </div>
+              )}
             </div>
           </div>
         </div>

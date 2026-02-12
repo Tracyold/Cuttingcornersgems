@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight, Sparkles, Gem } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Sparkles, Gem, PenTool } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import JourneyStories from '../components/JourneyStories';

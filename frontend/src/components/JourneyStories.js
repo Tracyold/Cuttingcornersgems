@@ -100,56 +100,115 @@ const SAMPLE_JOURNEYS = [
   }
 ];
 
-// Journey Card Component
+// Journey Card Component with Before/After Slider
 const JourneyCard = ({ journey, onClick }) => {
+  const [sliderPosition, setSliderPosition] = useState(50);
+  const [isDragging, setIsDragging] = useState(false);
+  const containerRef = React.useRef(null);
+
+  const handleMove = (clientX) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPosition(percentage);
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    handleMove(e.clientX);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleTouchMove = (e) => {
+    handleMove(e.touches[0].clientX);
+  };
+
+  React.useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging]);
+
   return (
     <div 
-      onClick={onClick}
       className="group cursor-pointer"
       data-testid={`journey-card-${journey.id}`}
     >
-      <div className="relative aspect-square overflow-hidden mb-4">
-        {/* Before/After Split Preview */}
-        <div className="absolute inset-0 flex">
-          <div className="w-1/2 h-full overflow-hidden">
-            <img 
-              src={journey.coverImage} 
-              alt="Before"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-          </div>
-          <div className="w-1/2 h-full overflow-hidden">
-            <img 
-              src={journey.finalImage} 
-              alt="After"
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+      {/* Before/After Slider */}
+      <div 
+        ref={containerRef}
+        className="relative aspect-square overflow-hidden mb-4 select-none"
+        onTouchMove={handleTouchMove}
+      >
+        {/* After Image (Background) */}
+        <img 
+          src={journey.finalImage} 
+          alt="After"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Before Image (Clipped) */}
+        <div 
+          className="absolute inset-0 overflow-hidden"
+          style={{ width: `${sliderPosition}%` }}
+        >
+          <img 
+            src={journey.coverImage} 
+            alt="Before"
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%' }}
+          />
+        </div>
+        
+        {/* Slider Handle */}
+        <div 
+          className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize z-10"
+          style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
+          onMouseDown={handleMouseDown}
+          onTouchStart={() => setIsDragging(true)}
+        >
+          {/* Handle Circle */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg">
+            <div className="flex items-center gap-0.5">
+              <ChevronLeft className="w-3 h-3 text-gray-800" />
+              <ChevronRight className="w-3 h-3 text-gray-800" />
+            </div>
           </div>
         </div>
         
-        {/* Diagonal Divider */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
-            <line x1="50" y1="0" x2="50" y2="100" stroke="white" strokeWidth="0.5" />
-          </svg>
-        </div>
-        
-        {/* Hover Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span className="text-sm uppercase tracking-widest">View Journey</span>
-        </div>
+        {/* Labels */}
+        <div className="absolute bottom-3 left-3 text-[10px] uppercase tracking-widest text-white/80 bg-black/40 px-2 py-1 rounded">Rough</div>
+        <div className="absolute bottom-3 right-3 text-[10px] uppercase tracking-widest text-white/80 bg-black/40 px-2 py-1 rounded">Cut</div>
         
         {/* Steps Count Badge */}
         <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 text-xs tracking-wider">
           {journey.steps.length} STEPS
         </div>
         
-        {/* Labels */}
-        <div className="absolute bottom-3 left-3 text-[10px] uppercase tracking-widest text-white/70">Rough</div>
-        <div className="absolute bottom-3 right-3 text-[10px] uppercase tracking-widest text-white/70">Cut</div>
+        {/* Click to View Overlay */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        >
+          <span className="text-sm uppercase tracking-widest bg-black/60 px-4 py-2 rounded">View Journey</span>
+        </div>
       </div>
       
-      <div className="space-y-1">
+      {/* Card Info - Clickable */}
+      <div className="space-y-1" onClick={onClick}>
         <h3 className="title-sm text-lg group-hover:text-amber-400 transition-colors">{journey.gemName}</h3>
         <p className="text-sm text-gray-500">{journey.subtitle}</p>
       </div>

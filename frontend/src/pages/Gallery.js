@@ -261,14 +261,15 @@ const Gallery = () => {
               <nav className="space-y-1 mb-8">
                 {VIEW_MODES.map(mode => {
                   const Icon = mode.icon;
+                  const isActive = viewMode === mode.id;
                   return (
                     <button
                       key={mode.id}
                       onClick={() => setViewMode(mode.id)}
-                      className={`category-item w-full text-left flex items-center gap-2 ${viewMode === mode.id ? 'active' : ''}`}
+                      className={`category-item w-full text-left flex items-center gap-2 ${isActive ? 'active' : ''}`}
                       data-testid={`view-${mode.id}`}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : ''}`} />
                       {mode.name}
                     </button>
                   );

@@ -9,7 +9,7 @@ const SAMPLE_JOURNEYS = [
     subtitle: 'From Rough to Radiant',
     coverImage: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=600',
     finalImage: 'https://images.unsplash.com/photo-1615655406736-b37c4fabf923?w=600',
-    color: '#1e40af',
+    color: '#4a6fa5',
     steps: [
       {
         image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800',

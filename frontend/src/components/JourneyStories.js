@@ -176,16 +176,16 @@ const JourneyCard = ({ journey, onClick }) => {
         
         {/* Slider Handle */}
         <div 
-          className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize z-10"
+          className="absolute top-0 bottom-0 w-1 bg-black cursor-ew-resize z-10"
           style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
           onMouseDown={handleMouseDown}
           onTouchStart={() => setIsDragging(true)}
         >
           {/* Handle Circle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-black rounded-full flex items-center justify-center shadow-lg border border-white/20">
             <div className="flex items-center gap-0.5">
-              <ChevronLeft className="w-3 h-3 text-gray-800" />
-              <ChevronRight className="w-3 h-3 text-gray-800" />
+              <ChevronLeft className="w-3 h-3 text-white" />
+              <ChevronRight className="w-3 h-3 text-white" />
             </div>
           </div>
         </div>

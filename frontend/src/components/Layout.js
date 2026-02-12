@@ -191,29 +191,34 @@ const Layout = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-16">
+      <footer className="border-t border-white/5 py-12 md:py-16">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div className="md:col-span-2">
-              <h3 className="title-sm text-2xl mb-4">Cutting Corners</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            {/* About - Full width on mobile */}
+            <div className="col-span-2">
+              <h3 className="title-sm text-xl md:text-2xl mb-4">Cutting Corners</h3>
               <p className="text-gray-500 text-sm leading-relaxed max-w-md">
                 Conscious gemstone cutting by Michael Wall. Based in Tempe, Arizona. 
                 Specializing in sapphires, tourmalines, emeralds, and more.
               </p>
             </div>
+            
+            {/* Navigation */}
             <div>
-              <h4 className="text-sm uppercase tracking-widest mb-4 text-gray-400">Navigation</h4>
-              <div className="space-y-2">
+              <h4 className="text-sm uppercase tracking-widest mb-4 text-amber-400 md:text-gray-400">Navigation</h4>
+              <div className="space-y-3 md:space-y-2">
                 {navLinks.map(link => (
-                  <Link key={link.path} to={link.path} className="block text-gray-500 hover:text-white text-sm transition-colors">
+                  <Link key={link.path} to={link.path} className="block text-gray-400 hover:text-white text-sm transition-colors">
                     {link.label}
                   </Link>
                 ))}
               </div>
             </div>
+            
+            {/* Contact */}
             <div>
-              <h4 className="text-sm uppercase tracking-widest mb-4 text-gray-400">Contact</h4>
-              <div className="space-y-2 text-gray-500 text-sm">
+              <h4 className="text-sm uppercase tracking-widest mb-4 text-teal-400 md:text-gray-400">Contact</h4>
+              <div className="space-y-3 md:space-y-2 text-gray-500 text-sm">
                 <p>Tempe, Arizona</p>
                 <p>
                   <a href="tel:4802854595" className="hover:text-white transition-colors">480-286-4595</a>

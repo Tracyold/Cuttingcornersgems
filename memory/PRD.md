@@ -77,6 +77,9 @@ A gemstone portfolio website for showcasing gem cutting work, with features for 
 - `POST/GET/PATCH/DELETE /api/admin/designs` - Design CRUD
 - `POST/GET/PATCH/DELETE /api/admin/gallery` - Gallery CRUD
 - `POST/GET/PATCH/DELETE /api/admin/products` - Product CRUD
+- `GET /api/admin/messages/unread-counts` - Get total and per-user unread message counts
+- `PATCH /api/admin/users/{user_id}/messages/mark-read` - Mark user's messages as read
+- `POST /api/admin/users/{user_id}/message` - Send message to user
 
 ## Database Collections
 - `journeys` - Journey stories data

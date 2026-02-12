@@ -46,12 +46,12 @@
 }
 
 .section-subtitle {
-    @apply text-gray-400 text-base md:text-lg tracking-wide;
+    @apply text-gray-300 text-base md:text-lg tracking-wide;
 }
 
 /* Category sidebar */
 .category-item {
-    @apply text-sm uppercase tracking-widest text-gray-500 hover:text-white transition-colors duration-300 cursor-pointer py-2;
+    @apply text-sm uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-300 cursor-pointer py-2;
 }
 
 .category-item.active {

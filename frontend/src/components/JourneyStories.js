@@ -396,47 +396,6 @@ const JourneyDetail = ({ journey, onClose }) => {
     </div>
   );
 };
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Text */}
-                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-                  <h3 className="title-sm text-xl mb-2">{step.title}</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* End Marker */}
-          <div className="relative mt-12 md:mt-16 text-center">
-            <div 
-              className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full transform -translate-x-1/2"
-              style={{ backgroundColor: journey.color }}
-            />
-            <div className="pl-12 md:pl-0">
-              <Gem className="w-8 h-8 mx-auto mb-2" style={{ color: journey.color }} />
-              <p className="text-xs uppercase tracking-widest text-gray-500">Journey Complete</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Padding */}
-        <div className="h-16" />
-      </div>
-
-      {/* Image Popup */}
-      {popupImage && (
-        <ImagePopup
-          image={popupImage.image}
-          title={popupImage.title}
-          onClose={closeImagePopup}
-        />
-      )}
-    </div>
-  );
-};
 
 // Main Journey Stories Component
 const JourneyStories = () => {

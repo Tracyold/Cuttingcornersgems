@@ -240,9 +240,8 @@ const JourneyCard = ({ journey, onClick }) => {
       </div>
       
       {/* Card Info */}
-      <div className="space-y-1 cursor-pointer" onClick={() => { setShowClickPrompt(true); }}>
-        <h3 className="title-sm text-lg group-hover:text-amber-400 transition-colors">{journey.gemName}</h3>
-        <p className="text-sm text-gray-500">{journey.subtitle}</p>
+      <div className="cursor-pointer" onClick={() => { setShowClickPrompt(true); }}>
+        <p className="text-sm text-gray-500 uppercase tracking-widest">{journey.subtitle}</p>
       </div>
     </div>
   );

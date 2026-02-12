@@ -330,14 +330,14 @@ const JourneyDetail = ({ journey, onClose }) => {
       </div>
 
       {/* Journey Content */}
-      <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Simple Grid with Arrows */}
-        <div className="flex flex-wrap justify-start items-center gap-2 md:gap-3">
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Simple Grid with Arrows - 4 per row */}
+        <div className="flex flex-wrap items-center gap-y-3">
           {displaySteps.map((step, index) => (
             <React.Fragment key={index}>
               {/* Photo */}
               <div 
-                className="relative w-[calc(50%-20px)] md:w-[calc(25%-18px)] aspect-square overflow-hidden cursor-pointer group rounded"
+                className="relative w-[20%] aspect-square overflow-hidden cursor-pointer group rounded"
                 onClick={() => openImagePopup(step)}
                 data-testid={`timeline-image-${index}`}
               >
@@ -356,8 +356,8 @@ const JourneyDetail = ({ journey, onClose }) => {
               
               {/* Arrow (not after last item) */}
               {index < displaySteps.length - 1 && (
-                <div className="flex items-center justify-center w-5 md:w-6">
-                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-amber-400" />
+                <div className="flex items-center justify-center w-[6.66%]">
+                  <ArrowRight className="w-5 h-5 text-amber-400" />
                 </div>
               )}
             </React.Fragment>

@@ -37,6 +37,15 @@ from config.security import (
 
 app = FastAPI()
 
+# CORS middleware - must be added early before routes
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 # Add cache control middleware
 from middleware.cache_control import CacheControlMiddleware
 app.add_middleware(CacheControlMiddleware)

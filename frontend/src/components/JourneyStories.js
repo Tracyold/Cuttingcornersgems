@@ -270,7 +270,7 @@ const JourneyDetail = ({ journey, onClose }) => {
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     {/* Inner vignette border */}
-                    <div className="absolute inset-0 shadow-[inset_0_0_30px_10px_rgba(0,0,0,0.6)] pointer-events-none" />
+                    <div className="absolute inset-0 shadow-[inset_0_0_20px_6px_rgba(0,0,0,0.4)] pointer-events-none" />
                     {/* Hover overlay with zoom icon */}
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       <ZoomIn className="w-8 h-8 text-white" />

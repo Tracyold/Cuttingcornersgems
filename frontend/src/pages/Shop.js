@@ -624,6 +624,28 @@ const Shop = () => {
         </div>
       </section>
 
+      {/* Mobile: Category Filter */}
+      <section className="pb-4 md:hidden sticky top-20 z-30 bg-black/95 backdrop-blur-md border-b border-white/10">
+        <div className="px-4 py-4">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`flex-shrink-0 px-4 py-2 text-xs font-medium border transition-all ${
+                  selectedCategory === cat.id
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+                    : 'border-white/20 text-gray-500 hover:border-amber-500/50'
+                }`}
+                data-testid={`mobile-shop-category-${cat.id}`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Desktop: Category Filter */}
       <section className="pb-8 hidden md:block">
         <div className="container-custom">

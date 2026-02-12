@@ -23,6 +23,8 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminGallery from './pages/admin/AdminGallery';
+import AdminJourneys from './pages/admin/AdminJourneys';
+import AdminDesigns from './pages/admin/AdminDesigns';
 import AdminInquiries from './pages/admin/AdminInquiries';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminSold from './pages/admin/AdminSold';

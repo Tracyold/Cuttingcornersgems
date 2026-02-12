@@ -168,8 +168,8 @@ const Home = () => {
             ))}
           </div>
 
-          {/* Mobile: 2 column grid */}
-          <div className="grid grid-cols-2 gap-3 md:hidden">
+          {/* Mobile: Single column */}
+          <div className="grid grid-cols-1 gap-4 md:hidden">
             {[
               { icon: Cog, title: 'Custom Cutting', desc: 'Receive a tailored cutting experience designed to reveal each gemstone\'s highest potential.' },
               { icon: Sparkles, title: 'Re-Polish & Re-Cut', desc: 'Breathe new life into existing gemstones through restoration focused on above-industry-standard weight retention.' },
@@ -180,13 +180,17 @@ const Home = () => {
             ].map((service, i) => (
               <div 
                 key={service.title}
-                className="gem-card p-5 opacity-0 transition-all duration-700"
+                className="gem-card p-6 opacity-0 transition-all duration-700"
                 style={{ animationDelay: `${i * 50}ms` }}
                 data-scroll-reveal
               >
-                <service.icon className="w-7 h-7 mb-3 text-[#d4af37] opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
-                <h3 className="title-sm text-lg mb-2">{service.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
+                <div className="flex items-start gap-4">
+                  <service.icon className="w-8 h-8 text-[#d4af37] flex-shrink-0 opacity-0 transition-all duration-700" data-scroll-reveal strokeWidth={1.5} />
+                  <div>
+                    <h3 className="title-sm text-lg mb-2">{service.title}</h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{service.desc}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

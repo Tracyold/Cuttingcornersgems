@@ -982,9 +982,40 @@ const Dashboard = () => {
       <section className="pb-24">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar */}
+            {/* Sidebar - Mobile horizontal scroll, Desktop vertical */}
             <div className="lg:col-span-1">
-              <nav className="space-y-2" data-testid="dashboard-nav">
+              {/* Mobile: Horizontal scrollable tabs */}
+              <nav className="md:hidden flex gap-2 overflow-x-auto pb-4 -mx-1 px-1 scrollbar-hide" data-testid="dashboard-nav-mobile">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 text-sm font-medium border transition-all ${
+                      activeTab === tab.id
+                        ? 'bg-amber-500/20 border-amber-500 text-amber-400'
+                        : 'border-white/20 text-gray-500 hover:border-teal-500/50'
+                    }`}
+                    data-testid={`mobile-tab-${tab.id}`}
+                  >
+                    <tab.icon className="w-4 h-4" />
+                    <span>{tab.label}</span>
+                    {tab.id === 'messages' && messages.length > 0 && (
+                      <span className="ml-1 text-xs bg-teal-500/30 text-teal-400 px-1.5 py-0.5">{messages.length}</span>
+                    )}
+                  </button>
+                ))}
+                <button
+                  onClick={handleLogout}
+                  className="flex-shrink-0 flex items-center gap-2 px-4 py-3 text-sm font-medium border border-white/20 text-gray-500 hover:border-red-500/50 hover:text-red-400 transition-all"
+                  data-testid="mobile-logout-btn"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Logout</span>
+                </button>
+              </nav>
+
+              {/* Desktop: Vertical sidebar */}
+              <nav className="hidden md:block space-y-2" data-testid="dashboard-nav">
                 {tabs.map(tab => (
                   <button
                     key={tab.id}

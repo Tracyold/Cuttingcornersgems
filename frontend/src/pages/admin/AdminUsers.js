@@ -666,6 +666,8 @@ const AdminUsers = () => {
               expanded={expandedUser === user.id}
               onToggle={() => setExpandedUser(expandedUser === user.id ? null : user.id)}
               onUserUpdate={fetchUsers}
+              unreadCount={unreadCounts[user.id] || 0}
+              onMessagesRead={handleMessagesRead}
             />
           ))}
         </div>

@@ -104,7 +104,6 @@ const SAMPLE_JOURNEYS = [
 const JourneyCard = ({ journey, onClick }) => {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [showClickPrompt, setShowClickPrompt] = useState(false);
   const containerRef = React.useRef(null);
 
@@ -120,7 +119,6 @@ const JourneyCard = ({ journey, onClick }) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
-    setHasInteracted(true);
   };
 
   const handleMouseMove = (e) => {
@@ -129,30 +127,38 @@ const JourneyCard = ({ journey, onClick }) => {
   };
 
   const handleMouseUp = () => {
-    setIsDragging(false);
+    if (isDragging) {
+      setIsDragging(false);
+      // Show the prompt after dragging to let them know there's more
+      setShowClickPrompt(true);
+    }
   };
 
   const handleTouchMove = (e) => {
-    setHasInteracted(true);
     handleMove(e.touches[0].clientX);
   };
 
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    // Show the prompt after dragging to let them know there's more
+    setShowClickPrompt(true);
+  };
+
   const handleCardClick = (e) => {
-    // If just finished dragging, don't do anything
-    if (hasInteracted) {
-      setHasInteracted(false);
+    // If currently dragging, don't do anything
+    if (isDragging) {
+      return;
+    }
+    
+    // If prompt is showing, open the timeline
+    if (showClickPrompt) {
+      onClick();
+      setShowClickPrompt(false);
       return;
     }
     
     // First click shows the prompt
-    if (!showClickPrompt) {
-      setShowClickPrompt(true);
-      return;
-    }
-    
-    // Second click opens the timeline
-    onClick();
-    setShowClickPrompt(false);
+    setShowClickPrompt(true);
   };
 
   // Reset prompt when clicking outside

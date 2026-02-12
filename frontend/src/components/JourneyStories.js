@@ -199,16 +199,15 @@ const JourneyCard = ({ journey, onClick }) => {
           className="absolute inset-0 w-full h-full object-cover"
         />
         
-        {/* Before Image (Clipped) */}
+        {/* Before Image (Clipped) - Static positioning */}
         <div 
-          className="absolute inset-0 overflow-hidden"
-          style={{ width: `${sliderPosition}%` }}
+          className="absolute inset-0 overflow-hidden pointer-events-none"
+          style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
         >
           <img 
             src={journey.coverImage} 
             alt="Before"
             className="absolute inset-0 w-full h-full object-cover"
-            style={{ width: containerRef.current ? `${containerRef.current.offsetWidth}px` : '100%' }}
           />
         </div>
         

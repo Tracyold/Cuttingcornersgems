@@ -30,7 +30,7 @@ client = AsyncIOMotorClient(
 db = client[db_name]
 
 # Import centralized security config (single source of truth)
-from backend.config.security import (
+from config.security import (
     JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_HOURS,
     ADMIN_USERNAME, ADMIN_PASSWORD_HASH
 )

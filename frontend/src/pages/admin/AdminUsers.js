@@ -7,9 +7,12 @@ import {
 } from 'lucide-react';
 import { adminApi } from '../../api/adminApi';
 import { toast } from 'sonner';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Expandable User Card
-const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
+const UserCard = ({ user, expanded, onToggle, onUserUpdate, unreadCount, onMessagesRead }) => {
   const [details, setDetails] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [resettingPassword, setResettingPassword] = useState(false);
@@ -36,6 +39,19 @@ const UserCard = ({ user, expanded, onToggle, onUserUpdate }) => {
     try {
       const data = await adminApi.get(`/admin/users/${user.id}/details`);
       setDetails(data);
+      
+      // Mark messages as read when user is expanded
+      if (unreadCount > 0) {
+        try {
+          const token = localStorage.getItem('adminToken');
+          await axios.patch(`${API_URL}/api/admin/users/${user.id}/messages/mark-read`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (onMessagesRead) onMessagesRead(user.id);
+        } catch (err) {
+          console.error('Failed to mark messages as read:', err);
+        }
+      }
     } catch (error) {
       console.error('Failed to fetch user details:', error);
     } finally {

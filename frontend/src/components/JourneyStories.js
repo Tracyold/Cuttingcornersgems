@@ -260,7 +260,7 @@ const JourneyDetail = ({ journey, onClose }) => {
                 {/* Image - Clickable */}
                 <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
                   <div 
-                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group rounded shadow-[0_0_40px_8px_rgba(0,0,0,0.7)]"
+                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group rounded shadow-[0_0_25px_4px_rgba(255,255,255,0.15),0_0_50px_10px_rgba(0,0,0,0.6)]"
                     onClick={() => openImagePopup(step)}
                     data-testid={`timeline-image-${index}`}
                   >

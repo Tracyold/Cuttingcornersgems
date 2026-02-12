@@ -3,6 +3,7 @@ import { X, ChevronLeft, ChevronRight, Sparkles, Gem, PenTool } from 'lucide-rea
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import JourneyStories from '../components/JourneyStories';
+import DesignGallery from '../components/DesignGallery';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL + '/api';
 

@@ -226,43 +226,71 @@ const Gallery = () => {
           <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8">
             {/* Sidebar */}
             <aside className="md:sticky md:top-28 md:h-fit" data-testid="gallery-sidebar">
-              {/* Era Filter */}
-              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Era</h3>
+              {/* View Mode Toggle */}
+              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">View</h3>
               <nav className="space-y-1 mb-8">
-                {ERAS.map(era => (
-                  <button
-                    key={era.id}
-                    onClick={() => setSelectedEra(era.id)}
-                    className={`category-item block w-full text-left ${selectedEra === era.id ? 'active' : ''}`}
-                    data-testid={`era-${era.id}`}
-                  >
-                    {era.name}
-                  </button>
-                ))}
+                {VIEW_MODES.map(mode => {
+                  const Icon = mode.icon;
+                  return (
+                    <button
+                      key={mode.id}
+                      onClick={() => setViewMode(mode.id)}
+                      className={`category-item w-full text-left flex items-center gap-2 ${viewMode === mode.id ? 'active' : ''}`}
+                      data-testid={`view-${mode.id}`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {mode.name}
+                    </button>
+                  );
+                })}
               </nav>
-              
-              {/* Category Filter */}
-              <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Category</h3>
-              <nav className="space-y-1">
-                {CATEGORIES.map(cat => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(cat.id)}
-                    className={`category-item block w-full text-left ${selectedCategory === cat.id ? 'active' : ''}`}
-                    data-testid={`category-${cat.id}`}
-                  >
-                    {cat.name}
-                  </button>
-                ))}
-              </nav>
+
+              {/* Era Filter - only show for gallery view */}
+              {viewMode === 'gallery' && (
+                <>
+                  <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Era</h3>
+                  <nav className="space-y-1 mb-8">
+                    {ERAS.map(era => (
+                      <button
+                        key={era.id}
+                        onClick={() => setSelectedEra(era.id)}
+                        className={`category-item block w-full text-left ${selectedEra === era.id ? 'active' : ''}`}
+                        data-testid={`era-${era.id}`}
+                      >
+                        {era.name}
+                      </button>
+                    ))}
+                  </nav>
+                  
+                  {/* Category Filter */}
+                  <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Category</h3>
+                  <nav className="space-y-1">
+                    {CATEGORIES.map(cat => (
+                      <button
+                        key={cat.id}
+                        onClick={() => setSelectedCategory(cat.id)}
+                        className={`category-item block w-full text-left ${selectedCategory === cat.id ? 'active' : ''}`}
+                        data-testid={`category-${cat.id}`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </nav>
+                </>
+              )}
             </aside>
 
-            {/* Gallery Grid */}
-            <div data-testid="gallery-grid">
-              {loading ? (
-                <div className="gallery-grid">
-                  {[...Array(9)].map((_, i) => (
-                    <div key={i} className="aspect-square bg-white/5 animate-pulse" />
+            {/* Main Content Area */}
+            <div data-testid="gallery-content">
+              {viewMode === 'journeys' ? (
+                <JourneyStories />
+              ) : (
+                /* Gallery Grid */
+                <div data-testid="gallery-grid">
+                  {loading ? (
+                    <div className="gallery-grid">
+                      {[...Array(9)].map((_, i) => (
+                        <div key={i} className="aspect-square bg-white/5 animate-pulse" />
                   ))}
                 </div>
               ) : items.length === 0 ? (

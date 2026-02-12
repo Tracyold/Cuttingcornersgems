@@ -331,17 +331,6 @@ const JourneyDetail = ({ journey, onClose }) => {
 
       {/* Journey Content */}
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Title Section */}
-        <div className="text-center mb-12">
-          <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-2">The Journey</p>
-          <h1 className="title-sm text-3xl md:text-4xl mb-2">{journey.gemName}</h1>
-          <p className="text-gray-400">{journey.subtitle}</p>
-          <div 
-            className="w-16 h-0.5 mx-auto mt-6"
-            style={{ backgroundColor: journey.color }}
-          />
-        </div>
-
         {/* Simple Grid with Arrows */}
         <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
           {displaySteps.map((step, index) => (
@@ -367,18 +356,12 @@ const JourneyDetail = ({ journey, onClose }) => {
               
               {/* Arrow (not after last item) */}
               {index < displaySteps.length - 1 && (
-                <div className="flex items-center justify-center w-4 md:w-6">
-                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
+                <div className="flex items-center justify-center w-6 md:w-8">
+                  <ChevronRight className="w-6 h-6 md:w-8 md:h-8 text-amber-400" />
                 </div>
               )}
             </React.Fragment>
           ))}
-        </div>
-
-        {/* End Marker */}
-        <div className="text-center mt-12">
-          <Gem className="w-8 h-8 mx-auto mb-2" style={{ color: journey.color }} />
-          <p className="text-xs uppercase tracking-widest text-gray-500">Journey Complete</p>
         </div>
 
         {/* Bottom Padding */}

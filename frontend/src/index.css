@@ -140,3 +140,36 @@ input:focus, textarea:focus, select:focus {
     background: rgba(0, 0, 0, 0.95);
     backdrop-filter: blur(20px);
 }
+
+/* ========================================
+   LUXURY DARK THEME COLOR OVERRIDES
+   Brighten gray text for better contrast
+   against #121214 background
+   ======================================== */
+
+/* Override Tailwind gray-500 to be brighter */
+.text-gray-500 {
+    color: #9CA3AF !important; /* gray-400 equivalent */
+}
+
+/* Override Tailwind gray-400 to be brighter */
+.text-gray-400 {
+    color: #D1D5DB !important; /* gray-300 equivalent */
+}
+
+/* Override Tailwind gray-600 to be brighter */
+.text-gray-600 {
+    color: #9CA3AF !important; /* gray-400 equivalent */
+}
+
+/* Keep forms and modals with true black backgrounds for contrast */
+.glass {
+    background: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Ensure modals have black backgrounds */
+[role="dialog"],
+.modal-content,
+[data-state="open"] {
+    background-color: #000000;
+}

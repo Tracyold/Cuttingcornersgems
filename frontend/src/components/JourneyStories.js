@@ -288,7 +288,7 @@ const ImagePopup = ({ image, title, onClose }) => {
   );
 };
 
-// Journey Detail Page - Scrollable Timeline (NOT a slideshow)
+// Journey Detail Page - Simple Grid Layout with Arrows
 const JourneyDetail = ({ journey, onClose }) => {
   const [popupImage, setPopupImage] = useState(null);
 
@@ -300,6 +300,9 @@ const JourneyDetail = ({ journey, onClose }) => {
     setPopupImage(null);
   };
 
+  // Limit to 8 photos max
+  const displaySteps = journey.steps.slice(0, 8);
+
   return (
     <div 
       className="fixed inset-0 z-50 bg-black overflow-y-auto"
@@ -307,7 +310,7 @@ const JourneyDetail = ({ journey, onClose }) => {
     >
       {/* Sticky Header */}
       <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <button
             onClick={onClose}
             className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
@@ -327,7 +330,7 @@ const JourneyDetail = ({ journey, onClose }) => {
       </div>
 
       {/* Journey Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Title Section */}
         <div className="text-center mb-12">
           <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-2">The Journey</p>
@@ -339,45 +342,60 @@ const JourneyDetail = ({ journey, onClose }) => {
           />
         </div>
 
-        {/* Timeline */}
-        <div className="relative">
-          {/* Vertical Line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/10 transform md:-translate-x-px" />
-          
-          {/* Steps */}
-          <div className="space-y-12 md:space-y-16">
-            {journey.steps.map((step, index) => (
+        {/* Simple Grid with Arrows */}
+        <div className="flex flex-wrap justify-center items-center gap-2 md:gap-4">
+          {displaySteps.map((step, index) => (
+            <React.Fragment key={index}>
+              {/* Photo */}
               <div 
-                key={index}
-                className={`relative flex flex-col md:flex-row gap-6 md:gap-12 ${
-                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                }`}
+                className="relative w-[calc(50%-24px)] md:w-[calc(25%-24px)] aspect-square overflow-hidden cursor-pointer group rounded"
+                onClick={() => openImagePopup(step)}
+                data-testid={`timeline-image-${index}`}
               >
-                {/* Timeline Number */}
-                <div 
-                  className="absolute left-4 md:left-1/2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transform -translate-x-1/2 z-10"
-                  style={{ backgroundColor: journey.color }}
-                >
-                  {index + 1}
+                <img
+                  src={step.image}
+                  alt={step.title}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                {/* Inner vignette border */}
+                <div className="absolute inset-0 shadow-[inset_0_0_20px_6px_rgba(0,0,0,0.4)] pointer-events-none" />
+                {/* Hover overlay with zoom icon */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <ZoomIn className="w-6 h-6 text-white" />
                 </div>
-                
-                {/* Image - Clickable */}
-                <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
-                  <div 
-                    className="relative aspect-[4/3] overflow-hidden cursor-pointer group rounded"
-                    onClick={() => openImagePopup(step)}
-                    data-testid={`timeline-image-${index}`}
-                  >
-                    <img
-                      src={step.image}
-                      alt={step.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    {/* Inner vignette border */}
-                    <div className="absolute inset-0 shadow-[inset_0_0_20px_6px_rgba(0,0,0,0.4)] pointer-events-none" />
-                    {/* Hover overlay with zoom icon */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <ZoomIn className="w-8 h-8 text-white" />
+              </div>
+              
+              {/* Arrow (not after last item) */}
+              {index < displaySteps.length - 1 && (
+                <div className="flex items-center justify-center w-4 md:w-6">
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-amber-400" />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* End Marker */}
+        <div className="text-center mt-12">
+          <Gem className="w-8 h-8 mx-auto mb-2" style={{ color: journey.color }} />
+          <p className="text-xs uppercase tracking-widest text-gray-500">Journey Complete</p>
+        </div>
+
+        {/* Bottom Padding */}
+        <div className="h-16" />
+      </div>
+
+      {/* Image Popup */}
+      {popupImage && (
+        <ImagePopup
+          image={popupImage.image}
+          title={popupImage.title}
+          onClose={closeImagePopup}
+        />
+      )}
+    </div>
+  );
+};
                     </div>
                   </div>
                 </div>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight, Play, Gem, Sparkles } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Gem, Sparkles, ArrowLeft } from 'lucide-react';
 
 // Sample journey data - this would come from API later
 const SAMPLE_JOURNEYS = [
@@ -134,14 +134,9 @@ const JourneyCard = ({ journey, onClick }) => {
           </svg>
         </div>
         
-        {/* Play Button Overlay */}
+        {/* Hover Overlay */}
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div 
-            className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-white/80 bg-white/10 backdrop-blur-sm"
-            style={{ borderColor: journey.color }}
-          >
-            <Play className="w-6 h-6 text-white ml-1" fill="white" />
-          </div>
+          <span className="text-sm uppercase tracking-widest">View Journey</span>
         </div>
         
         {/* Steps Count Badge */}
@@ -162,150 +157,117 @@ const JourneyCard = ({ journey, onClick }) => {
   );
 };
 
-// Fullscreen Journey Viewer
-const JourneyViewer = ({ journey, onClose }) => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  const goToStep = useCallback((index) => {
-    if (index === currentStep || isTransitioning) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setCurrentStep(index);
-      setIsTransitioning(false);
-    }, 300);
-  }, [currentStep, isTransitioning]);
-
-  const goNext = useCallback(() => {
-    if (currentStep < journey.steps.length - 1) {
-      goToStep(currentStep + 1);
-    }
-  }, [currentStep, journey.steps.length, goToStep]);
-
-  const goPrev = useCallback(() => {
-    if (currentStep > 0) {
-      goToStep(currentStep - 1);
-    }
-  }, [currentStep, goToStep]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowRight') goNext();
-      if (e.key === 'ArrowLeft') goPrev();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose, goNext, goPrev]);
-
-  // Touch/swipe handling
-  const [touchStart, setTouchStart] = useState(null);
-  const handleTouchStart = (e) => setTouchStart(e.touches[0].clientX);
-  const handleTouchEnd = (e) => {
-    if (!touchStart) return;
-    const touchEnd = e.changedTouches[0].clientX;
-    const diff = touchStart - touchEnd;
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) goNext();
-      else goPrev();
-    }
-    setTouchStart(null);
-  };
-
-  const step = journey.steps[currentStep];
-  const progress = ((currentStep + 1) / journey.steps.length) * 100;
-
+// Journey Detail Page - Scrollable Timeline (NOT a slideshow)
+const JourneyDetail = ({ journey, onClose }) => {
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      data-testid="journey-viewer"
+      className="fixed inset-0 z-50 bg-black overflow-y-auto"
+      data-testid="journey-detail"
     >
-      {/* Progress Bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-white/10 z-20">
-        <div 
-          className="h-full transition-all duration-500 ease-out"
-          style={{ width: `${progress}%`, backgroundColor: journey.color }}
-        />
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-10 bg-black/90 backdrop-blur-sm border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+          <button
+            onClick={onClose}
+            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+            data-testid="journey-back-btn"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm uppercase tracking-widest">Back</span>
+          </button>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 flex items-center justify-center hover:bg-white/10 transition-colors"
+            data-testid="journey-close-btn"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
-      {/* Close Button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center bg-black/50 backdrop-blur-sm hover:bg-white/10 transition-colors"
-        data-testid="journey-close-btn"
-      >
-        <X className="w-5 h-5" />
-      </button>
-
-      {/* Header */}
-      <div className="absolute top-4 left-4 z-20">
-        <p className="text-xs uppercase tracking-[0.2em] text-gray-400 mb-1">The Journey</p>
-        <h2 className="title-sm text-xl">{journey.gemName}</h2>
-      </div>
-
-      {/* Main Image */}
-      <div className="absolute inset-0 flex items-center justify-center p-4 md:p-20">
-        <div className={`relative w-full h-full max-w-4xl transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-          <img
-            src={step.image}
-            alt={step.title}
-            className="w-full h-full object-contain"
+      {/* Journey Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Title Section */}
+        <div className="text-center mb-12">
+          <p className="text-xs uppercase tracking-[0.3em] text-gray-500 mb-2">The Journey</p>
+          <h1 className="title-sm text-3xl md:text-4xl mb-2">{journey.gemName}</h1>
+          <p className="text-gray-400">{journey.subtitle}</p>
+          <div 
+            className="w-16 h-0.5 mx-auto mt-6"
+            style={{ backgroundColor: journey.color }}
           />
         </div>
-      </div>
 
-      {/* Navigation Arrows - Desktop */}
-      <button
-        onClick={goPrev}
-        disabled={currentStep === 0}
-        className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center bg-black/50 backdrop-blur-sm hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-        data-testid="journey-prev-btn"
-      >
-        <ChevronLeft className="w-6 h-6" />
-      </button>
-      <button
-        onClick={goNext}
-        disabled={currentStep === journey.steps.length - 1}
-        className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 items-center justify-center bg-black/50 backdrop-blur-sm hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-        data-testid="journey-next-btn"
-      >
-        <ChevronRight className="w-6 h-6" />
-      </button>
-
-      {/* Bottom Info Panel */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 md:p-8">
-        {/* Step Dots */}
-        <div className="flex items-center justify-center gap-2 mb-4">
-          {journey.steps.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToStep(index)}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                index === currentStep 
-                  ? 'w-8 bg-white' 
-                  : 'bg-white/30 hover:bg-white/50'
-              }`}
-              data-testid={`journey-dot-${index}`}
+        {/* Timeline */}
+        <div className="relative">
+          {/* Vertical Line */}
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-white/10 transform md:-translate-x-px" />
+          
+          {/* Steps */}
+          <div className="space-y-12 md:space-y-16">
+            {journey.steps.map((step, index) => (
+              <div 
+                key={index}
+                className={`relative flex flex-col md:flex-row gap-6 md:gap-12 ${
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                }`}
+              >
+                {/* Timeline Dot */}
+                <div 
+                  className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full border-2 transform -translate-x-1/2 bg-black z-10"
+                  style={{ borderColor: journey.color }}
+                />
+                
+                {/* Step Number - Mobile */}
+                <div 
+                  className="md:hidden absolute left-0 top-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium"
+                  style={{ backgroundColor: journey.color }}
+                >
+                  {index + 1}
+                </div>
+                
+                {/* Image */}
+                <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src={step.image}
+                      alt={step.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {/* Step number badge - Desktop */}
+                    <div 
+                      className="hidden md:flex absolute top-4 left-4 w-8 h-8 rounded-full items-center justify-center text-xs font-medium"
+                      style={{ backgroundColor: journey.color }}
+                    >
+                      {index + 1}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Text */}
+                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
+                  <h3 className="title-sm text-xl mb-2">{step.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* End Marker */}
+          <div className="relative mt-12 md:mt-16 text-center">
+            <div 
+              className="absolute left-4 md:left-1/2 w-4 h-4 rounded-full transform -translate-x-1/2"
+              style={{ backgroundColor: journey.color }}
             />
-          ))}
+            <div className="pl-12 md:pl-0">
+              <Gem className="w-8 h-8 mx-auto mb-2" style={{ color: journey.color }} />
+              <p className="text-xs uppercase tracking-widest text-gray-500">Journey Complete</p>
+            </div>
+          </div>
         </div>
 
-        {/* Step Info */}
-        <div className="text-center max-w-2xl mx-auto">
-          <p className="text-xs uppercase tracking-[0.2em] mb-2" style={{ color: journey.color }}>
-            Step {currentStep + 1} of {journey.steps.length}
-          </p>
-          <h3 className="title-sm text-2xl mb-2">{step.title}</h3>
-          <p className="text-gray-400 text-sm md:text-base leading-relaxed">{step.description}</p>
-        </div>
-
-        {/* Mobile Swipe Hint */}
-        <p className="md:hidden text-center text-xs text-gray-600 mt-4">
-          Swipe to navigate
-        </p>
+        {/* Bottom Padding */}
+        <div className="h-16" />
       </div>
     </div>
   );
@@ -356,9 +318,9 @@ const JourneyStories = () => {
         </div>
       )}
 
-      {/* Fullscreen Viewer */}
+      {/* Journey Detail Page */}
       {selectedJourney && (
-        <JourneyViewer
+        <JourneyDetail
           journey={selectedJourney}
           onClose={closeJourney}
         />

@@ -7,18 +7,45 @@ import {
   DollarSign, Gem, PenTool
 } from 'lucide-react';
 import { useAdmin } from '../../context/AdminContext';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const AdminLayout = ({ children }) => {
   const { isAdmin, loading, logout } = useAdmin();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !isAdmin) {
       navigate('/admin');
     }
   }, [isAdmin, loading, navigate]);
+
+  // Fetch unread message count
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        if (!token) return;
+        const response = await axios.get(`${API_URL}/api/admin/messages/unread-counts`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUnreadCount(response.data.total_unread || 0);
+      } catch (error) {
+        console.error('Failed to fetch unread count:', error);
+      }
+    };
+
+    if (isAdmin) {
+      fetchUnreadCount();
+      // Poll every 30 seconds
+      const interval = setInterval(fetchUnreadCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isAdmin]);
 
   if (loading) {
     return (

@@ -2,7 +2,7 @@
 
 /* Navigation */
 .nav-link {
-    @apply text-sm uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-300;
+    @apply text-sm uppercase tracking-widest text-gray-300 hover:text-white transition-colors duration-300;
 }
 
 .nav-link.active {

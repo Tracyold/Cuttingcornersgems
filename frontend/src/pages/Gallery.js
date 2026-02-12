@@ -269,8 +269,7 @@ const Gallery = () => {
                               <p className="text-xs text-gray-400">Weight: <span className="text-teal-400">{item.carat}</span></p>
                             )}
                           </div>
-                          <p className="text-xs text-gray-600 mt-4 uppercase tracking-wider border border-white/10 px-3 py-1">Not For Sale</p>
-                          <p className="text-[10px] text-gray-600 mt-3">Tap to close</p>
+                          <p className="text-[10px] text-gray-600 mt-4">Tap to close</p>
                         </div>
                       ) : (
                         <>

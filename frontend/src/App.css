@@ -85,7 +85,7 @@
 
 /* Spec text */
 .spec-text {
-    @apply font-mono text-xs uppercase tracking-widest text-gray-500;
+    @apply font-mono text-xs uppercase tracking-widest text-gray-400;
 }
 
 /* Modal backdrop */

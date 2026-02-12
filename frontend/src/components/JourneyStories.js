@@ -249,11 +249,13 @@ const JourneyDetail = ({ journey, onClose }) => {
                   index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                 }`}
               >
-                {/* Timeline Dot */}
+                {/* Timeline Number */}
                 <div 
-                  className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full border-2 transform -translate-x-1/2 bg-black z-10"
-                  style={{ borderColor: journey.color }}
-                />
+                  className="absolute left-4 md:left-1/2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transform -translate-x-1/2 z-10"
+                  style={{ backgroundColor: journey.color }}
+                >
+                  {index + 1}
+                </div>
                 
                 {/* Image - Clickable */}
                 <div className={`pl-12 md:pl-0 md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
@@ -274,21 +276,10 @@ const JourneyDetail = ({ journey, onClose }) => {
                   </div>
                 </div>
                 
-                {/* Text with Step Number */}
-                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center relative ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-                  {/* Step Number Badge */}
-                  <div 
-                    className={`absolute top-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium ${
-                      index % 2 === 0 ? 'left-12 md:left-12' : 'left-12 md:right-0 md:left-auto'
-                    }`}
-                    style={{ backgroundColor: journey.color }}
-                  >
-                    {index + 1}
-                  </div>
-                  <div className="pt-10 md:pt-0">
-                    <h3 className="title-sm text-xl mb-2">{step.title}</h3>
-                    <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
-                  </div>
+                {/* Text */}
+                <div className={`pl-12 md:pl-0 md:w-1/2 flex flex-col justify-center ${index % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
+                  <h3 className="title-sm text-xl mb-2">{step.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">{step.description}</p>
                 </div>
               </div>
             ))}

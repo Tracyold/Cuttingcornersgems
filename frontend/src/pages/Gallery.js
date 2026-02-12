@@ -282,31 +282,37 @@ const Gallery = () => {
                 <>
                   <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Era</h3>
                   <nav className="space-y-1 mb-8">
-                    {ERAS.map(era => (
-                      <button
-                        key={era.id}
-                        onClick={() => setSelectedEra(era.id)}
-                        className={`category-item block w-full text-left ${selectedEra === era.id ? 'active' : ''}`}
-                        data-testid={`era-${era.id}`}
-                      >
-                        {era.name}
-                      </button>
-                    ))}
+                    {ERAS.map(era => {
+                      const isActive = selectedEra === era.id;
+                      return (
+                        <button
+                          key={era.id}
+                          onClick={() => setSelectedEra(era.id)}
+                          className={`category-item block w-full text-left ${isActive ? 'active text-amber-400' : ''}`}
+                          data-testid={`era-${era.id}`}
+                        >
+                          {era.name}
+                        </button>
+                      );
+                    })}
                   </nav>
                   
                   {/* Category Filter */}
-                  <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Category</h3>
+                  <h3 className="text-sm uppercase tracking-widest text-gray-500 mb-4">Gem Type</h3>
                   <nav className="space-y-1">
-                    {CATEGORIES.map(cat => (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
-                        className={`category-item block w-full text-left ${selectedCategory === cat.id ? 'active' : ''}`}
-                        data-testid={`category-${cat.id}`}
-                      >
-                        {cat.name}
-                      </button>
-                    ))}
+                    {CATEGORIES.map(cat => {
+                      const isActive = selectedCategory === cat.id;
+                      return (
+                        <button
+                          key={cat.id}
+                          onClick={() => setSelectedCategory(cat.id)}
+                          className={`category-item block w-full text-left ${isActive ? 'active text-amber-400' : ''}`}
+                          data-testid={`category-${cat.id}`}
+                        >
+                          {cat.name}
+                        </button>
+                      );
+                    })}
                   </nav>
                 </>
               )}

@@ -34,6 +34,8 @@ const AdminLayout = ({ children }) => {
     { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/products', label: 'Products', icon: Package },
     { path: '/admin/gallery', label: 'Gallery', icon: Image },
+    { path: '/admin/journeys', label: 'Journeys', icon: Gem },
+    { path: '/admin/designs', label: 'Designs', icon: PenTool },
     { path: '/admin/studio', label: 'Studio Content', icon: Film },
     { path: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
     { path: '/admin/negotiations', label: 'Negotiations', icon: DollarSign },

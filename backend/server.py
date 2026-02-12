@@ -1555,7 +1555,7 @@ async def register(user_data: UserCreate):
         "id": user_id,
         "email": user_data.email,
         "name": user_data.name,
-        "phone": getattr(user_data, 'phone', None),
+        "phone": user_data.phone,
         "password_hash": hash_password(user_data.password),
         "created_at": datetime.now(timezone.utc).isoformat()
     }
@@ -1568,6 +1568,7 @@ async def register(user_data: UserCreate):
             id=user_id,
             email=user_data.email,
             name=user_data.name,
+            phone=user_data.phone,
             created_at=user["created_at"]
         )
     )

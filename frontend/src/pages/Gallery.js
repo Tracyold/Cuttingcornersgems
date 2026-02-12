@@ -192,11 +192,13 @@ const Gallery = () => {
         </div>
       </div>
 
-      {/* Mobile Gallery/Journeys */}
+      {/* Mobile Gallery/Journeys/Designs */}
       <section className="pb-24 md:hidden">
         <div className="px-4">
           {viewMode === 'journeys' ? (
             <JourneyStories />
+          ) : viewMode === 'designs' ? (
+            <DesignGallery />
           ) : (
             <>
               {loading ? (

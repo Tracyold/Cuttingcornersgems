@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Gem, Sparkles, ArrowLeft, ArrowRight, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from 'axios';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Sample journey data - this would come from API later
 const SAMPLE_JOURNEYS = [

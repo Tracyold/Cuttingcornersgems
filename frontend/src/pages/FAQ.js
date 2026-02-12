@@ -57,7 +57,7 @@ const FAQItem = ({ question, answer, index }) => {
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
       >
-        <span className="font-medium pr-4">{question}</span>
+        <span className="font-medium pr-4 normal-case">{question}</span>
         <ChevronDown 
           className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
         />

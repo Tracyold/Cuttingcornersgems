@@ -386,7 +386,36 @@ const JourneyDetail = ({ journey, onClose }) => {
 // Main Journey Stories Component
 const JourneyStories = () => {
   const [selectedJourney, setSelectedJourney] = useState(null);
-  const [journeys] = useState(SAMPLE_JOURNEYS);
+  const [journeys, setJourneys] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchJourneys = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/journeys`);
+        // Transform API data to match component structure
+        const transformedJourneys = response.data.map(journey => ({
+          id: journey.id,
+          gemName: journey.gem_name,
+          subtitle: journey.subtitle,
+          coverImage: journey.before_image,
+          finalImage: journey.after_image,
+          color: journey.color,
+          steps: journey.timeline_images.map((img, index) => ({
+            image: img,
+            title: `Step ${index + 1}`,
+            description: ''
+          }))
+        }));
+        setJourneys(transformedJourneys);
+      } catch (err) {
+        console.error('Failed to fetch journeys:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJourneys();
+  }, []);
 
   const openJourney = (journey) => {
     setSelectedJourney(journey);
@@ -397,6 +426,14 @@ const JourneyStories = () => {
     setSelectedJourney(null);
     document.body.style.overflow = 'auto';
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <div className="w-8 h-8 border-2 border-white/20 border-t-amber-400 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div data-testid="journey-stories-section">

@@ -104,6 +104,7 @@ const AdminLayout = ({ children }) => {
               if (item.type === 'divider') {
                 return <div key={i} className="my-4 border-t border-white/5" />;
               }
+              const showBadge = item.path === '/admin/users' && unreadCount > 0;
               return (
                 <Link
                   key={item.path}
@@ -116,7 +117,12 @@ const AdminLayout = ({ children }) => {
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
-                  <span className="text-sm">{item.label}</span>
+                  <span className="text-sm flex-1">{item.label}</span>
+                  {showBadge && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full min-w-[20px] text-center">
+                      {unreadCount}
+                    </span>
+                  )}
                 </Link>
               );
             })}

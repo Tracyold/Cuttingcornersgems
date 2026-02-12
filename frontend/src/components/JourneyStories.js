@@ -241,7 +241,7 @@ const JourneyCard = ({ journey, onClick }) => {
       
       {/* Card Info */}
       <div className="cursor-pointer" onClick={() => { setShowClickPrompt(true); }}>
-        <p className="text-sm text-gray-500 uppercase tracking-widest">{journey.subtitle}</p>
+        <p className="text-sm text-amber-400 uppercase tracking-widest">{journey.subtitle}</p>
       </div>
     </div>
   );

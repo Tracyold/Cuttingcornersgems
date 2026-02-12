@@ -118,3 +118,66 @@
 .section-spacing {
     @apply py-24 md:py-32;
 }
+
+/* ========================================
+   MOBILE-SPECIFIC STYLES
+   Only affect screens smaller than md (768px)
+   ======================================== */
+
+/* Hide scrollbar for filter pills on mobile */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+/* Mobile navigation improvements */
+@media (max-width: 767px) {
+    /* Better touch targets on mobile */
+    .nav-link {
+        @apply py-3;
+    }
+    
+    /* Mobile section spacing */
+    .section-spacing {
+        @apply py-16;
+    }
+    
+    /* Mobile page title */
+    .page-title.title-xl {
+        font-size: 2rem !important;
+    }
+    
+    /* Mobile container padding */
+    .container-custom {
+        @apply px-4;
+    }
+    
+    /* Mobile gem cards - better tap targets */
+    .gem-card {
+        @apply active:border-amber-500/50;
+    }
+    
+    /* Mobile buttons - gold accent for primary actions */
+    .btn-mobile-gold {
+        @apply bg-amber-500/20 border border-amber-500 text-amber-400 px-6 py-3 font-medium transition-all active:bg-amber-500/30;
+    }
+    
+    /* Mobile buttons - teal accent for secondary actions */
+    .btn-mobile-teal {
+        @apply bg-teal-500/20 border border-teal-500 text-teal-400 px-6 py-3 font-medium transition-all active:bg-teal-500/30;
+    }
+    
+    /* Mobile filter buttons */
+    .filter-btn-mobile {
+        @apply px-4 py-2 text-xs border border-white/20 text-gray-400 transition-all;
+    }
+    
+    .filter-btn-mobile.active {
+        @apply border-amber-500 bg-amber-500/20 text-amber-400;
+    }
+}
+

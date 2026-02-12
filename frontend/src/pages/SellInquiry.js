@@ -134,6 +134,22 @@ const SellInquiry = () => {
       <section className="pb-24">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto">
+            {/* Info Card */}
+            <div className="gem-card p-6 mb-8 border-l-2 border-amber-500/50">
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Looking to sell your gemstones? Fill out the form below with details about your stones. 
+                Please upload photos and provide good descriptions of the gemstones, including your phone 
+                number and email for communication.
+              </p>
+              <Link 
+                to="/faq" 
+                className="inline-block mt-3 text-sm text-amber-400 hover:text-amber-300 transition-colors"
+                data-testid="sell-learn-more-link"
+              >
+                Learn more →
+              </Link>
+            </div>
+            
             <div className="gem-card p-8 md:p-12">
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="sell-inquiry-form">
                 {/* Name */}

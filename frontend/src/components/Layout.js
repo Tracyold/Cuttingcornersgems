@@ -128,31 +128,58 @@ const Layout = ({ children }) => {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden glass border-t border-white/5">
-            <div className="container-custom py-6 space-y-4">
-              {navLinks.map(link => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`block nav-link ${isActive(link.path) ? 'active' : ''}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {isAuthenticated ? (
-                <>
-                  <Link to="/dashboard" className="block nav-link" onClick={() => setMobileMenuOpen(false)}>
-                    Dashboard
+            <div className="container-custom py-8 px-6">
+              {/* Main Navigation */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {navLinks.map(link => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`block text-center py-4 px-4 border transition-all ${
+                      isActive(link.path) 
+                        ? 'border-amber-500 bg-amber-500/10 text-amber-400' 
+                        : 'border-white/20 text-gray-300 hover:border-teal-500 hover:bg-teal-500/10 hover:text-teal-400'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <span className="text-sm font-medium tracking-wide">{link.label}</span>
                   </Link>
-                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block nav-link">
-                    Logout
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-white/10 my-6"></div>
+
+              {/* User Actions */}
+              <div className="space-y-3">
+                {isAuthenticated ? (
+                  <>
+                    <Link 
+                      to="/dashboard" 
+                      className="flex items-center justify-center gap-3 py-4 px-6 bg-amber-500/20 border border-amber-500/50 text-amber-400 hover:bg-amber-500/30 transition-all" 
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="font-medium">My Account</span>
+                    </Link>
+                    <button 
+                      onClick={() => { logout(); setMobileMenuOpen(false); }} 
+                      className="w-full flex items-center justify-center gap-3 py-4 px-6 border border-white/20 text-gray-400 hover:border-red-500/50 hover:text-red-400 transition-all"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span className="font-medium">Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    onClick={() => { openAuthModal('login'); setMobileMenuOpen(false); }} 
+                    className="w-full flex items-center justify-center gap-3 py-4 px-6 bg-teal-500/20 border border-teal-500/50 text-teal-400 hover:bg-teal-500/30 transition-all"
+                  >
+                    <User className="w-5 h-5" />
+                    <span className="font-medium">Login / Sign Up</span>
                   </button>
-                </>
-              ) : (
-                <button onClick={() => { openAuthModal('login'); setMobileMenuOpen(false); }} className="block nav-link">
-                  Login
-                </button>
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}

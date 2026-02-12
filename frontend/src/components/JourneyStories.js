@@ -192,8 +192,8 @@ const JourneyCard = ({ journey, onClick }) => {
         </div>
       </div>
       
-      {/* Card Info - Clickable */}
-      <div className="space-y-1" onClick={onClick}>
+      {/* Card Info */}
+      <div className="space-y-1">
         <h3 className="title-sm text-lg group-hover:text-amber-400 transition-colors">{journey.gemName}</h3>
         <p className="text-sm text-gray-500">{journey.subtitle}</p>
       </div>

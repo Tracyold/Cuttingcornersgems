@@ -1562,6 +1562,57 @@ async def admin_restore_order(order_id: str, admin: dict = Depends(get_admin_use
     return {"message": "Order restored"}
 
 
+class RefundRequest(BaseModel):
+    reason: Optional[str] = None
+
+
+@api_router.post("/admin/orders/{order_id}/refund")
+async def admin_refund_order(order_id: str, request: RefundRequest = RefundRequest(), admin: dict = Depends(get_admin_user)):
+    """Mark an order as refunded. Removes it from revenue calculations."""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if not order.get("paid_at"):
+        raise HTTPException(status_code=400, detail="Cannot refund unpaid order")
+    
+    if order.get("refunded_at"):
+        raise HTTPException(status_code=400, detail="Order already refunded")
+    
+    await db.orders.update_one(
+        {"id": order_id},
+        {"$set": {
+            "refunded_at": datetime.now(timezone.utc).isoformat(),
+            "refund_reason": request.reason or "Return/refund requested",
+            "status": "refunded"
+        }}
+    )
+    
+    logging.info(f"Order {order_id} refunded. Reason: {request.reason}")
+    return {"message": "Order refunded", "order_id": order_id}
+
+
+@api_router.post("/admin/orders/{order_id}/unrefund")
+async def admin_unrefund_order(order_id: str, admin: dict = Depends(get_admin_user)):
+    """Reverse a refund (restore order to paid status)."""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    if not order.get("refunded_at"):
+        raise HTTPException(status_code=400, detail="Order is not refunded")
+    
+    await db.orders.update_one(
+        {"id": order_id},
+        {
+            "$unset": {"refunded_at": "", "refund_reason": ""},
+            "$set": {"status": "paid"}
+        }
+    )
+    
+    return {"message": "Refund reversed", "order_id": order_id}
+
+
 @api_router.post("/admin/orders/{order_id}/hard-delete")
 async def admin_hard_delete_order(order_id: str, admin: dict = Depends(get_admin_user)):
     """Hard-delete a paid order — TEST CLEANUP ONLY, blocked in production unless ALLOW_TEST_ADMIN_DELETES=true."""

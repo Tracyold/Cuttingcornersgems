@@ -1100,11 +1100,11 @@ const Dashboard = () => {
                                   <p className="text-sm text-gray-400">{formatDate(order.created_at)}</p>
                                 </div>
                                 <span className={`px-3 py-1 text-xs uppercase tracking-widest ${
-                                  order.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                                  order.paid_at ? 'bg-green-500/20 text-green-400' :
                                   order.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
                                   'bg-gray-500/20 text-gray-400'
                                 }`}>
-                                  {order.status}
+                                  {order.paid_at ? 'Paid' : order.status}
                                 </span>
                               </div>
                               {order.tracking_number && (

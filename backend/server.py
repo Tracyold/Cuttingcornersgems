@@ -1146,8 +1146,8 @@ async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
     bookings_count = await db.bookings.count_documents(nd)
     users_count = await db.users.count_documents(nd)
     
-    # Orders: PAID only (completed revenue events)
-    orders_count = await db.orders.count_documents({"paid_at": {"$ne": None}, **nd})
+    # Orders: PAID only (completed revenue events), excluding refunded
+    orders_count = await db.orders.count_documents({"paid_at": {"$ne": None}, "refunded_at": {"$eq": None}, **nd})
     # Commits: UNPAID+PENDING orders (active commitments)
     commits_count = await db.orders.count_documents({"status": "pending", "paid_at": None, **nd})
     # Negotiations
@@ -1161,9 +1161,15 @@ async def admin_get_dashboard_stats(admin: dict = Depends(get_admin_user)):
     sell_inquiries_count = await db.sell_inquiries.count_documents(nd)
     nyp_inquiries_count = await db.name_your_price_inquiries.count_documents(nd)
     
-    # Calculate revenue from non-deleted sold items
-    sold_items = await db.sold_items.find(nd, {"total_paid": 1}).to_list(1000)
-    total_revenue = sum(item.get("total_paid", 0) for item in sold_items)
+    # Calculate revenue from non-deleted, non-refunded sold items
+    sold_items = await db.sold_items.find({**nd, "refunded_at": {"$eq": None}}, {"total_paid": 1}).to_list(1000)
+    legacy_revenue = sum(item.get("total_paid", 0) for item in sold_items)
+    
+    # Add revenue from paid orders (non-refunded)
+    paid_orders = await db.orders.find({"paid_at": {"$ne": None}, "refunded_at": {"$eq": None}, **nd}, {"total": 1}).to_list(1000)
+    orders_revenue = sum(order.get("total", 0) for order in paid_orders)
+    
+    total_revenue = legacy_revenue + orders_revenue
     
     # Get pending items (non-deleted only)
     pending_bookings = await db.bookings.count_documents({"status": "pending", **nd})

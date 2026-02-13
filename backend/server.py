@@ -1063,6 +1063,48 @@ async def admin_send_sold_item_notes(item_id: str, data: dict, admin: dict = Dep
     
     return {"message": "Notes sent to user"}
 
+
+@api_router.post("/admin/sold/{item_id}/refund")
+async def admin_refund_sold_item(item_id: str, data: dict = {}, admin: dict = Depends(get_admin_user)):
+    """Mark a legacy sold item as refunded. Removes it from revenue calculations."""
+    sold_item = await db.sold_items.find_one({"id": item_id}, {"_id": 0})
+    if not sold_item:
+        raise HTTPException(status_code=404, detail="Sold item not found")
+    
+    if sold_item.get("refunded_at"):
+        raise HTTPException(status_code=400, detail="Item already refunded")
+    
+    reason = data.get("reason", "Return/refund requested")
+    
+    await db.sold_items.update_one(
+        {"id": item_id},
+        {"$set": {
+            "refunded_at": datetime.now(timezone.utc).isoformat(),
+            "refund_reason": reason
+        }}
+    )
+    
+    logging.info(f"Sold item {item_id} refunded. Reason: {reason}")
+    return {"message": "Item refunded", "item_id": item_id}
+
+
+@api_router.post("/admin/sold/{item_id}/unrefund")
+async def admin_unrefund_sold_item(item_id: str, admin: dict = Depends(get_admin_user)):
+    """Reverse a refund on a legacy sold item."""
+    sold_item = await db.sold_items.find_one({"id": item_id}, {"_id": 0})
+    if not sold_item:
+        raise HTTPException(status_code=404, detail="Sold item not found")
+    
+    if not sold_item.get("refunded_at"):
+        raise HTTPException(status_code=400, detail="Item is not refunded")
+    
+    await db.sold_items.update_one(
+        {"id": item_id},
+        {"$unset": {"refunded_at": "", "refund_reason": ""}}
+    )
+    
+    return {"message": "Refund reversed", "item_id": item_id}
+
 # ============ EMAIL TEST ENDPOINT ============
 
 @api_router.post("/admin/settings/test-email")

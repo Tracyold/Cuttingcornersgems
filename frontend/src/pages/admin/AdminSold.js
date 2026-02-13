@@ -372,6 +372,45 @@ const OrderCard = ({ order, onUpdate }) => {
           </div>
         </div>
       )}
+
+      {/* Refund Modal */}
+      {showRefundModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowRefundModal(false)}>
+          <div className="bg-gray-900 border border-white/10 p-6 max-w-md w-full mx-4" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold mb-4">Refund Order #{order.id.slice(0, 8)}</h3>
+            <p className="text-sm text-gray-400 mb-4">
+              This will remove <span className="text-orange-400 font-semibold">{formatPrice(order.total)}</span> from your revenue calculations.
+            </p>
+            <div className="mb-4">
+              <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Reason for refund</label>
+              <input
+                type="text"
+                value={refundReason}
+                onChange={(e) => setRefundReason(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                placeholder="e.g., Customer returned item, Quality issue..."
+                data-testid="refund-reason-input"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowRefundModal(false)}
+                className="flex-1 py-2 text-sm border border-white/20 hover:border-white/40"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRefund}
+                disabled={refunding}
+                className="flex-1 py-2 text-sm bg-orange-500/20 text-orange-400 hover:bg-orange-500/30 disabled:opacity-50"
+                data-testid="confirm-refund-btn"
+              >
+                {refunding ? 'Processing...' : 'Confirm Refund'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

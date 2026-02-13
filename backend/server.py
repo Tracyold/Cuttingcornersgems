@@ -823,6 +823,17 @@ async def admin_get_name_your_price_inquiries(include_deleted: bool = False, adm
 async def admin_get_orders(include_deleted: bool = False, admin: dict = Depends(get_admin_user)):
     query = {} if include_deleted else {"is_deleted": {"$ne": True}}
     orders = await db.orders.find(query, {"_id": 0}).to_list(1000)
+    
+    # Enrich orders with user details for admin view
+    for order in orders:
+        user_id = order.get("user_id")
+        if user_id:
+            user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+            if user:
+                order["buyer_name"] = user.get("name", "Unknown")
+                order["buyer_email"] = user.get("email", "")
+                order["buyer_phone"] = user.get("phone", "")
+    
     return orders
 
 @api_router.get("/admin/users")

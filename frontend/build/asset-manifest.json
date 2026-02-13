@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/static/css/main.968aa290.css",
+    "main.js": "/static/js/main.d3fe03ec.js",
+    "static/media/ArnoPro.otf": "/static/media/ArnoPro.03e3bc1169ea9cbfc935.otf",
+    "static/media/NexaRustSans.otf": "/static/media/NexaRustSans.1ce7f35737aa69928b51.otf",
+    "static/media/Oranienbaum.ttf": "/static/media/Oranienbaum.e5625604e9200634b240.ttf",
+    "static/media/Comfortaa-Regular.ttf": "/static/media/Comfortaa-Regular.886fcced57daea5944e7.ttf",
+    "static/media/Montserrat-Regular.otf": "/static/media/Montserrat-Regular.cfe8a3efde65b43ae9ef.otf",
+    "static/media/AHAMONO.otf": "/static/media/AHAMONO.b0066f7d985ab9a47457.otf",
+    "static/media/Vidaloka.otf": "/static/media/Vidaloka.f5cb71035ca9819ac303.otf",
+    "index.html": "/index.html",
+    "main.968aa290.css.map": "/static/css/main.968aa290.css.map",
+    "main.d3fe03ec.js.map": "/static/js/main.d3fe03ec.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.968aa290.css",
+    "static/js/main.d3fe03ec.js"
+  ]
+}

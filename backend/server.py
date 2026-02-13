@@ -545,6 +545,8 @@ class OrderResponse(BaseModel):
     tracking_carrier: Optional[str] = None
     tracking_entered_at: Optional[str] = None
     seller_notes: Optional[str] = None
+    refunded_at: Optional[str] = None
+    refund_reason: Optional[str] = None
 
 # ============ AUTH HELPERS ============
 

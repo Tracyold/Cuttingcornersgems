@@ -224,11 +224,11 @@ const OrderCard = ({ order, onUpdate }) => {
             </div>
             <div>
               <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Status</p>
-              <p className={`text-sm ${isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
-                {isPaid ? 'Paid' : 'Pending (Commit)'}
+              <p className={`text-sm ${isRefunded ? 'text-orange-400' : isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
+                {isRefunded ? 'Refunded' : isPaid ? 'Paid' : 'Pending (Commit)'}
               </p>
             </div>
-            {isPaid && (
+            {isPaid && !isRefunded && (
               <div>
                 <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Date Paid</p>
                 <p className="flex items-center gap-1 text-sm"><Calendar className="w-3 h-3 text-gray-500" /> {formatDate(order.paid_at)}</p>

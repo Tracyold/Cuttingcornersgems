@@ -180,20 +180,20 @@ const OrderCard = ({ order, onUpdate }) => {
                   )}
                   {isPaid && (
                     <button 
-                      onClick={(e) => { e.stopPropagation(); setShowRefundModal(true); }}
+                      onClick={(e) => { e.stopPropagation(); handleRemoveFromRevenue(); }}
                       className="text-xs px-3 py-1 bg-orange-500/20 text-orange-400 hover:bg-orange-500/30"
-                      data-testid={`refund-order-${order.id}`}
+                      data-testid={`remove-revenue-${order.id}`}
                     >
-                      Refund
+                      Remove from Revenue
                     </button>
                   )}
                   {isRefunded && (
                     <button 
-                      onClick={(e) => { e.stopPropagation(); handleUnrefund(); }}
+                      onClick={(e) => { e.stopPropagation(); handleRestoreToRevenue(); }}
                       className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30"
-                      data-testid={`unrefund-order-${order.id}`}
+                      data-testid={`restore-revenue-${order.id}`}
                     >
-                      Undo Refund
+                      Restore to Revenue
                     </button>
                   )}
                 </>

@@ -50,7 +50,7 @@
     "admin_password": "adm1npa$$word",
     "test_user_email": "Tracy.old.gold@gmail.com",
     "test_user_password": "fuckyoutoo",
-    "preview_url": "https://notification-hub-47.preview.emergentagent.com"
+    "preview_url": "https://admin-order-tracker.preview.emergentagent.com"
   },
 
   "seed_data_creation": "Created test_msg_* prefixed users during pytest run for message testing. These can be cleaned up.",

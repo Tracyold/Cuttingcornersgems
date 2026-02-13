@@ -541,6 +541,10 @@ class OrderResponse(BaseModel):
     payment_provider: Optional[str] = None
     is_deleted: Optional[bool] = None
     deleted_at: Optional[str] = None
+    tracking_number: Optional[str] = None
+    tracking_carrier: Optional[str] = None
+    tracking_entered_at: Optional[str] = None
+    seller_notes: Optional[str] = None
 
 # ============ AUTH HELPERS ============
 

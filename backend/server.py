@@ -524,7 +524,6 @@ class CartResponse(BaseModel):
     total: float
 
 class OrderCreate(BaseModel):
-    items: List[CartItem]
     shipping_address: str
     payment_method: str = "stripe"
 

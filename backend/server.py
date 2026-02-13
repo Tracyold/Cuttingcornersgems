@@ -1570,6 +1570,33 @@ async def admin_hard_delete_order(order_id: str, admin: dict = Depends(get_admin
     return {"message": "Order hard-deleted (test cleanup)", "order_id": order_id}
 
 
+class OrderTrackingUpdate(BaseModel):
+    tracking_number: Optional[str] = None
+    tracking_carrier: Optional[str] = None
+    seller_notes: Optional[str] = None
+
+
+@api_router.patch("/admin/orders/{order_id}/tracking")
+async def admin_update_order_tracking(order_id: str, updates: OrderTrackingUpdate, admin: dict = Depends(get_admin_user)):
+    """Update order tracking info and seller notes."""
+    order = await db.orders.find_one({"id": order_id}, {"_id": 0})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    update_fields = {}
+    if updates.tracking_number is not None:
+        update_fields["tracking_number"] = updates.tracking_number
+        update_fields["tracking_carrier"] = updates.tracking_carrier or ""
+        update_fields["tracking_entered_at"] = datetime.now(timezone.utc).isoformat()
+    if updates.seller_notes is not None:
+        update_fields["seller_notes"] = updates.seller_notes
+    
+    if update_fields:
+        await db.orders.update_one({"id": order_id}, {"$set": update_fields})
+    
+    return {"message": "Order updated", "order_id": order_id}
+
+
 @api_router.post("/admin/{domain}/{item_id}/delete")
 async def admin_soft_delete_record(
     domain: str, item_id: str,

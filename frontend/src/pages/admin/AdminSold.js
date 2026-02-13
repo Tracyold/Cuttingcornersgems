@@ -13,6 +13,9 @@ const OrderCard = ({ order, onUpdate }) => {
   });
   const [saving, setSaving] = useState(false);
   const [markingPaid, setMarkingPaid] = useState(false);
+  const [refunding, setRefunding] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
+  const [refundReason, setRefundReason] = useState('');
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -24,7 +27,8 @@ const OrderCard = ({ order, onUpdate }) => {
   const formatPrice = (p) => p ? `$${Number(p).toLocaleString()}` : '$0';
 
   const isPending = order.status === 'pending' && !order.paid_at;
-  const isPaid = !!order.paid_at;
+  const isPaid = !!order.paid_at && !order.refunded_at;
+  const isRefunded = !!order.refunded_at;
 
   const handleSaveTracking = async () => {
     setSaving(true);
@@ -53,6 +57,31 @@ const OrderCard = ({ order, onUpdate }) => {
       toast.error(e.response?.data?.detail || 'Failed to mark as paid');
     } finally {
       setMarkingPaid(false);
+    }
+  };
+
+  const handleRefund = async () => {
+    setRefunding(true);
+    try {
+      await adminApi.post(`/admin/orders/${order.id}/refund`, { reason: refundReason || 'Return/refund' });
+      toast.success('Order refunded - removed from revenue');
+      setShowRefundModal(false);
+      setRefundReason('');
+      onUpdate();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Refund failed');
+    } finally {
+      setRefunding(false);
+    }
+  };
+
+  const handleUnrefund = async () => {
+    try {
+      await adminApi.post(`/admin/orders/${order.id}/unrefund`);
+      toast.success('Refund reversed - added back to revenue');
+      onUpdate();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Failed to reverse refund');
     }
   };
 

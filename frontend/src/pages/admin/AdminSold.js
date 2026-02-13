@@ -118,7 +118,9 @@ const OrderCard = ({ order, onUpdate }) => {
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold">Order #{order.id.slice(0, 8)}</h3>
               {order.is_deleted && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5" data-testid="badge-deleted">DELETED</span>}
-              {isPaid ? (
+              {isRefunded ? (
+                <span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5" data-testid="badge-refunded">REFUNDED</span>
+              ) : isPaid ? (
                 <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5" data-testid="badge-paid">PAID</span>
               ) : (
                 <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5" data-testid="badge-pending">PENDING</span>

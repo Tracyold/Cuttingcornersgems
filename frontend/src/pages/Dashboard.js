@@ -1110,13 +1110,19 @@ const Dashboard = () => {
                               {order.tracking_number && (
                                 <div className="mb-4 p-3 bg-blue-500/10">
                                   <p className="text-xs uppercase tracking-widest text-blue-400 mb-1">Tracking</p>
-                                  <p className="font-mono text-sm">{order.tracking_number}</p>
+                                  <p className="font-mono text-sm">{order.tracking_carrier ? `${order.tracking_carrier.toUpperCase()}: ` : ''}{order.tracking_number}</p>
                                 </div>
                               )}
                               {order.seller_notes && (
                                 <div className="mb-4 p-3 bg-purple-500/10">
                                   <p className="text-xs uppercase tracking-widest text-purple-400 mb-1">Note from Seller</p>
                                   <p className="text-sm text-gray-400">{order.seller_notes}</p>
+                                </div>
+                              )}
+                              {order.shipping_address && (
+                                <div className="mb-4 p-3 bg-white/5">
+                                  <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Shipping Address</p>
+                                  <p className="text-sm text-gray-400 whitespace-pre-line">{order.shipping_address}</p>
                                 </div>
                               )}
                               <div className="space-y-2">

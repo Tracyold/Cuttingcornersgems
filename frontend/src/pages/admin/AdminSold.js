@@ -13,9 +13,6 @@ const OrderCard = ({ order, onUpdate }) => {
   });
   const [saving, setSaving] = useState(false);
   const [markingPaid, setMarkingPaid] = useState(false);
-  const [refunding, setRefunding] = useState(false);
-  const [showRefundModal, setShowRefundModal] = useState(false);
-  const [refundReason, setRefundReason] = useState('');
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';

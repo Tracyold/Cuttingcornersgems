@@ -198,14 +198,11 @@ const OrderCard = ({ order, onUpdate }) => {
             </div>
           </div>
 
-          {/* Refund info banner */}
+          {/* Removed from revenue banner */}
           {isRefunded && (
             <div className="bg-orange-500/10 border border-orange-500/20 p-3">
-              <p className="text-sm text-orange-400 font-medium">Order Refunded</p>
-              <p className="text-xs text-gray-400 mt-1">
-                Refunded on {formatDate(order.refunded_at)} • Reason: {order.refund_reason || 'Not specified'}
-              </p>
-              <p className="text-xs text-gray-500 mt-1">This order is excluded from revenue calculations.</p>
+              <p className="text-sm text-orange-400">Removed from Revenue</p>
+              <p className="text-xs text-gray-500 mt-1">This sale is excluded from revenue calculations.</p>
             </div>
           )}
 

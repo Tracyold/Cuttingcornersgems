@@ -182,10 +182,39 @@ const OrderCard = ({ order, onUpdate }) => {
                       </button>
                     </>
                   )}
+                  {isPaid && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setShowRefundModal(true); }}
+                      className="text-xs px-3 py-1 bg-orange-500/20 text-orange-400 hover:bg-orange-500/30"
+                      data-testid={`refund-order-${order.id}`}
+                    >
+                      Refund
+                    </button>
+                  )}
+                  {isRefunded && (
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); handleUnrefund(); }}
+                      className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                      data-testid={`unrefund-order-${order.id}`}
+                    >
+                      Undo Refund
+                    </button>
+                  )}
                 </>
               )}
             </div>
           </div>
+
+          {/* Refund info banner */}
+          {isRefunded && (
+            <div className="bg-orange-500/10 border border-orange-500/20 p-3">
+              <p className="text-sm text-orange-400 font-medium">Order Refunded</p>
+              <p className="text-xs text-gray-400 mt-1">
+                Refunded on {formatDate(order.refunded_at)} • Reason: {order.refund_reason || 'Not specified'}
+              </p>
+              <p className="text-xs text-gray-500 mt-1">This order is excluded from revenue calculations.</p>
+            </div>
+          )}
 
           {/* Order & Payment Info */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

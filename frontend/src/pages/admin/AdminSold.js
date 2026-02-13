@@ -60,28 +60,24 @@ const OrderCard = ({ order, onUpdate }) => {
     }
   };
 
-  const handleRefund = async () => {
-    setRefunding(true);
+  const handleRemoveFromRevenue = async () => {
+    if (!window.confirm('Remove this sale from revenue calculations?')) return;
     try {
-      await adminApi.post(`/admin/orders/${order.id}/refund`, { reason: refundReason || 'Return/refund' });
-      toast.success('Order refunded - removed from revenue');
-      setShowRefundModal(false);
-      setRefundReason('');
+      await adminApi.post(`/admin/orders/${order.id}/refund`, { reason: 'Return' });
+      toast.success('Sale removed from revenue');
       onUpdate();
     } catch (e) {
-      toast.error(e.response?.data?.detail || 'Refund failed');
-    } finally {
-      setRefunding(false);
+      toast.error(e.response?.data?.detail || 'Failed');
     }
   };
 
-  const handleUnrefund = async () => {
+  const handleRestoreToRevenue = async () => {
     try {
       await adminApi.post(`/admin/orders/${order.id}/unrefund`);
-      toast.success('Refund reversed - added back to revenue');
+      toast.success('Sale restored to revenue');
       onUpdate();
     } catch (e) {
-      toast.error(e.response?.data?.detail || 'Failed to reverse refund');
+      toast.error(e.response?.data?.detail || 'Failed');
     }
   };
 

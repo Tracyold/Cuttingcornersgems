@@ -1,10 +1,323 @@
 import React, { useState, useEffect } from 'react';
-import { Receipt, Package, Calendar, Truck, Mail, User, CreditCard, ChevronDown, ChevronUp, Send, ExternalLink, Trash2, Clock, Check, RotateCcw, DollarSign } from 'lucide-react';
+import { Receipt, Package, Calendar, Truck, Mail, User, CreditCard, ChevronDown, ChevronUp, Send, ExternalLink, Trash2, Clock, Check, RotateCcw, DollarSign, MapPin, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { adminApi } from '../../api/adminApi';
 
-// Expandable Invoice Card
-const InvoiceCard = ({ item, onUpdate }) => {
+// Expandable Order Card - Shows full invoice with user details
+const OrderCard = ({ order, onUpdate }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [trackingData, setTrackingData] = useState({
+    tracking_number: order.tracking_number || '',
+    tracking_carrier: order.tracking_carrier || '',
+    seller_notes: order.seller_notes || ''
+  });
+  const [saving, setSaving] = useState(false);
+  const [markingPaid, setMarkingPaid] = useState(false);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  };
+
+  const formatPrice = (p) => p ? `$${Number(p).toLocaleString()}` : '$0';
+
+  const isPending = order.status === 'pending' && !order.paid_at;
+  const isPaid = !!order.paid_at;
+
+  const handleSaveTracking = async () => {
+    setSaving(true);
+    try {
+      await adminApi.patch(`/admin/orders/${order.id}/tracking`, {
+        tracking_number: trackingData.tracking_number,
+        tracking_carrier: trackingData.tracking_carrier,
+        seller_notes: trackingData.seller_notes
+      });
+      toast.success('Tracking info saved');
+      onUpdate();
+    } catch (error) {
+      toast.error('Failed to save tracking info');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleMarkPaid = async () => {
+    setMarkingPaid(true);
+    try {
+      await adminApi.post(`/admin/orders/${order.id}/mark-paid`);
+      toast.success('Order marked as paid');
+      onUpdate();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Failed to mark as paid');
+    } finally {
+      setMarkingPaid(false);
+    }
+  };
+
+  const handleDeleteOrder = async () => {
+    if (!window.confirm('Delete this order?')) return;
+    try {
+      await adminApi.post(`/admin/orders/${order.id}/delete`);
+      toast.success('Order deleted');
+      onUpdate();
+    } catch (e) {
+      toast.error(e.response?.data?.detail || 'Delete failed');
+    }
+  };
+
+  const handleRestoreOrder = async () => {
+    try {
+      await adminApi.post(`/admin/orders/${order.id}/restore`);
+      toast.success('Order restored');
+      onUpdate();
+    } catch (e) {
+      toast.error('Restore failed');
+    }
+  };
+
+  return (
+    <div className={`gem-card overflow-hidden ${order.is_deleted ? 'opacity-50 border border-red-500/20' : ''}`} data-testid={`order-card-${order.id}`}>
+      {/* Header Row */}
+      <div 
+        className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <div className="flex items-start gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-semibold">Order #{order.id.slice(0, 8)}</h3>
+              {order.is_deleted && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5" data-testid="badge-deleted">DELETED</span>}
+              {isPaid ? (
+                <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5" data-testid="badge-paid">PAID</span>
+              ) : (
+                <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5" data-testid="badge-pending">PENDING</span>
+              )}
+              {order.tracking_number && (
+                <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 flex items-center gap-1">
+                  <Truck className="w-3 h-3" /> Tracked
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">
+              {order.buyer_name || 'Unknown'} • {formatPrice(order.total)}
+            </p>
+            <p className="text-xs text-gray-600">{formatDate(order.created_at)}</p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {expanded ? <ChevronUp className="w-5 h-5 text-gray-500" /> : <ChevronDown className="w-5 h-5 text-gray-500" />}
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded Invoice Details */}
+      {expanded && (
+        <div className="px-4 pb-4 border-t border-white/10 pt-4 space-y-6">
+          {/* Invoice Header */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Receipt className="w-5 h-5 text-gray-400" />
+              <span className="font-semibold">Invoice #{order.id.slice(0, 8).toUpperCase()}</span>
+            </div>
+            <div className="flex gap-2">
+              {order.is_deleted ? (
+                <button 
+                  onClick={(e) => { e.stopPropagation(); handleRestoreOrder(); }} 
+                  className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                  data-testid={`restore-order-${order.id}`}
+                >
+                  Restore
+                </button>
+              ) : (
+                <>
+                  {isPending && (
+                    <>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleMarkPaid(); }}
+                        disabled={markingPaid}
+                        className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                        data-testid={`mark-paid-${order.id}`}
+                      >
+                        {markingPaid ? 'Processing...' : 'Mark Paid'}
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleDeleteOrder(); }}
+                        className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                        data-testid={`delete-order-${order.id}`}
+                      >
+                        Delete
+                      </button>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Order & Payment Info */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Created</p>
+              <p className="flex items-center gap-1 text-sm"><Calendar className="w-3 h-3 text-gray-500" /> {formatDate(order.created_at)}</p>
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Status</p>
+              <p className={`text-sm ${isPaid ? 'text-green-400' : 'text-yellow-400'}`}>
+                {isPaid ? 'Paid' : 'Pending (Commit)'}
+              </p>
+            </div>
+            {isPaid && (
+              <div>
+                <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Date Paid</p>
+                <p className="flex items-center gap-1 text-sm"><Calendar className="w-3 h-3 text-gray-500" /> {formatDate(order.paid_at)}</p>
+              </div>
+            )}
+            {order.commit_expires_at && !isPaid && (
+              <div>
+                <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Expires</p>
+                <p className="flex items-center gap-1 text-sm text-yellow-400"><Clock className="w-3 h-3" /> {formatDate(order.commit_expires_at)}</p>
+              </div>
+            )}
+            <div>
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Payment Method</p>
+              <p className="flex items-center gap-1 text-sm"><CreditCard className="w-3 h-3 text-gray-500" /> {order.payment_provider || 'Pending'}</p>
+            </div>
+          </div>
+
+          {/* Order Items */}
+          <div className="bg-white/5 p-4 space-y-2">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Order Items</p>
+            {order.items?.map((item, i) => (
+              <div key={i} className="flex justify-between text-sm">
+                <span className="text-gray-400">{item.title || item.product_id?.slice(0, 8)} x{item.quantity}</span>
+                <span>{formatPrice(item.price * item.quantity)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between font-semibold pt-2 border-t border-white/10">
+              <span>Total</span>
+              <span className={isPaid ? 'text-green-400' : 'text-yellow-400'}>{formatPrice(order.total)}</span>
+            </div>
+          </div>
+
+          {/* Buyer Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border border-white/10 p-4">
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1">
+                <User className="w-3 h-3" /> Buyer Information
+              </p>
+              <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-500" />
+                  <span>{order.buyer_name || 'Not provided'}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-400">{order.buyer_email || 'Not provided'}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-400">{order.buyer_phone || 'Not provided'}</span>
+                </p>
+                {order.user_id && (
+                  <p className="text-xs text-blue-400 mt-2">Account ID: {order.user_id.slice(0, 8)}...</p>
+                )}
+              </div>
+            </div>
+            <div className="border border-white/10 p-4">
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> Shipping Address
+              </p>
+              <p className="text-sm text-gray-400 whitespace-pre-line">{order.shipping_address || 'Not provided'}</p>
+            </div>
+          </div>
+
+          {/* Tracking Details */}
+          <div className="border border-white/10 p-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <Truck className="w-4 h-4 text-gray-400" />
+              <span className="font-semibold text-sm">Tracking Details</span>
+              {order.tracking_entered_at && (
+                <span className="text-xs text-gray-500 ml-auto">
+                  Entered: {formatDate(order.tracking_entered_at)}
+                </span>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Carrier</label>
+                <select
+                  value={trackingData.tracking_carrier}
+                  onChange={(e) => setTrackingData(prev => ({ ...prev, tracking_carrier: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
+                  data-testid="tracking-carrier-select"
+                >
+                  <option value="">Select carrier...</option>
+                  <option value="usps">USPS</option>
+                  <option value="ups">UPS</option>
+                  <option value="fedex">FedEx</option>
+                  <option value="dhl">DHL</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs uppercase tracking-widest text-gray-500 mb-1">Tracking Number</label>
+                <input
+                  type="text"
+                  value={trackingData.tracking_number}
+                  onChange={(e) => setTrackingData(prev => ({ ...prev, tracking_number: e.target.value }))}
+                  className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm font-mono focus:outline-none focus:border-white/30"
+                  placeholder="Enter tracking number"
+                  data-testid="tracking-number-input"
+                />
+              </div>
+            </div>
+
+            <button 
+              onClick={handleSaveTracking} 
+              disabled={saving}
+              className="w-full py-2 text-sm border border-white/20 hover:border-white/40 transition-colors disabled:opacity-50"
+              data-testid="save-tracking-btn"
+            >
+              {saving ? 'Saving...' : 'Save Tracking (Auto-populates to User Account)'}
+            </button>
+          </div>
+
+          {/* Seller Notes */}
+          <div className="border border-white/10 p-4 space-y-4">
+            <div className="flex items-center gap-2">
+              <Send className="w-4 h-4 text-gray-400" />
+              <span className="font-semibold text-sm">Notes for Buyer</span>
+            </div>
+            
+            <textarea
+              value={trackingData.seller_notes}
+              onChange={(e) => setTrackingData(prev => ({ ...prev, seller_notes: e.target.value }))}
+              className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm resize-none h-20 focus:outline-none focus:border-white/30"
+              placeholder="Add notes for the buyer (will appear in their invoice)..."
+              data-testid="seller-notes-input"
+            />
+
+            <button 
+              onClick={handleSaveTracking} 
+              disabled={saving || !trackingData.seller_notes.trim()}
+              className="w-full py-2 text-sm bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors disabled:opacity-50"
+              data-testid="save-notes-btn"
+            >
+              <Send className="w-4 h-4 inline mr-2" />
+              Save Notes
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Legacy Sold Item Card (for sold_items collection)
+const LegacySoldCard = ({ item, onUpdate, onDelete, onRestore, onPurge }) => {
   const [expanded, setExpanded] = useState(false);
   const [trackingData, setTrackingData] = useState({
     tracking_number: item.tracking_number || '',
@@ -18,12 +331,6 @@ const InvoiceCard = ({ item, onUpdate }) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
-  };
-
-  const maskPaymentInfo = (info) => {
-    if (!info) return 'N/A';
-    if (info.length <= 4) return '****';
-    return '****' + info.slice(-4);
   };
 
   const handleSaveTracking = async () => {
@@ -44,33 +351,14 @@ const InvoiceCard = ({ item, onUpdate }) => {
     }
   };
 
-  const handleSendNotes = async () => {
-    if (!trackingData.user_notes.trim()) {
-      toast.error('Please enter notes to send');
-      return;
-    }
-    setSaving(true);
-    try {
-      await axios.post(`${API_URL}/admin/sold/${item.id}/send-notes`, {
-        notes: trackingData.user_notes
-      }, getAuthHeaders());
-      toast.success('Notes sent to user');
-    } catch (error) {
-      toast.error('Failed to send notes');
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
-    <div className="gem-card overflow-hidden" data-testid={`sold-item-${item.id}`}>
+    <div className={`gem-card overflow-hidden ${item.is_deleted ? 'opacity-60' : ''}`} data-testid={`sold-item-${item.id}`}>
       {/* Header Row */}
       <div 
         className="p-4 cursor-pointer hover:bg-white/5 transition-colors"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-start gap-4">
-          {/* Thumbnail */}
           {item.product_image && (
             <img 
               src={item.product_image} 
@@ -89,11 +377,6 @@ const InvoiceCard = ({ item, onUpdate }) => {
           </div>
 
           <div className="flex items-center gap-3">
-            {item.email_sent && (
-              <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-0.5 flex items-center gap-1">
-                <Mail className="w-3 h-3" /> Email Sent
-              </span>
-            )}
             {item.tracking_number && (
               <span className="text-xs bg-purple-500/20 text-purple-400 px-2 py-0.5 flex items-center gap-1">
                 <Truck className="w-3 h-3" /> Tracked
@@ -104,113 +387,43 @@ const InvoiceCard = ({ item, onUpdate }) => {
         </div>
       </div>
 
-      {/* Expanded Invoice Details */}
+      {/* Expanded Details */}
       {expanded && (
         <div className="px-4 pb-4 border-t border-white/10 pt-4 space-y-6">
-          {/* Invoice Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Receipt className="w-5 h-5 text-gray-400" />
-              <span className="font-semibold">Invoice #{item.invoice_number || item.id.slice(0, 8).toUpperCase()}</span>
-            </div>
-            <a 
-              href={`/shop/${item.product_id}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1"
-            >
-              <ExternalLink className="w-3 h-3" /> View Product
-            </a>
-          </div>
-
-          {/* Order & Payment Info */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Date Sold</p>
-              <p className="flex items-center gap-1"><Calendar className="w-3 h-3 text-gray-500" /> {formatDate(item.sold_at)}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Date Paid</p>
-              <p className="flex items-center gap-1"><Calendar className="w-3 h-3 text-gray-500" /> {formatDate(item.paid_at)}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Payment Method</p>
-              <p className="flex items-center gap-1"><CreditCard className="w-3 h-3 text-gray-500" /> {item.payment_method || 'N/A'}</p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-1">Payment Info</p>
-              <p className="font-mono text-sm">{maskPaymentInfo(item.payment_last_four)}</p>
-            </div>
-          </div>
-
-          {/* Price Breakdown */}
-          <div className="bg-white/5 p-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Item Price</span>
-              <span>${item.item_price?.toLocaleString() || '0'}</span>
-            </div>
-            {item.shipping_cost > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Shipping</span>
-                <span>${item.shipping_cost?.toLocaleString()}</span>
-              </div>
-            )}
-            <div className="flex justify-between font-semibold pt-2 border-t border-white/10">
-              <span>Total Paid</span>
-              <span className="text-green-400">${item.total_paid?.toLocaleString()}</span>
-            </div>
-          </div>
-
           {/* Buyer Information */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-2 flex items-center gap-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="border border-white/10 p-4">
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1">
                 <User className="w-3 h-3" /> Buyer Information
               </p>
-              <div className="space-y-1 text-sm">
-                <p>{item.buyer_name}</p>
-                <p className="text-gray-400">{item.buyer_email}</p>
-                <p className="text-gray-400">{item.buyer_phone}</p>
-                {item.user_id && (
-                  <p className="text-xs text-blue-400">Account ID: {item.user_id.slice(0, 8)}...</p>
-                )}
+              <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-gray-500" />
+                  <span>{item.buyer_name}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-400">{item.buyer_email}</span>
+                </p>
+                <p className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-400">{item.buyer_phone || 'Not provided'}</span>
+                </p>
               </div>
             </div>
-            <div>
-              <p className="text-xs uppercase tracking-widest text-gray-500 mb-2">Shipping Address</p>
-              <p className="text-sm text-gray-400 whitespace-pre-line">{item.shipping_address || 'N/A'}</p>
+            <div className="border border-white/10 p-4">
+              <p className="text-xs uppercase tracking-widest text-gray-500 mb-3 flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> Shipping Address
+              </p>
+              <p className="text-sm text-gray-400 whitespace-pre-line">{item.shipping_address || 'Not provided'}</p>
             </div>
           </div>
 
-          {/* Email Verification */}
-          <div className="bg-white/5 p-4 rounded">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-gray-400" />
-                <span className="text-sm">Auto Email Status</span>
-              </div>
-              {item.email_sent ? (
-                <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1">
-                  Sent on {formatDate(item.email_sent_at)}
-                </span>
-              ) : (
-                <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-1">
-                  Pending - Email Service Not Configured
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Tracking Details */}
+          {/* Tracking */}
           <div className="border border-white/10 p-4 space-y-4">
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-gray-400" />
               <span className="font-semibold text-sm">Tracking Details</span>
-              {item.tracking_entered_at && (
-                <span className="text-xs text-gray-500 ml-auto">
-                  Entered: {formatDate(item.tracking_entered_at)}
-                </span>
-              )}
             </div>
             
             <div className="grid grid-cols-2 gap-4">
@@ -219,7 +432,7 @@ const InvoiceCard = ({ item, onUpdate }) => {
                 <select
                   value={trackingData.tracking_carrier}
                   onChange={(e) => setTrackingData(prev => ({ ...prev, tracking_carrier: e.target.value }))}
-                  className="input-dark h-9 text-sm"
+                  className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm focus:outline-none focus:border-white/30"
                 >
                   <option value="">Select carrier...</option>
                   <option value="usps">USPS</option>
@@ -235,7 +448,7 @@ const InvoiceCard = ({ item, onUpdate }) => {
                   type="text"
                   value={trackingData.tracking_number}
                   onChange={(e) => setTrackingData(prev => ({ ...prev, tracking_number: e.target.value }))}
-                  className="input-dark h-9 text-sm font-mono"
+                  className="w-full bg-white/5 border border-white/10 px-3 py-2 text-sm font-mono focus:outline-none focus:border-white/30"
                   placeholder="Enter tracking number"
                 />
               </div>
@@ -244,37 +457,26 @@ const InvoiceCard = ({ item, onUpdate }) => {
             <button 
               onClick={handleSaveTracking} 
               disabled={saving}
-              className="btn-secondary text-sm w-full"
+              className="w-full py-2 text-sm border border-white/20 hover:border-white/40 transition-colors disabled:opacity-50"
             >
-              {saving ? 'Saving...' : 'Save Tracking (Auto-populates to User Account)'}
-            </button>
-          </div>
-
-          {/* User Notes */}
-          <div className="border border-white/10 p-4 space-y-4">
-            <div className="flex items-center gap-2">
-              <Send className="w-4 h-4 text-gray-400" />
-              <span className="font-semibold text-sm">Send Notes to Buyer</span>
-            </div>
-            
-            <textarea
-              value={trackingData.user_notes}
-              onChange={(e) => setTrackingData(prev => ({ ...prev, user_notes: e.target.value }))}
-              className="input-dark h-20 text-sm resize-none"
-              placeholder="Add notes for the buyer (will appear in their invoice)..."
-            />
-
-            <button 
-              onClick={handleSendNotes} 
-              disabled={saving || !trackingData.user_notes.trim()}
-              className="btn-primary text-sm w-full disabled:opacity-50"
-            >
-              <Send className="w-4 h-4 inline mr-2" />
-              Send Notes to User
+              {saving ? 'Saving...' : 'Save Tracking'}
             </button>
           </div>
         </div>
       )}
+
+      {/* Actions */}
+      <div className="flex items-center gap-2 px-4 pb-3">
+        {item.is_deleted ? (
+          <>
+            <span className="text-xs text-red-400">Deleted</span>
+            <button onClick={() => onRestore(item.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30">Restore</button>
+            <button onClick={() => { if(window.prompt('Type PURGE to confirm') === 'PURGE') onPurge(item.id); }} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30">Purge</button>
+          </>
+        ) : (
+          <button onClick={() => onDelete(item.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20">Delete</button>
+        )}
+      </div>
     </div>
   );
 };
@@ -331,45 +533,6 @@ const AdminSold = () => {
     } catch (e) { toast.error('Purge failed'); }
   };
 
-  const handleMarkPaid = async (orderId) => {
-    try {
-      await adminApi.post(`/admin/orders/${orderId}/mark-paid`);
-      fetchData();
-      toast.success('Order marked as paid');
-    } catch (e) { toast.error(e.response?.data?.detail || 'Failed'); }
-  };
-
-  const handleDeleteOrder = async (orderId) => {
-    if (!window.confirm('Delete this unpaid order?')) return;
-    try {
-      await adminApi.post(`/admin/orders/${orderId}/delete`);
-      fetchData();
-      toast.success('Order deleted');
-    } catch (e) { toast.error(e.response?.data?.detail || 'Delete failed'); }
-  };
-
-  const handleRestoreOrder = async (orderId) => {
-    try {
-      await adminApi.post(`/admin/orders/${orderId}/restore`);
-      fetchData();
-      toast.success('Order restored');
-    } catch (e) { toast.error('Restore failed'); }
-  };
-
-  const handleHardDeleteOrder = async (orderId) => {
-    if (!window.confirm('PERMANENTLY delete this paid order? (Test cleanup only)')) return;
-    try {
-      await adminApi.post(`/admin/orders/${orderId}/hard-delete`);
-      fetchData();
-      toast.success('Order permanently deleted');
-    } catch (e) {
-      toast.error(e.response?.data?.detail || 'Hard-delete failed');
-    }
-  };
-
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
-  const formatPrice = (p) => p ? `$${Number(p).toLocaleString()}` : '$0';
-
   // Filter orders into sections
   const now = new Date();
   const d30 = new Date(now - 30 * 86400000);
@@ -380,7 +543,7 @@ const AdminSold = () => {
   const soldOrders = orders.filter(o => o.paid_at && new Date(o.paid_at) >= d365);
 
   const sections = [
-    { key: 'pending', label: 'Pending (Unpaid)', count: pendingOrders.filter(o => !o.is_deleted).length, icon: Clock },
+    { key: 'pending', label: 'Pending (Commit)', count: pendingOrders.filter(o => !o.is_deleted).length, icon: Clock },
     { key: 'completed', label: 'Completed (30d)', count: completedOrders.filter(o => !o.is_deleted).length, icon: Check },
     { key: 'sold', label: 'Sold (365d)', count: soldOrders.filter(o => !o.is_deleted).length, icon: DollarSign },
     { key: 'legacy', label: 'Legacy Sold', count: soldItems.filter(s => !s.is_deleted).length, icon: Receipt },
@@ -439,52 +602,11 @@ const AdminSold = () => {
             </div>
           ) : (
             filteredOrders.map(order => (
-              <div key={order.id} className={`gem-card p-5 ${order.is_deleted ? 'opacity-50 border border-red-500/20' : ''}`} data-testid={`order-card-${order.id}`}>
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-widest">Order #{order.id.slice(0, 8)}</p>
-                    <p className="font-mono text-lg">{formatPrice(order.total)}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {order.is_deleted && <span className="text-xs bg-red-500/20 text-red-400 px-2 py-0.5" data-testid="badge-deleted">DELETED</span>}
-                    {order.paid_at ? (
-                      <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5" data-testid="badge-paid">PAID</span>
-                    ) : (
-                      <span className="text-xs bg-yellow-500/20 text-yellow-400 px-2 py-0.5" data-testid="badge-pending">PENDING</span>
-                    )}
-                  </div>
-                </div>
-                <div className="space-y-1 text-sm text-gray-400 mb-3">
-                  {order.items?.map((item, i) => (
-                    <div key={i} className="flex justify-between">
-                      <span>{item.title || item.product_id?.slice(0, 8)} x{item.quantity}</span>
-                      <span>{formatPrice(item.price * item.quantity)}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mb-3">
-                  <span>Created: {formatDate(order.created_at)}</span>
-                  {order.paid_at && <span>Paid: {formatDate(order.paid_at)} ({order.payment_provider})</span>}
-                  {order.commit_expires_at && !order.paid_at && <span>Expires: {formatDate(order.commit_expires_at)}</span>}
-                </div>
-                <div className="flex gap-2">
-                  {order.is_deleted ? (
-                    <button onClick={() => handleRestoreOrder(order.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-order-${order.id}`}>Restore</button>
-                  ) : (
-                    <>
-                      {!order.paid_at && (
-                        <>
-                          <button onClick={() => handleMarkPaid(order.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`mark-paid-${order.id}`}>Mark Paid</button>
-                          <button onClick={() => handleDeleteOrder(order.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-order-${order.id}`}>Delete</button>
-                        </>
-                      )}
-                      {order.paid_at && (
-                        <button onClick={() => handleHardDeleteOrder(order.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`hard-delete-order-${order.id}`}>Hard Delete (Test)</button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+              <OrderCard 
+                key={order.id} 
+                order={order} 
+                onUpdate={fetchData}
+              />
             ))
           )}
         </div>
@@ -501,23 +623,14 @@ const AdminSold = () => {
           ) : (
             <div className="space-y-4">
               {soldItems.map(item => (
-                <div key={item.id} className={item.is_deleted ? 'opacity-60' : ''}>
-                  <InvoiceCard 
-                    item={item} 
-                    onUpdate={fetchData}
-                  />
-                  <div className="flex items-center gap-2 px-4 pb-2">
-                    {item.is_deleted ? (
-                      <>
-                        <span className="text-xs text-red-400">Deleted</span>
-                        <button onClick={() => handleRestoreSold(item.id)} className="text-xs px-3 py-1 bg-green-500/20 text-green-400 hover:bg-green-500/30" data-testid={`restore-sold-${item.id}`}>Restore</button>
-                        <button onClick={() => { if(window.prompt('Type PURGE to confirm') === 'PURGE') handlePurgeSold(item.id); }} className="text-xs px-3 py-1 bg-red-500/20 text-red-400 hover:bg-red-500/30" data-testid={`purge-sold-${item.id}`}>Purge</button>
-                      </>
-                    ) : (
-                      <button onClick={() => handleDeleteSold(item.id)} className="text-xs px-3 py-1 bg-red-500/10 text-red-400 hover:bg-red-500/20" data-testid={`delete-sold-${item.id}`}>Delete</button>
-                    )}
-                  </div>
-                </div>
+                <LegacySoldCard 
+                  key={item.id}
+                  item={item} 
+                  onUpdate={fetchData}
+                  onDelete={handleDeleteSold}
+                  onRestore={handleRestoreSold}
+                  onPurge={handlePurgeSold}
+                />
               ))}
             </div>
           )}
